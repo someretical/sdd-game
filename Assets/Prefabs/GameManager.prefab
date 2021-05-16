@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7992030536002465654
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7992030536002465651}
+  - component: {fileID: 7992030536002465652}
+  - component: {fileID: 7992030536002465653}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7992030536002465651
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7992030536002465654}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -100}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7992030536002465652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7992030536002465654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c44848eea2e2f3542ae4bb92d0404d59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapScript: {fileID: 0}
+--- !u!114 &7992030536002465653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7992030536002465654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7af5cc65ffd910458e1d756993ef976, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapWidth: 150
+  mapHeight: 150
+  maximumRooms: 30
+  intersectionRoomProbability: 20
+  minimumChestRooms: 2
+  maximumChestRooms: 2
+  minimumSecretRooms: 2
+  maximumSecretRooms: 2
+  minimumSinglePathLength: 1
+  maximumSinglePathLength: 3
+  minimumMultiPathSegmentLength: 2
+  maximumMultiPathSegmentLength: 5
+  minimumMultiPathTotal: 6
+  maximumMultiPathTotal: 10
+  minimumPathTurns: 1
+  maximumPathTurns: 2
+  pathTurnProbability: 30
+  maximumAttempts: 100
+  entranceTile: {fileID: 2763526828712920349, guid: f5655496827296049a819661533cc65e,
+    type: 3}
+  exitTile: {fileID: 1373978380387332517, guid: 9e066a05820f95b449662bf01bc60f1b,
+    type: 3}
+  northDoor: {fileID: 3673259404500155745, guid: 320426a66ace6c143832ed8e479d022f,
+    type: 3}
+  eastDoor: {fileID: 2232517269944161556, guid: 1135ec41f3eef6b4694d34e05045217c,
+    type: 3}
+  southDoor: {fileID: 8773724984118355606, guid: 8eeba628f573d784da699f7188e12ba0,
+    type: 3}
+  westDoor: {fileID: 2985099921330721407, guid: f9f14c1e35e13dd40a308de92eca52cc,
+    type: 3}
+  wallTiles:
+  - {fileID: 818402252535062283, guid: 51e98d37a26e51d4f89b4d5adf8bd501, type: 3}
+  secretWallTiles:
+  - {fileID: 4342432292226337413, guid: b1c1683676365ce4c8e85c5e996bc34b, type: 3}
+  groundTiles:
+  - {fileID: 9114631783283909152, guid: a1945c2191e7c6941b96c386fe4f3767, type: 3}
+  secretGroundTiles:
+  - {fileID: 9152750351560016496, guid: 8257ba8ab2d426c488e868739afab3a2, type: 3}
+  pathTiles:
+  - {fileID: 3788127547765607623, guid: cf5762d317f3f6b4691283733c8d73e0, type: 3}
+  secretPathTiles:
+  - {fileID: 2843603972870240493, guid: fc2181e3882d7724d83efbb33e38eaba, type: 3}
+  destroyableWallTiles:
+  - {fileID: 7566742812040439842, guid: caf29eadc4e1e8d44bd9b829560290d1, type: 3}

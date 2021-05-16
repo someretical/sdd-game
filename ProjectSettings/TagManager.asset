@@ -3,7 +3,10 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Enemy
+  - Exit
+  - Environment Hazard
   layers:
   - Default
   - TransparentFX
@@ -13,7 +16,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - BlockingLayer
   - 
   - 
   - 
@@ -40,4 +43,19 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Floor
+    uniqueID: 1793969281
+    locked: 0
+  - name: Walls
+    uniqueID: 3484487677
+    locked: 0
+  - name: Corpses
+    uniqueID: 113377381
+    locked: 0
+  - name: Items
+    uniqueID: 592348661
+    locked: 0
+  - name: Units
+    uniqueID: 3473933679
     locked: 0
