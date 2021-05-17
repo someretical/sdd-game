@@ -55,12 +55,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -8977042133213792052, guid: 3451a6d7e0db5754fbe0f76b894e6de2,
+      objectReference: {fileID: -821816418284144668, guid: 2f7a4b3dcaa385b43b19f690bf7a1d37,
         type: 3}
     - target: {fileID: 7607952918472459083, guid: b53f379789e8af94c97f4ca8f351f72c,
         type: 3}
       propertyPath: m_Name
-      value: SecetPit
+      value: SecetPit Variant
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b53f379789e8af94c97f4ca8f351f72c, type: 3}

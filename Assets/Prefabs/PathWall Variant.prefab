@@ -65,13 +65,13 @@ PrefabInstance:
     - target: {fileID: 6920968091211037882, guid: 9e7769c348eff024188bcec350e016a0,
         type: 3}
       propertyPath: m_Name
-      value: PathWall
+      value: PathWall Variant
       objectReference: {fileID: 0}
     - target: {fileID: 8897565483773768915, guid: 9e7769c348eff024188bcec350e016a0,
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 3626566181461693962, guid: 3451a6d7e0db5754fbe0f76b894e6de2,
+      objectReference: {fileID: -6345708168113967008, guid: 2f7a4b3dcaa385b43b19f690bf7a1d37,
         type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9e7769c348eff024188bcec350e016a0, type: 3}

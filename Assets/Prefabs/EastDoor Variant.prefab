@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 3673259404500155745, guid: 320426a66ace6c143832ed8e479d022f,
         type: 3}
       propertyPath: m_Name
-      value: EastDoor
+      value: EastDoor Variant
       objectReference: {fileID: 0}
     - target: {fileID: 6590704054283256961, guid: 320426a66ace6c143832ed8e479d022f,
         type: 3}
@@ -71,7 +71,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -3143681163082207153, guid: 3451a6d7e0db5754fbe0f76b894e6de2,
+      objectReference: {fileID: 3463885903112536849, guid: 2f7a4b3dcaa385b43b19f690bf7a1d37,
         type: 3}
+    - target: {fileID: 8701818637070340318, guid: 320426a66ace6c143832ed8e479d022f,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 320426a66ace6c143832ed8e479d022f, type: 3}

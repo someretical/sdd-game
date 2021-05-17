@@ -10,13 +10,13 @@ PrefabInstance:
     - target: {fileID: 2232517269944161556, guid: 1135ec41f3eef6b4694d34e05045217c,
         type: 3}
       propertyPath: m_Name
-      value: SouthDoor
+      value: SouthDoor Variant
       objectReference: {fileID: 0}
     - target: {fileID: 6107556906251450539, guid: 1135ec41f3eef6b4694d34e05045217c,
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -1549736658958449464, guid: 3451a6d7e0db5754fbe0f76b894e6de2,
+      objectReference: {fileID: -7948402115863542055, guid: 2f7a4b3dcaa385b43b19f690bf7a1d37,
         type: 3}
     - target: {fileID: 8608513300083092724, guid: 1135ec41f3eef6b4694d34e05045217c,
         type: 3}

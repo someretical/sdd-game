@@ -55,7 +55,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 494991230123411978, guid: 3451a6d7e0db5754fbe0f76b894e6de2,
+      objectReference: {fileID: -9038990027257229965, guid: 2f7a4b3dcaa385b43b19f690bf7a1d37,
         type: 3}
     - target: {fileID: 2570984584633724660, guid: b53f379789e8af94c97f4ca8f351f72c,
         type: 3}
@@ -72,10 +72,15 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2570984584633724660, guid: b53f379789e8af94c97f4ca8f351f72c,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7607952918472459083, guid: b53f379789e8af94c97f4ca8f351f72c,
         type: 3}
       propertyPath: m_Name
-      value: Goo
+      value: Goo Variant
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b53f379789e8af94c97f4ca8f351f72c, type: 3}

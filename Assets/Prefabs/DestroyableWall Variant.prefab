@@ -80,13 +80,18 @@ PrefabInstance:
     - target: {fileID: 6920968091211037882, guid: 9e7769c348eff024188bcec350e016a0,
         type: 3}
       propertyPath: m_Name
-      value: DestroyableWall
+      value: DestroyableWall Variant
       objectReference: {fileID: 0}
     - target: {fileID: 8897565483773768915, guid: 9e7769c348eff024188bcec350e016a0,
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -647705330210597841, guid: 3451a6d7e0db5754fbe0f76b894e6de2,
+      objectReference: {fileID: -562753577355159171, guid: 2f7a4b3dcaa385b43b19f690bf7a1d37,
         type: 3}
+    - target: {fileID: 8897565483773768915, guid: 9e7769c348eff024188bcec350e016a0,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9e7769c348eff024188bcec350e016a0, type: 3}

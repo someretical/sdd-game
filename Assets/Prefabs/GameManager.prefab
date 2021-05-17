@@ -66,7 +66,7 @@ MonoBehaviour:
   minimumSecretRooms: 2
   maximumSecretRooms: 2
   minimumSinglePathLength: 1
-  maximumSinglePathLength: 3
+  maximumSinglePathLength: 1
   minimumMultiPathSegmentLength: 2
   maximumMultiPathSegmentLength: 5
   minimumMultiPathTotal: 6
@@ -87,6 +87,12 @@ MonoBehaviour:
     type: 3}
   westDoor: {fileID: 2985099921330721407, guid: f9f14c1e35e13dd40a308de92eca52cc,
     type: 3}
+  voidTile: {fileID: 8404724423286336729, guid: 2e94e129c258e5d4181d66471c10d6dc,
+    type: 3}
+  chestTile: {fileID: 1680118207636297014, guid: 58175feff837f964781ae1ca4e7450a1,
+    type: 3}
+  pitTile: {fileID: 7607952918472459083, guid: b53f379789e8af94c97f4ca8f351f72c, type: 3}
+  gooTile: {fileID: 732245817541562099, guid: 7a218119585905f4e9ceff51f345d573, type: 3}
   wallTiles:
   - {fileID: 818402252535062283, guid: 51e98d37a26e51d4f89b4d5adf8bd501, type: 3}
   secretWallTiles:

@@ -66,12 +66,17 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -6836041904627061707, guid: 3451a6d7e0db5754fbe0f76b894e6de2,
+      objectReference: {fileID: -3284917267571317263, guid: 2f7a4b3dcaa385b43b19f690bf7a1d37,
         type: 3}
+    - target: {fileID: 3835943141940834255, guid: 8257ba8ab2d426c488e868739afab3a2,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9152750351560016496, guid: 8257ba8ab2d426c488e868739afab3a2,
         type: 3}
       propertyPath: m_Name
-      value: Entrance
+      value: Entrance Variant
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8257ba8ab2d426c488e868739afab3a2, type: 3}
