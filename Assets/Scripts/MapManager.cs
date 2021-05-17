@@ -12,7 +12,7 @@ public class MapManager : MonoBehaviour
 	public int minimumSecretRooms = 2;
 	public int maximumSecretRooms = 2;
 	public int minimumSinglePathLength = 1;
-	public int maximumSinglePathLength = 3;
+	public int maximumSinglePathLength = 1;
 	public int minimumMultiPathSegmentLength = 2;
 	public int maximumMultiPathSegmentLength = 5;
 	public int minimumMultiPathTotal = 6;
@@ -27,6 +27,10 @@ public class MapManager : MonoBehaviour
 	public GameObject eastDoor;
 	public GameObject southDoor;
 	public GameObject westDoor;
+	public GameObject voidTile;
+	public GameObject chestTile;
+	public GameObject pitTile;
+	public GameObject gooTile;
 	public GameObject[] wallTiles;
 	public GameObject[] secretWallTiles;
 	public GameObject[] groundTiles;
@@ -37,6 +41,8 @@ public class MapManager : MonoBehaviour
 	private Transform tileHolder;
 	public void SetupMap(int level)
 	{
+		tileHolder = new GameObject("Dungeon").transform;
+
 		Rooms.RotateRoomPresets();
 
 		MapGenerator mapGenerator = new MapGenerator(
@@ -62,18 +68,18 @@ public class MapManager : MonoBehaviour
 
 		mapGenerator.Generate();
 
-		for (var y = 0; y < mapGenerator.map.GetLength(0); ++y)
-			for (var x = 0; x < mapGenerator.map.GetLength(1); ++x)
+		for (var x = 0; x < mapGenerator.map.GetLength(1); ++x)
+			for (var y = 0; y < mapGenerator.map.GetLength(0); ++y)
 			{
 				GameObject toInstantiate = entranceTile;
 
-				switch (mapGenerator.map[y, x].type)
+				switch (mapGenerator.map[x, y].type)
 				{
 					case TileTypes.Void:
-						toInstantiate = wallTiles[Random.Range(0, wallTiles.Length)];
+						toInstantiate = voidTile;
 						break;
 					case TileTypes.Any:
-						toInstantiate = wallTiles[Random.Range(0, wallTiles.Length)];
+						toInstantiate = voidTile;
 						break;
 					case TileTypes.Pillar:
 						toInstantiate = wallTiles[Random.Range(0, wallTiles.Length)];
@@ -91,29 +97,29 @@ public class MapManager : MonoBehaviour
 						toInstantiate = groundTiles[Random.Range(0, groundTiles.Length)];
 						break;
 					case TileTypes.Door:
-						if (mapGenerator.map[y, x].rotation == Rotations.North)
+						if (mapGenerator.map[x, y].rotation == Rotations.North)
 							toInstantiate = northDoor;
 
-						if (mapGenerator.map[y, x].rotation == Rotations.East)
+						if (mapGenerator.map[x, y].rotation == Rotations.East)
 							toInstantiate = eastDoor;
 
-						if (mapGenerator.map[y, x].rotation == Rotations.South)
+						if (mapGenerator.map[x, y].rotation == Rotations.South)
 							toInstantiate = southDoor;
 
-						if (mapGenerator.map[y, x].rotation == Rotations.West)
+						if (mapGenerator.map[x, y].rotation == Rotations.West)
 							toInstantiate = westDoor;
 						break;
 					case TileTypes.Path:
 						toInstantiate = pathTiles[Random.Range(0, pathTiles.Length)];
 						break;
 					case TileTypes.Pit:
-						toInstantiate = groundTiles[Random.Range(0, groundTiles.Length)];
+						toInstantiate = pitTile;
 						break;
 					case TileTypes.Goo:
-						toInstantiate = groundTiles[Random.Range(0, groundTiles.Length)];
+						toInstantiate = gooTile;
 						break;
 					case TileTypes.Chest:
-						toInstantiate = groundTiles[Random.Range(0, groundTiles.Length)];
+						toInstantiate = chestTile;
 						break;
 					case TileTypes.DestroyableWall:
 						toInstantiate = destroyableWallTiles[Random.Range(0, destroyableWallTiles.Length)];

@@ -1,3 +1,5 @@
+// This file contains all of the code used to generate the dungeon
+
 using System;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
@@ -24,6 +26,19 @@ namespace DungeonGenerator
 		private int maximumPathTurns;
 		private int pathTurnProbability;
 		private int maximumAttempts;
+
+		// These ID counters will be used to associate tiles with their respective
+		// rooms and/or paths (doors are both part of a room and a path)
+		// These IDs will come in handy when revealing new portions of the map
+		// which will occur whenever the player opens a new door or reveals
+		// a secret room.
+		// Counters start at 1 as 0 is the null value used for the any and void tile
+		// which simplifies scanning the entire tile matrix and reduces load on the
+		// Unity engine as it does not have to change as many sprites
+		// They are declared here because pointers are kind of inconvenient to use in c#
+		// (with pointers, I could just pass the address of the variable and not need to return anything)
+		private int roomIDCounter = 1;
+		private int pathIDCounter = 1;
 		public Tile[,] map
 		{
 			get;
@@ -106,13 +121,39 @@ namespace DungeonGenerator
 		{
 			return !(x < 0 || x >= columns || y < 0 || y >= rows);
 		}
-		public void BuildRoom(Point topLeft, Room room)
+		public void BuildRoom(Point topLeft, Room room, bool secret = false)
 		{
 			// Put a room preset onto the map
 			for (var x = 0; x < room.width; ++x)
 				for (var y = 0; y < room.height; ++y)
 					if (room.tiles[y, x].type != TileTypes.Any)
-						map[x + topLeft.x, y + topLeft.y] = new Tile(room.tiles[y, x].type, room.tiles[y, x].rotation);
+					{
+						// All secret room tiles only have a path ID
+						// Also convert secret doors into a secret path tile
+						Tile newTile;
+						if (secret)
+						{
+							// Don't need to reveal void tiles
+							int actualPathID = room.tiles[y, x].type == TileTypes.Void ? 0 : pathIDCounter;
+
+							newTile = new Tile(room.tiles[y, x].type, room.tiles[y, x].rotation, 0, actualPathID);
+
+							if (newTile.type == TileTypes.SecretDoor)
+							{
+								newTile.type = TileTypes.SecretPath;
+								newTile.rotation = Rotations.None;
+							}
+						}
+						else
+						{
+							// Don't need to reveal void tiles
+							int actualRoomID = room.tiles[y, x].type == TileTypes.Void ? 0 : roomIDCounter;
+
+							newTile = new Tile(room.tiles[y, x].type, room.tiles[y, x].rotation, actualRoomID);
+						}
+
+						map[x + topLeft.x, y + topLeft.y] = newTile;
+					}
 			// VERY VERY VERY IMPORTANT THAT THIS IS y, x NOT x, y
 			// Also the tile instance has to be a new one, 
 			// otherwise it copies by reference which is not what we want
@@ -133,6 +174,7 @@ namespace DungeonGenerator
 				}
 
 			BuildRoom(new Point(columns / 2, rows / 2), Rooms.Entrances[Random.Range(0, Rooms.Entrances.Count)]);
+			++roomIDCounter;
 		}
 		public List<Tuple<Tile, Point>> GetAvailableDoors()
 		{
@@ -414,40 +456,63 @@ namespace DungeonGenerator
 
 			return Tuple.Create(true, randomRoom, topLeft);
 		}
+		public void BuildPathTile(int x, int y, TileTypes type)
+		{
+			// Actually set the tile
+			map[x, y].type = type;
+
+			// Secret rooms and paths only have a path ID since they don't have any doors
+			// Doors are responsible for triggering room reveals
+			// Destroyable walls do that too, but then there is no door to
+			// transition between the secret path and the secret room
+			// which breaks the whole thing,
+			// hence this rather band aid fix :p
+			map[x, y].pathID = type == TileTypes.SecretPath ? roomIDCounter : pathIDCounter;
+		}
+		public void SetPathIDForDoor(int x, int y)
+		{
+			// Set the path ID for a door tile
+			if (map[x, y].type == TileTypes.Door)
+				map[x, y].pathID = pathIDCounter;
+		}
 		public void BuildPath(Point start, Rotations direction, int length, bool secret)
 		{
-			// Put all the path segments onto the map
+			// Put a path segment onto the map
 			var type = secret ? TileTypes.SecretPath : TileTypes.Path;
 
+			// The direction is relative to END of the current segment
+			// which is relative to the NEW room which would have been 
+			// just placed before this path will be placed
+			// Just realised how confusing all this really is
 			switch (direction)
 			{
 				case Rotations.North:
+					SetPathIDForDoor(start.x, start.y + 1);
+					SetPathIDForDoor(start.x, start.y - length);
+
 					for (var y = start.y; y > start.y - length; --y)
-					{
-						map[start.x, y].type = type;
-						map[start.x, y].rotation = Rotations.None;
-					}
+						BuildPathTile(start.x, y, type);
 					break;
 				case Rotations.East:
+					SetPathIDForDoor(start.x - 1, start.y);
+					SetPathIDForDoor(start.x + length, start.y);
+
 					for (var x = start.x; x < start.x + length; ++x)
-					{
-						map[x, start.y].type = type;
-						map[x, start.y].rotation = Rotations.None;
-					}
+						BuildPathTile(x, start.y, type);
 					break;
 				case Rotations.South:
+					SetPathIDForDoor(start.x, start.y - 1);
+					SetPathIDForDoor(start.x, start.y + length);
+
 					for (var y = start.y; y < start.y + length; ++y)
-					{
-						map[start.x, y].type = type;
-						map[start.x, y].rotation = Rotations.None;
-					}
+						BuildPathTile(start.x, y, type);
 					break;
 				case Rotations.West:
+					SetPathIDForDoor(start.x + 1, start.y);
+					SetPathIDForDoor(start.x - length, start.y);
+
 					for (var x = start.x; x > start.x - length; --x)
-					{
-						map[x, start.y].type = type;
-						map[x, start.y].rotation = Rotations.None;
-					}
+						BuildPathTile(x, start.y, type);
 					break;
 			}
 		}
@@ -485,10 +550,14 @@ namespace DungeonGenerator
 						var surrounding = GetAdjacentEmpty(new Point(x, y));
 
 						for (var i = 0; i < surrounding.Count; ++i)
+						{
 							if (map[x, y].type == TileTypes.SecretPath)
 								map[surrounding[i].x, surrounding[i].y].type = TileTypes.SecretPathWall;
 							else
 								map[surrounding[i].x, surrounding[i].y].type = TileTypes.PathWall;
+
+							map[surrounding[i].x, surrounding[i].y].pathID = pathIDCounter;
+						}
 					}
 		}
 		public bool AddRoom(RoomTypes type, bool secret = false)
@@ -510,7 +579,6 @@ namespace DungeonGenerator
 				if (pathSegments.Count == 0)
 					continue;
 
-
 				// Final path segment data
 				var (finalSegmentStartPoint, finalSegmentDirection, l) = pathSegments[pathSegments.Count - 1];
 
@@ -530,7 +598,7 @@ namespace DungeonGenerator
 				if (!roomIsBuildable)
 					continue;
 
-				BuildRoom(topLeftPoint, room);
+				BuildRoom(topLeftPoint, room, secret);
 
 				for (var k = 0; k < pathSegments.Count; ++k)
 				{
@@ -540,6 +608,10 @@ namespace DungeonGenerator
 				}
 
 				WallPaths();
+
+				++pathIDCounter;
+				if (type != RoomTypes.Secret)
+					++roomIDCounter;
 
 				return true;
 			}
@@ -632,11 +704,6 @@ namespace DungeonGenerator
 								}
 								break;
 						}
-					}
-					else if (map[x, y].type == TileTypes.SecretDoor)
-					{
-						map[x, y].type = TileTypes.SecretPath;
-						map[x, y].rotation = Rotations.None;
 					}
 		}
 		public void BlockDoors()

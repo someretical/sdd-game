@@ -1,3 +1,7 @@
+// This file holds all of the room presets and functions for rotating rooms
+// It also holds a bunch of enums that are used in DungeonGenerator.cs
+// Finally it holds the declarations of a few other classes
+
 using System.Collections.Generic;
 
 namespace DungeonGenerator
@@ -56,10 +60,14 @@ namespace DungeonGenerator
 	{
 		public TileTypes type;
 		public Rotations rotation;
-		public Tile(TileTypes t, Rotations r)
+		public int roomID;
+		public int pathID;
+		public Tile(TileTypes p_type, Rotations p_rotation, int p_roomID = 0, int p_pathID = 0)
 		{
-			type = t;
-			rotation = r;
+			type = p_type;
+			rotation = p_rotation;
+			roomID = p_roomID;
+			pathID = p_pathID;
 		}
 	}
 	public class Room
@@ -107,161 +115,175 @@ namespace DungeonGenerator
 		public static readonly List<Room> Entrances = new List<Room>
 		{
 			new Room(new Tile[,] {
-			{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.DN, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.EN, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_},
-		})
+				{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.DN, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.EN, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_},
+			})
 		};
 		public static readonly List<Room> Exits = new List<Room>
 		{
 			new Room(new Tile[,] {
-			{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.DN, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.EX, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_},
-		})
+				{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.DN, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.EX, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_},
+			})
 		};
 		public static readonly List<Room> Treasures = new List<Room>
 		{
 			// Thin chest room
 			new Room(new Tile[,] {
-			{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.DN, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.C_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_},
-		}),
+				{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.DN, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.C_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_},
+			}),
 			// Diamond shaped chest room
 			new Room(new Tile[,] {
-			{Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_},
-			{Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.W_, Tiles.DN, Tiles.W_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_},
-			{Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.W_, Tiles.W_, Tiles.G_, Tiles.W_, Tiles.W_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_},
-			{Tiles.A_, Tiles.V_, Tiles.V_, Tiles.W_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.W_, Tiles.V_, Tiles.V_, Tiles.A_},
-			{Tiles.V_, Tiles.V_, Tiles.W_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.W_, Tiles.V_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.C_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.V_, Tiles.W_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.W_, Tiles.V_, Tiles.V_},
-			{Tiles.A_, Tiles.V_, Tiles.V_, Tiles.W_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.W_, Tiles.V_, Tiles.V_, Tiles.A_},
-			{Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.W_, Tiles.W_, Tiles.G_, Tiles.W_, Tiles.W_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_},
-			{Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_},
-			{Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_},
-		}),
+				{Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_},
+				{Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.W_, Tiles.DN, Tiles.W_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_},
+				{Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.W_, Tiles.W_, Tiles.G_, Tiles.W_, Tiles.W_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_},
+				{Tiles.A_, Tiles.V_, Tiles.V_, Tiles.W_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.W_, Tiles.V_, Tiles.V_, Tiles.A_},
+				{Tiles.V_, Tiles.V_, Tiles.W_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.W_, Tiles.V_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.C_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.V_, Tiles.W_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.W_, Tiles.V_, Tiles.V_},
+				{Tiles.A_, Tiles.V_, Tiles.V_, Tiles.W_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.W_, Tiles.V_, Tiles.V_, Tiles.A_},
+				{Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.W_, Tiles.W_, Tiles.G_, Tiles.W_, Tiles.W_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_},
+				{Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_},
+				{Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_},
+			}),
 		};
 		public static readonly List<Room> Secret = new List<Room>
 		{
 			// Small secret room
 			new Room(new Tile[,] {
-			{Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_},
-			{Tiles.V_, Tiles.SW, Tiles.SW, Tiles.SD, Tiles.SW, Tiles.SW, Tiles.V_},
-			{Tiles.V_, Tiles.SW, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SW, Tiles.V_},
-			{Tiles.V_, Tiles.SW, Tiles.SG, Tiles.C_, Tiles.SG, Tiles.SW, Tiles.V_},
-			{Tiles.V_, Tiles.SW, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SW, Tiles.V_},
-			{Tiles.V_, Tiles.SW, Tiles.SW, Tiles.SW, Tiles.SW, Tiles.SW, Tiles.V_},
-			{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_},
-		}),
+				{Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_},
+				{Tiles.V_, Tiles.SW, Tiles.SW, Tiles.SD, Tiles.SW, Tiles.SW, Tiles.V_},
+				{Tiles.V_, Tiles.SW, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SW, Tiles.V_},
+				{Tiles.V_, Tiles.SW, Tiles.SG, Tiles.C_, Tiles.SG, Tiles.SW, Tiles.V_},
+				{Tiles.V_, Tiles.SW, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SW, Tiles.V_},
+				{Tiles.V_, Tiles.SW, Tiles.SW, Tiles.SW, Tiles.SW, Tiles.SW, Tiles.V_},
+				{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_},
+			}),
 			// Large secret room
 			new Room(new Tile[,] {
-			{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_},
-			{Tiles.V_, Tiles.SW, Tiles.SW, Tiles.SW, Tiles.SD, Tiles.SW, Tiles.SW, Tiles.SW, Tiles.V_},
-			{Tiles.V_, Tiles.SW, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SW, Tiles.V_},
-			{Tiles.V_, Tiles.SW, Tiles.SG, Tiles.C_, Tiles.SG, Tiles.C_, Tiles.SG, Tiles.SW, Tiles.V_},
-			{Tiles.V_, Tiles.SW, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SW, Tiles.V_},
-			{Tiles.V_, Tiles.SW, Tiles.SG, Tiles.C_, Tiles.SG, Tiles.C_, Tiles.SG, Tiles.SW, Tiles.V_},
-			{Tiles.V_, Tiles.SW, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SW, Tiles.V_},
-			{Tiles.V_, Tiles.SW, Tiles.SW, Tiles.SW, Tiles.SW, Tiles.SW, Tiles.SW, Tiles.SW, Tiles.V_},
-			{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_},
-		}),
+				{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_},
+				{Tiles.V_, Tiles.SW, Tiles.SW, Tiles.SW, Tiles.SD, Tiles.SW, Tiles.SW, Tiles.SW, Tiles.V_},
+				{Tiles.V_, Tiles.SW, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SW, Tiles.V_},
+				{Tiles.V_, Tiles.SW, Tiles.SG, Tiles.C_, Tiles.SG, Tiles.C_, Tiles.SG, Tiles.SW, Tiles.V_},
+				{Tiles.V_, Tiles.SW, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SW, Tiles.V_},
+				{Tiles.V_, Tiles.SW, Tiles.SG, Tiles.C_, Tiles.SG, Tiles.C_, Tiles.SG, Tiles.SW, Tiles.V_},
+				{Tiles.V_, Tiles.SW, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SG, Tiles.SW, Tiles.V_},
+				{Tiles.V_, Tiles.SW, Tiles.SW, Tiles.SW, Tiles.SW, Tiles.SW, Tiles.SW, Tiles.SW, Tiles.V_},
+				{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_},
+			}),
 		};
 		public static readonly List<Room> Intersections = new List<Room>
 		{
 			// Square room with multiple connections per side
 			new Room(new Tile[,] {
-			{Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.DN, Tiles.W_, Tiles.DN, Tiles.W_, Tiles.W_, Tiles.V_},
-			{Tiles.A_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.A_},
-			{Tiles.A_, Tiles.DW, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.DE, Tiles.A_},
-			{Tiles.A_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.A_},
-			{Tiles.A_, Tiles.DW, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.DE, Tiles.A_},
-			{Tiles.A_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.A_},
-			{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.DS, Tiles.W_, Tiles.DS, Tiles.W_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_},
-		}),
+				{Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.DN, Tiles.W_, Tiles.DN, Tiles.W_, Tiles.W_, Tiles.V_},
+				{Tiles.A_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.A_},
+				{Tiles.A_, Tiles.DW, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.DE, Tiles.A_},
+				{Tiles.A_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.A_},
+				{Tiles.A_, Tiles.DW, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.DE, Tiles.A_},
+				{Tiles.A_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.A_},
+				{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.DS, Tiles.W_, Tiles.DS, Tiles.W_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_},
+			}),
 			// Origin room
 			new Room(new Tile[,] {
-			{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.DN, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.A_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.A_},
-			{Tiles.A_, Tiles.DW, Tiles.G_, Tiles.G_, Tiles.P_, Tiles.G_, Tiles.G_, Tiles.DE, Tiles.A_},
-			{Tiles.A_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.A_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.DS, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_},
-		}),
+				{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.DN, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.A_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.A_},
+				{Tiles.A_, Tiles.DW, Tiles.G_, Tiles.G_, Tiles.P_, Tiles.G_, Tiles.G_, Tiles.DE, Tiles.A_},
+				{Tiles.A_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.A_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.DS, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_},
+			}),
 		};
 		public static readonly List<Room> Default = new List<Room>
 		{
 			// L shaped room
 			new Room(new Tile[,] {
-			{Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_},
-			{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.DN, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_},
-			{Tiles.A_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_},
-			{Tiles.A_, Tiles.DW, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_},
-			{Tiles.A_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.A_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.DE, Tiles.A_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.A_},
-			{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.DS, Tiles.W_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_}
-		}),
+				{Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_},
+				{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.DN, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_},
+				{Tiles.A_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_},
+				{Tiles.A_, Tiles.DW, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_},
+				{Tiles.A_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.A_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.DE, Tiles.A_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.A_},
+				{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.DS, Tiles.W_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_}
+			}),
 			// L shaped room with goo
 			new Room(new Tile[,] {
-			{Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_},
-			{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.DN, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_},
-			{Tiles.A_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_},
-			{Tiles.A_, Tiles.DW, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_},
-			{Tiles.A_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.GO, Tiles.GO, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.A_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.GO, Tiles.GO, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.DE, Tiles.A_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.A_},
-			{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.DS, Tiles.W_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_}
-		}),
+				{Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_},
+				{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.DN, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_},
+				{Tiles.A_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_},
+				{Tiles.A_, Tiles.DW, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.A_},
+				{Tiles.A_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.GO, Tiles.GO, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.A_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.GO, Tiles.GO, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.DE, Tiles.A_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.A_},
+				{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.DS, Tiles.W_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_}
+			}),
 			// Long rectangular room
 			new Room(new Tile[,] {
-			{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.DN, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.DS, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
-			{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_},
-		})
+				{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.DN, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.DS, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_},
+			}),
+			// Square room with only 2 doorways
+			new Room(new Tile[,] {
+				{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.A_, Tiles.A_, Tiles.A_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.DN, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.A_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.A_, Tiles.DW, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.A_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.G_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.W_, Tiles.V_},
+				{Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_, Tiles.V_},
+			}),
 		};
 		private static Tile[,] RotateRoom(Room baseRoom, Rotations direction)
 		{
