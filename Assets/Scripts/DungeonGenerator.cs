@@ -752,17 +752,11 @@ namespace DungeonGenerator
 			while (true)
 			{
 				InstantiateMap();
-				Console.WriteLine("Instantiated map");
 
 				if (AddRooms())
 				{
-					Console.WriteLine("Added rooms");
-
 					HideSecretRooms();
-					Console.WriteLine("Hidden secret rooms");
-
 					BlockDoors();
-					Console.WriteLine("Removed oblivion doors");
 
 					break;
 				}
