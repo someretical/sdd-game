@@ -7,6 +7,7 @@ TagManager:
   - Enemy
   - Exit
   - Environment Hazard
+  - Door
   layers:
   - Default
   - TransparentFX
