@@ -1,25 +1,28 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-public class GameManager : MonoBehaviour
+namespace DungeonGeneratorNamespace
 {
-	public static GameManager instance = null;
-	public MapManager mapScript;
-	private int level = 0;
-	void Awake()
+	public class GameManager : MonoBehaviour
 	{
-		if (instance == null)
-			instance = this;
-		else if (instance != this)
-			Destroy(gameObject);
+		public GameObject levelManager;
+		public TextAsset defaultRoomsJSON;
+		public TextAsset entranceRoomsJSON;
+		public TextAsset exitRoomsJSON;
+		public TextAsset intersectionRoomsJSON;
+		public TextAsset secretRoomsJSON;
+		public TextAsset treasureRoomsJSON;
+		private readonly RoomManager roomManager = new RoomManager();
+		private GameObject currentLevelManager;
+		void Start()
+		{
+			roomManager.Init(this);
 
-		DontDestroyOnLoad(gameObject);
+			currentLevelManager = Instantiate(levelManager, new Vector3Int(0, 0, 0), Quaternion.identity, transform);
 
-		mapScript = GetComponent<MapManager>();
-
-		InitGame();
-	}
-	void InitGame()
-	{
-		mapScript.SetupMap(level);
+			var dungeonManager = currentLevelManager.transform.Find("Dungeon").gameObject.GetComponent<DungeonManager>();
+			dungeonManager.Init(roomManager);
+		}
 	}
 }

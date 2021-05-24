@@ -1,9 +1,16 @@
 fileFormatVersion: 2
-guid: c44848eea2e2f3542ae4bb92d0404d59
+guid: 7593a1a9109513f48ada64162c4f68b5
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - levelManager: {instanceID: 0}
+  - defaultRoomsJSON: {fileID: 4900000, guid: f66c93463a5a8f141bd76c86a39d3566, type: 3}
+  - entranceRoomsJSON: {instanceID: 0}
+  - exitRoomsJSON: {instanceID: 0}
+  - intersectionRoomsJSON: {instanceID: 0}
+  - secretRoomsJSON: {instanceID: 0}
+  - treasureRoomsJSON: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

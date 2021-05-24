@@ -4,10 +4,12 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Enemy
-  - Exit
-  - Environment Hazard
+  - Ground
   - Door
+  - Wall
+  - Chest
+  - Item
+  - Decorations
   layers:
   - Default
   - TransparentFX
@@ -17,7 +19,7 @@ TagManager:
   - UI
   - 
   - 
-  - BlockingLayer
+  - 
   - 
   - 
   - 
@@ -45,18 +47,24 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Floor
-    uniqueID: 1793969281
+  - name: Ground
+    uniqueID: 1466288339
     locked: 0
   - name: Walls
-    uniqueID: 3484487677
+    uniqueID: 3462706379
     locked: 0
-  - name: Corpses
-    uniqueID: 113377381
+  - name: Doors
+    uniqueID: 1528656013
+    locked: 0
+  - name: Tile entities
+    uniqueID: 3220054737
+    locked: 0
+  - name: Decorations
+    uniqueID: 3084760137
     locked: 0
   - name: Items
-    uniqueID: 592348661
+    uniqueID: 4009106277
     locked: 0
-  - name: Units
-    uniqueID: 3473933679
+  - name: Entities
+    uniqueID: 172548445
     locked: 0

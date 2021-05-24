@@ -1,0 +1,14 @@
+root=true
+
+[*.cs]
+dotnet_diagnostic.IDE0051.severity = none
+
+# This is needed because Unity does not support c# 9 yet where you can do type name = new()
+dotnet_diagnostic.IDE0090.severity = none
+
+# This is needed so VSC ignores external libraries
+[Packages/**.cs]
+generated_code = true
+
+[Assets/Plugins/**.cs]
+generated_code = true
