@@ -52,8 +52,8 @@ namespace DungeonGeneratorNamespace
 		public Tile(
 			TileTypes p_type,
 			Rotations p_rotation = Rotations.None,
-			int p_roomID = 0,
-			int p_pathID = 0
+			int p_roomID = -1,
+			int p_pathID = -1
 		)
 		{
 			type = p_type;
