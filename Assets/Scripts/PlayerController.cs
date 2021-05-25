@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
 	public Rigidbody2D rb2d;
 	void Awake()
 	{
-		transform.position = new Vector3Int(70, 70, 0);
+		transform.position = new Vector3Int(79, 71, 0);
 	}
 	void FixedUpdate()
 	{

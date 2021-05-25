@@ -9,25 +9,25 @@ namespace DungeonGeneratorNamespace
 {
 	public class DungeonGenerator
 	{
-		private readonly int columns;
-		private readonly int rows;
-		private readonly int maximumRooms;
-		private readonly int intersectionRoomProbability;
-		private readonly int minimumChestRooms;
-		private readonly int maximumChestRooms;
-		private readonly int minimumSecretRooms;
-		private readonly int maximumSecretRooms;
-		private readonly int minimumSinglePathLength;
-		private readonly int maximumSinglePathLength;
-		private readonly int minimumMultiPathSegmentLength;
-		private readonly int maximumMultiPathSegmentLength;
-		private readonly int minimumMultiPathTotal;
-		private readonly int maximumMultiPathTotal;
-		private readonly int minimumPathTurns;
-		private readonly int maximumPathTurns;
-		private readonly int pathTurnProbability;
-		private readonly int maximumAttempts;
-		private readonly RoomManager roomManager;
+		public readonly int columns;
+		public readonly int rows;
+		public readonly int maximumRooms;
+		public readonly int intersectionRoomProbability;
+		public readonly int minimumChestRooms;
+		public readonly int maximumChestRooms;
+		public readonly int minimumSecretRooms;
+		public readonly int maximumSecretRooms;
+		public readonly int minimumSinglePathLength;
+		public readonly int maximumSinglePathLength;
+		public readonly int minimumMultiPathSegmentLength;
+		public readonly int maximumMultiPathSegmentLength;
+		public readonly int minimumMultiPathTotal;
+		public readonly int maximumMultiPathTotal;
+		public readonly int minimumPathTurns;
+		public readonly int maximumPathTurns;
+		public readonly int pathTurnProbability;
+		public readonly int maximumAttempts;
+		public readonly RoomManager roomManager;
 		public Tile[,] Map
 		{
 			get;
@@ -212,11 +212,15 @@ namespace DungeonGeneratorNamespace
 
 			return doors;
 		}
-		public Tuple<bool, List<Vector2Int>> CheckPathLocations(Vector2Int topLeft, Vector2Int bottomRight)
+		public Tuple<bool, List<Vector2Int>> CheckPathLocations(Vector2Int topLeft, Vector2Int bottomRight, List<Vector2Int> extraPoints)
 		{
 			// Actually check that path can be placed
 			var placable = true;
 			var points = new List<Vector2Int>();
+
+			for (var i = 0; i < extraPoints.Count; i++)
+				if (!InBounds(extraPoints[i].x, extraPoints[i].y) || Map[extraPoints[i].x, extraPoints[i].y].type != TileTypes.Any)
+					return Tuple.Create(false, points);
 
 			for (var x = topLeft.x; x <= bottomRight.x; ++x)
 				for (var y = topLeft.y; y <= bottomRight.y; ++y)
@@ -262,19 +266,35 @@ namespace DungeonGeneratorNamespace
 				switch (currentDirection)
 				{
 					case Rotations.North:
-						// ++^++
+						// ++/++
 						//  S.
 						//   .
 						//   .E
-						// ++^++
+						// ++/++
 						// S = top left
 						// E = bottom right
+						// + = wall
+						// . = path
+						// / = door
 						// Different points for all 4 directions
 						// Need the range to check that it is all clear so the path can be placed
+						// Top left (for north at least) must also be moved up 1 more in case of a path that turns
+						// but also passes close by another room. This is why extraPoints exists
+						// Long story short, a path that can't be walled can be formed
+						// Since it doesn't matter if the same is done for a path without a turn, 
+						// this behaviour becomes the default.
+						// I don't know if this will actually fix the rare and annoying bug I keep on seeing
+						// but fingers crossed it will.
+						// If it doesn't, the game is still functional 99% of the time so it's good enough for me lmao
 						var topLeft = new Vector2Int(currentPoint.x - 1, currentPoint.y - pathLengths[i]);
 						var bottomRight = new Vector2Int(currentPoint.x + 1, currentPoint.y - 1);
+						var extraPoints = new List<Vector2Int> {
+							new Vector2Int(currentPoint.x + 1, currentPoint.y - pathLengths[i] - 1),
+							new Vector2Int(currentPoint.x, currentPoint.y - pathLengths[i] - 1),
+							new Vector2Int(currentPoint.x - 1, currentPoint.y - pathLengths[i] - 1),
+						};
 
-						var (placable, pointsToCheck) = CheckPathLocations(topLeft, bottomRight);
+						var (placable, pointsToCheck) = CheckPathLocations(topLeft, bottomRight, extraPoints);
 
 						if (placable)
 						{
@@ -289,8 +309,13 @@ namespace DungeonGeneratorNamespace
 					case Rotations.East:
 						topLeft = new Vector2Int(currentPoint.x + 1, currentPoint.y - 1);
 						bottomRight = new Vector2Int(currentPoint.x + pathLengths[i], currentPoint.y + 1);
+						extraPoints = new List<Vector2Int> {
+							new Vector2Int(currentPoint.x + pathLengths[i] + 1, currentPoint.y + 1),
+							new Vector2Int(currentPoint.x + pathLengths[i] + 1, currentPoint.y),
+							new Vector2Int(currentPoint.x + pathLengths[i] + 1, currentPoint.y - 1),
+						};
 
-						(placable, pointsToCheck) = CheckPathLocations(topLeft, bottomRight);
+						(placable, pointsToCheck) = CheckPathLocations(topLeft, bottomRight, extraPoints);
 
 						if (placable)
 						{
@@ -305,8 +330,13 @@ namespace DungeonGeneratorNamespace
 					case Rotations.South:
 						topLeft = new Vector2Int(currentPoint.x - 1, currentPoint.y + 1);
 						bottomRight = new Vector2Int(currentPoint.x + 1, currentPoint.y + pathLengths[i]);
+						extraPoints = new List<Vector2Int> {
+							new Vector2Int(currentPoint.x + 1, currentPoint.y + pathLengths[i] + 1),
+							new Vector2Int(currentPoint.x, currentPoint.y + pathLengths[i] + 1),
+							new Vector2Int(currentPoint.x - 1, currentPoint.y + pathLengths[i] + 1),
+						};
 
-						(placable, pointsToCheck) = CheckPathLocations(topLeft, bottomRight);
+						(placable, pointsToCheck) = CheckPathLocations(topLeft, bottomRight, extraPoints);
 
 						if (placable)
 						{
@@ -321,8 +351,13 @@ namespace DungeonGeneratorNamespace
 					case Rotations.West:
 						topLeft = new Vector2Int(currentPoint.x - pathLengths[i], currentPoint.y - 1);
 						bottomRight = new Vector2Int(currentPoint.x - 1, currentPoint.y + 1);
+						extraPoints = new List<Vector2Int> {
+							new Vector2Int(currentPoint.x - pathLengths[i] - 1, currentPoint.y + 1),
+							new Vector2Int(currentPoint.x - pathLengths[i] - 1, currentPoint.y),
+							new Vector2Int(currentPoint.x - pathLengths[i] - 1, currentPoint.y - 1),
+						};
 
-						(placable, pointsToCheck) = CheckPathLocations(topLeft, bottomRight);
+						(placable, pointsToCheck) = CheckPathLocations(topLeft, bottomRight, extraPoints);
 
 						if (placable)
 						{

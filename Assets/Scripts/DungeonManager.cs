@@ -15,9 +15,9 @@ public class DungeonManager : MonoBehaviour
 	public int maximumSecretRooms = 2;
 	public int minimumSinglePathLength = 1;
 	public int maximumSinglePathLength = 1;
-	public int minimumMultiPathSegmentLength = 2;
+	public int minimumMultiPathSegmentLength = 3;
 	public int maximumMultiPathSegmentLength = 5;
-	public int minimumMultiPathTotal = 6;
+	public int minimumMultiPathTotal = 8;
 	public int maximumMultiPathTotal = 10;
 	public int minimumPathTurns = 1;
 	public int maximumPathTurns = 2;
@@ -25,9 +25,9 @@ public class DungeonManager : MonoBehaviour
 	public int maximumAttempts = 100;
 	public Tilemap groundTilemap;
 	public Tilemap wallsTilemap;
-	public Tilemap doorsTilemap;
 	public Tilemap tileEntitiesTilemap;
 	public Tilemap decorationsTilemap;
+	public Tilemap darknessTilemap;
 	public TileBase entranceTile;
 	public TileBase exitTile;
 	public TileBase[] groundTiles;
@@ -38,17 +38,31 @@ public class DungeonManager : MonoBehaviour
 	public TileBase[] westWallTiles;
 	public TileBase[] innerCornerTiles;
 	public TileBase[] outerCornerTiles;
+	public DoorManager doorManager;
+	private DoorManager _doorManager;
 	private DungeonGenerator dungeonGenerator;
-	public bool CheckIfGround(int x, int y)
+	void Awake()
+	{
+		_doorManager = Instantiate(doorManager);
+		_doorManager.transform.parent = transform;
+	}
+	public bool CheckIfGround(int x, int y, bool includeDoor = true)
 	{
 		if (x < 1 || x > mapWidth - 1 || y < 1 || y > mapHeight - 1)
 			return false;
 
 		switch (dungeonGenerator.Map[x, y].type)
 		{
+			case TileTypes.Door:
+				if (includeDoor)
+					return true;
+				break;
 			case TileTypes.Ground:
+				return true;
 			case TileTypes.SecretGround:
+				return true;
 			case TileTypes.Path:
+				return true;
 			case TileTypes.SecretPath:
 				return true;
 		}
@@ -63,8 +77,11 @@ public class DungeonManager : MonoBehaviour
 		switch (dungeonGenerator.Map[x, y].type)
 		{
 			case TileTypes.Wall:
+				return true;
 			case TileTypes.PathWall:
+				return true;
 			case TileTypes.SecretWall:
+				return true;
 			case TileTypes.SecretPathWall:
 				return true;
 		}
@@ -101,7 +118,7 @@ public class DungeonManager : MonoBehaviour
 
 		PlaceWallTiles();
 
-		PlaceDoorTiles();
+		_doorManager.Init(dungeonGenerator);
 
 		PlaceTileEntities();
 
@@ -182,15 +199,19 @@ public class DungeonManager : MonoBehaviour
 							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), outerCornerTiles[3]);
 				}
 	}
-	public void PlaceDoorTiles()
-	{
-
-	}
 	public void PlaceTileEntities()
 	{
 
 	}
 	public void PlaceDecorations()
+	{
+
+	}
+	public void UpdateAdjacentWalls()
+	{
+
+	}
+	public void UpdateDarkness()
 	{
 
 	}
