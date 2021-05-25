@@ -28,20 +28,15 @@ namespace DungeonGeneratorNamespace
 		private readonly int pathTurnProbability;
 		private readonly int maximumAttempts;
 		private readonly RoomManager roomManager;
-
-		// These ID counters will be used to associate tiles with their respective
-		// rooms and/or paths (doors are both part of a room and a path)
-		// These IDs will come in handy when revealing new portions of the Map
-		// which will occur whenever the player opens a new door or reveals
-		// a secret room.
-		// Counters start at 1 as 0 is the null value used for the any and void tile
-		// which simplifies scanning the entire tile matrix and reduces load on the
-		// Unity engine as it does not have to change as many sprites
-		// They are declared here because pointers are kind of inconvenient to use in c#
-		// (with pointers, I could just pass the address of the variable and not need to return anything)
-		private int roomIDCounter = 1;
-		private int pathIDCounter = 1;
 		public Tile[,] Map
+		{
+			get;
+		}
+		public List<List<Vector2Int>> RoomPoints
+		{
+			get;
+		}
+		public List<List<Vector2Int>> PathPoints
 		{
 			get;
 		}
@@ -88,6 +83,8 @@ namespace DungeonGeneratorNamespace
 			maximumAttempts = p_maximumAttempts;
 
 			Map = new Tile[p_columns, p_rows];
+			RoomPoints = new List<List<Vector2Int>>();
+			PathPoints = new List<List<Vector2Int>>();
 		}
 		public List<int> GeneratePathLengths(int turnCount)
 		{
@@ -95,7 +92,7 @@ namespace DungeonGeneratorNamespace
 			// This approach removes the need to shuffle the list afterwards as there is roughly no bias introduced
 			// other than the cryptographically insecure Random.Range() of course
 			// Code adapted from https://stackoverflow.com/a/473383 :)
-			List<int> lengths = new List<int> { };
+			var lengths = new List<int>();
 			for (var i = 0; i < turnCount; ++i)
 				lengths.Add(minimumMultiPathSegmentLength);
 
@@ -128,9 +125,14 @@ namespace DungeonGeneratorNamespace
 						if (secret)
 						{
 							// Don't need to reveal void tiles
-							int actualPathID = room.tiles[y, x].type == TileTypes.Void ? 0 : pathIDCounter;
+							int actualPathID = room.tiles[y, x].type == TileTypes.Void
+								? -1
+								: PathPoints.Count - 1;
 
 							newTile = new Tile(room.tiles[y, x].type, room.tiles[y, x].rotation, 0, actualPathID);
+
+							if (actualPathID != -1)
+								PathPoints[PathPoints.Count - 1].Add(new Vector2Int(x + topLeft.x, y + topLeft.y));
 
 							if (newTile.type == TileTypes.SecretDoor)
 							{
@@ -141,9 +143,14 @@ namespace DungeonGeneratorNamespace
 						else
 						{
 							// Don't need to reveal void tiles
-							int actualRoomID = room.tiles[y, x].type == TileTypes.Void ? 0 : roomIDCounter;
+							int actualRoomID = room.tiles[y, x].type == TileTypes.Void
+								? -1
+								: RoomPoints.Count - 1;
 
 							newTile = new Tile(room.tiles[y, x].type, room.tiles[y, x].rotation, actualRoomID);
+
+							if (actualRoomID != -1)
+								RoomPoints[RoomPoints.Count - 1].Add(new Vector2Int(x + topLeft.x, y + topLeft.y));
 						}
 
 						Map[x + topLeft.x, y + topLeft.y] = newTile;
@@ -156,6 +163,9 @@ namespace DungeonGeneratorNamespace
 		}
 		public void InstantiateMap()
 		{
+			RoomPoints.Clear();
+			PathPoints.Clear();
+
 			// Fill Map with Any tiles and create the centre room
 			for (int x = 0; x < columns; ++x)
 				for (int y = 0; y < rows; ++y)
@@ -167,13 +177,13 @@ namespace DungeonGeneratorNamespace
 						Map[x, y] = new Tile(TileTypes.Any, Rotations.None);
 				}
 
+			RoomPoints.Add(new List<Vector2Int>());
 			BuildRoom(new Vector2Int(columns / 2, rows / 2), Util.GetListRandom(roomManager.entranceRooms));
-			++roomIDCounter;
 		}
 		public List<Tuple<Tile, Vector2Int>> GetAvailableDoors()
 		{
 			// Get a list of all unconnected doors on the Map
-			List<Tuple<Tile, Vector2Int>> doors = new List<Tuple<Tile, Vector2Int>> { };
+			var doors = new List<Tuple<Tile, Vector2Int>>();
 
 			for (var x = 0; x < columns; x++)
 				for (var y = 0; y < rows; y++)
@@ -206,7 +216,7 @@ namespace DungeonGeneratorNamespace
 		{
 			// Actually check that path can be placed
 			var placable = true;
-			List<Vector2Int> points = new List<Vector2Int> { };
+			var points = new List<Vector2Int>();
 
 			for (var x = topLeft.x; x <= bottomRight.x; ++x)
 				for (var y = topLeft.y; y <= bottomRight.y; ++y)
@@ -231,8 +241,8 @@ namespace DungeonGeneratorNamespace
 		{
 			// Check that path can be placed
 			var (door, point) = doorTuple;
-			List<Tuple<Vector2Int, Rotations, int>> segments = new List<Tuple<Vector2Int, Rotations, int>> { };
-			List<Vector2Int> pathPoints = new List<Vector2Int> { };
+			var segments = new List<Tuple<Vector2Int, Rotations, int>>();
+			var pathPoints = new List<Vector2Int>();
 
 			var createTurns = Random.Range(0, 100) < pathTurnProbability;
 			var turnCount = createTurns ? Random.Range(minimumPathTurns, maximumPathTurns + 1) : 0;
@@ -240,7 +250,7 @@ namespace DungeonGeneratorNamespace
 			// Create copies of doorTuple data since they are passed to the function by reference NOT value
 			// Copy enum https://stackoverflow.com/a/17878912
 			var currentDirection = (Rotations)((int)door.rotation);
-			var currentVector2Int = new Vector2Int(point.x, point.y);
+			var currentPoint = new Vector2Int(point.x, point.y);
 
 			var pathLengths = createTurns ?
 				GeneratePathLengths(turnCount + 1) :
@@ -261,14 +271,14 @@ namespace DungeonGeneratorNamespace
 						// E = bottom right
 						// Different points for all 4 directions
 						// Need the range to check that it is all clear so the path can be placed
-						var topLeft = new Vector2Int(currentVector2Int.x - 1, currentVector2Int.y - pathLengths[i]);
-						var bottomRight = new Vector2Int(currentVector2Int.x + 1, currentVector2Int.y - 1);
+						var topLeft = new Vector2Int(currentPoint.x - 1, currentPoint.y - pathLengths[i]);
+						var bottomRight = new Vector2Int(currentPoint.x + 1, currentPoint.y - 1);
 
 						var (placable, pointsToCheck) = CheckPathLocations(topLeft, bottomRight);
 
 						if (placable)
 						{
-							segments.Add(Tuple.Create(new Vector2Int(currentVector2Int.x, currentVector2Int.y - pathLengths[i]), Rotations.South, pathLengths[i]));
+							segments.Add(Tuple.Create(new Vector2Int(currentPoint.x, currentPoint.y - pathLengths[i]), Rotations.South, pathLengths[i]));
 
 							pathPoints.AddRange(pointsToCheck);
 						}
@@ -277,14 +287,14 @@ namespace DungeonGeneratorNamespace
 
 						break;
 					case Rotations.East:
-						topLeft = new Vector2Int(currentVector2Int.x + 1, currentVector2Int.y - 1);
-						bottomRight = new Vector2Int(currentVector2Int.x + pathLengths[i], currentVector2Int.y + 1);
+						topLeft = new Vector2Int(currentPoint.x + 1, currentPoint.y - 1);
+						bottomRight = new Vector2Int(currentPoint.x + pathLengths[i], currentPoint.y + 1);
 
 						(placable, pointsToCheck) = CheckPathLocations(topLeft, bottomRight);
 
 						if (placable)
 						{
-							segments.Add(Tuple.Create(new Vector2Int(currentVector2Int.x + pathLengths[i], currentVector2Int.y), Rotations.West, pathLengths[i]));
+							segments.Add(Tuple.Create(new Vector2Int(currentPoint.x + pathLengths[i], currentPoint.y), Rotations.West, pathLengths[i]));
 
 							pathPoints.AddRange(pointsToCheck);
 						}
@@ -293,14 +303,14 @@ namespace DungeonGeneratorNamespace
 
 						break;
 					case Rotations.South:
-						topLeft = new Vector2Int(currentVector2Int.x - 1, currentVector2Int.y + 1);
-						bottomRight = new Vector2Int(currentVector2Int.x + 1, currentVector2Int.y + pathLengths[i]);
+						topLeft = new Vector2Int(currentPoint.x - 1, currentPoint.y + 1);
+						bottomRight = new Vector2Int(currentPoint.x + 1, currentPoint.y + pathLengths[i]);
 
 						(placable, pointsToCheck) = CheckPathLocations(topLeft, bottomRight);
 
 						if (placable)
 						{
-							segments.Add(Tuple.Create(new Vector2Int(currentVector2Int.x, currentVector2Int.y + pathLengths[i]), Rotations.North, pathLengths[i]));
+							segments.Add(Tuple.Create(new Vector2Int(currentPoint.x, currentPoint.y + pathLengths[i]), Rotations.North, pathLengths[i]));
 
 							pathPoints.AddRange(pointsToCheck);
 						}
@@ -309,14 +319,14 @@ namespace DungeonGeneratorNamespace
 
 						break;
 					case Rotations.West:
-						topLeft = new Vector2Int(currentVector2Int.x - pathLengths[i], currentVector2Int.y - 1);
-						bottomRight = new Vector2Int(currentVector2Int.x - 1, currentVector2Int.y + 1);
+						topLeft = new Vector2Int(currentPoint.x - pathLengths[i], currentPoint.y - 1);
+						bottomRight = new Vector2Int(currentPoint.x - 1, currentPoint.y + 1);
 
 						(placable, pointsToCheck) = CheckPathLocations(topLeft, bottomRight);
 
 						if (placable)
 						{
-							segments.Add(Tuple.Create(new Vector2Int(currentVector2Int.x - pathLengths[i], currentVector2Int.y), Rotations.East, pathLengths[i]));
+							segments.Add(Tuple.Create(new Vector2Int(currentPoint.x - pathLengths[i], currentPoint.y), Rotations.East, pathLengths[i]));
 
 							pathPoints.AddRange(pointsToCheck);
 						}
@@ -329,7 +339,7 @@ namespace DungeonGeneratorNamespace
 				if (!breakLoop && pathLengths.Count > 1)
 				{
 					// Update point
-					currentVector2Int = new Vector2Int(segments[segments.Count - 1].Item1.x, segments[segments.Count - 1].Item1.y);
+					currentPoint = new Vector2Int(segments[segments.Count - 1].Item1.x, segments[segments.Count - 1].Item1.y);
 					// Get new direction for path
 					currentDirection = GetNewDirection(currentDirection);
 				}
@@ -340,7 +350,7 @@ namespace DungeonGeneratorNamespace
 		public List<Vector2Int> GetDirectionalDoors(Room room, Rotations facing)
 		{
 			// Get a list of relative points of doors in a preset that are facing a certain direction
-			List<Vector2Int> doors = new List<Vector2Int> { };
+			var doors = new List<Vector2Int>();
 
 			for (var y = 0; y < room.Height; ++y)
 				for (var x = 0; x < room.Width; ++x)
@@ -355,7 +365,7 @@ namespace DungeonGeneratorNamespace
 
 			return doors;
 		}
-		public Tuple<bool, Room, Vector2Int> LookaheadRoom(List<Room> possibleRooms, List<Vector2Int> pathPoints, Vector2Int pathEndVector2Int, Rotations doorDirection)
+		public Tuple<bool, Room, Vector2Int> LookaheadRoom(List<Room> possibleRooms, List<Vector2Int> pathPoints, Vector2Int pathEndPoint, Rotations doorDirection)
 		{
 			// Makes sure that the room can be placed
 			var failed = Tuple.Create(false, roomManager.entranceRooms[0], new Vector2Int(-1, -1));
@@ -384,20 +394,20 @@ namespace DungeonGeneratorNamespace
 			switch (doorDirection)
 			{
 				case Rotations.North:
-					// Real Map door location is pathEndVector2Int.x, pathEndVector2Int.y + 1
-					topLeft = new Vector2Int(pathEndVector2Int.x - randomDoor.x, pathEndVector2Int.y + 1 - randomDoor.y);
+					// Real Map door location is pathEndPoint.x, pathEndPoint.y + 1
+					topLeft = new Vector2Int(pathEndPoint.x - randomDoor.x, pathEndPoint.y + 1 - randomDoor.y);
 					break;
 				case Rotations.East:
-					// Real Map door location is pathEndVector2Int.x - 1, pathEndVector2Int.y
-					topLeft = new Vector2Int(pathEndVector2Int.x - 1 - randomDoor.x, pathEndVector2Int.y - randomDoor.y);
+					// Real Map door location is pathEndPoint.x - 1, pathEndPoint.y
+					topLeft = new Vector2Int(pathEndPoint.x - 1 - randomDoor.x, pathEndPoint.y - randomDoor.y);
 					break;
 				case Rotations.South:
-					// Real Map door location is pathEndVector2Int.x, pathEndVector2Int.y - 1
-					topLeft = new Vector2Int(pathEndVector2Int.x - randomDoor.x, pathEndVector2Int.y - 1 - randomDoor.y);
+					// Real Map door location is pathEndPoint.x, pathEndPoint.y - 1
+					topLeft = new Vector2Int(pathEndPoint.x - randomDoor.x, pathEndPoint.y - 1 - randomDoor.y);
 					break;
 				case Rotations.West:
-					// Real Map door location is pathEndVector2Int.x + 1, pathEndVector2Int.y
-					topLeft = new Vector2Int(pathEndVector2Int.x + 1 - randomDoor.x, pathEndVector2Int.y - randomDoor.y);
+					// Real Map door location is pathEndPoint.x + 1, pathEndPoint.y
+					topLeft = new Vector2Int(pathEndPoint.x + 1 - randomDoor.x, pathEndPoint.y - randomDoor.y);
 					break;
 				default:
 					return failed;
@@ -454,20 +464,37 @@ namespace DungeonGeneratorNamespace
 		{
 			// Actually set the tile
 			Map[x, y].type = type;
-
-			// Secret rooms and paths only have a path ID since they don't have any doors
-			// Doors are responsible for triggering room reveals
-			// Destroyable walls do that too, but then there is no door to
-			// transition between the secret path and the secret room
-			// which breaks the whole thing,
-			// hence this rather band aid fix :p
-			Map[x, y].pathID = type == TileTypes.SecretPath ? roomIDCounter : pathIDCounter;
+			Map[x, y].pathID = PathPoints.Count - 1;
+			PathPoints[PathPoints.Count - 1].Add(new Vector2Int(x, y));
 		}
 		public void SetPathIDForDoor(int x, int y)
 		{
 			// Set the path ID for a door tile
 			if (Map[x, y].type == TileTypes.Door)
-				Map[x, y].pathID = pathIDCounter;
+			{
+				Map[x, y].pathID = PathPoints.Count - 1;
+				PathPoints[PathPoints.Count - 1].Add(new Vector2Int(x, y));
+				switch (Map[x, y].rotation)
+				{
+					// Place east and west tiles there as well
+					case Rotations.North:
+					case Rotations.South:
+						Map[x + 1, y].pathID = PathPoints.Count - 1;
+						PathPoints[PathPoints.Count - 1].Add(new Vector2Int(x + 1, y));
+						Map[x - 1, y].pathID = PathPoints.Count - 1;
+						PathPoints[PathPoints.Count - 1].Add(new Vector2Int(x - 1, y));
+						break;
+
+					// Place north and south wall tiles there as well
+					case Rotations.East:
+					case Rotations.West:
+						Map[x, y - 1].pathID = PathPoints.Count - 1;
+						PathPoints[PathPoints.Count - 1].Add(new Vector2Int(x, y - 1));
+						Map[x, y + 1].pathID = PathPoints.Count - 1;
+						PathPoints[PathPoints.Count - 1].Add(new Vector2Int(x, y + 1));
+						break;
+				}
+			}
 		}
 		public void BuildPath(Vector2Int start, Rotations direction, int length, bool secret)
 		{
@@ -513,7 +540,7 @@ namespace DungeonGeneratorNamespace
 		public List<Vector2Int> GetSurroundingEmpty(Vector2Int p)
 		{
 			// Get a list of tiles that are empty AND adjacent to the provided coordinate
-			var empty = new List<Vector2Int> { };
+			var empty = new List<Vector2Int>();
 
 			// North
 			if (Map[p.x, p.y - 1].type == TileTypes.Any)
@@ -560,12 +587,16 @@ namespace DungeonGeneratorNamespace
 
 						for (var i = 0; i < surrounding.Count; ++i)
 						{
-							if (Map[x, y].type == TileTypes.SecretPath)
-								Map[surrounding[i].x, surrounding[i].y].type = TileTypes.SecretPathWall;
-							else
-								Map[surrounding[i].x, surrounding[i].y].type = TileTypes.PathWall;
+							var sx = surrounding[i].x;
+							var sy = surrounding[i].y;
 
-							Map[surrounding[i].x, surrounding[i].y].pathID = pathIDCounter;
+							if (Map[x, y].type == TileTypes.SecretPath)
+								Map[sx, sy].type = TileTypes.SecretPathWall;
+							else
+								Map[sx, sy].type = TileTypes.PathWall;
+
+							Map[sx, sy].pathID = PathPoints.Count - 1;
+							PathPoints[PathPoints.Count - 1].Add(new Vector2Int(sx, sy));
 						}
 					}
 		}
@@ -581,8 +612,8 @@ namespace DungeonGeneratorNamespace
 				var randomDoor = doors[Random.Range(0, doors.Count)];
 
 				// LookaheadPath returns the opposite coordinates from where the path will start
-				// Technically should be called pathEndVector2Int, 
-				// but it's called pathStartVector2Int to make consistent with pathDirection
+				// Technically should be called pathEndPoint, 
+				// but it's called pathStartPoint to make consistent with pathDirection
 				// This is so that the same parameters can be fed into the LookaheadRoom function
 				var (pathPoints, pathSegments) = LookaheadPath(randomDoor);
 				if (pathSegments.Count == 0)
@@ -607,6 +638,10 @@ namespace DungeonGeneratorNamespace
 				if (!roomIsBuildable)
 					continue;
 
+				PathPoints.Add(new List<Vector2Int>());
+				if (type != RoomTypes.Secret)
+					RoomPoints.Add(new List<Vector2Int>());
+
 				BuildRoom(topLeftPoint, room, secret);
 
 				for (var k = 0; k < pathSegments.Count; ++k)
@@ -617,10 +652,6 @@ namespace DungeonGeneratorNamespace
 				}
 
 				WallPaths();
-
-				++pathIDCounter;
-				if (type != RoomTypes.Secret)
-					++roomIDCounter;
 
 				return true;
 			}
