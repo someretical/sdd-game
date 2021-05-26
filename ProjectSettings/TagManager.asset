@@ -10,6 +10,7 @@ TagManager:
   - Chest
   - Item
   - Decorations
+  - Darkness
   layers:
   - Default
   - TransparentFX
@@ -67,4 +68,7 @@ TagManager:
     locked: 0
   - name: Entities
     uniqueID: 172548445
+    locked: 0
+  - name: Darkness
+    uniqueID: 1983024109
     locked: 0
