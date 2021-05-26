@@ -106,7 +106,7 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1136159217
+  m_SortingLayerID: 1983024109
   m_SortingLayer: 8
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
@@ -198,11 +198,9 @@ MonoBehaviour:
   maximumAttempts: 100
   groundTilemap: {fileID: 3218826439527071631}
   wallsTilemap: {fileID: 3218826440361200037}
-  tileEntitiesTilemap: {fileID: 3218826440017941973}
   decorationsTilemap: {fileID: 3218826440141103163}
   darknessTilemap: {fileID: 9040631641521199137}
-  entranceTile: {fileID: 0}
-  exitTile: {fileID: 0}
+  darknessTile: {fileID: 11400000, guid: c99dcc45ab27ed94388be658f9f09f19, type: 2}
   groundTiles:
   - {fileID: 11400000, guid: 147c971c4aaf3d0498395fa19634aed7, type: 2}
   - {fileID: 11400000, guid: fc891f1b22144934384ef2d943925acc, type: 2}

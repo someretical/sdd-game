@@ -752,31 +752,19 @@ namespace DungeonGeneratorNamespace
 						{
 							case Rotations.North:
 								if (y != 0 && Map[x, y - 1].type == TileTypes.SecretPath)
-								{
 									Map[x, y].type = TileTypes.DestroyableWall;
-									Map[x, y].rotation = Rotations.None;
-								}
 								break;
 							case Rotations.South:
 								if (y == rows - 1 || Map[x, y + 1].type == TileTypes.SecretPath)
-								{
 									Map[x, y].type = TileTypes.DestroyableWall;
-									Map[x, y].rotation = Rotations.None;
-								}
 								break;
 							case Rotations.East:
 								if (x == columns - 1 || Map[x + 1, y].type == TileTypes.SecretPath)
-								{
 									Map[x, y].type = TileTypes.DestroyableWall;
-									Map[x, y].rotation = Rotations.None;
-								}
 								break;
 							case Rotations.West:
 								if (x == 0 || Map[x - 1, y].type == TileTypes.SecretPath)
-								{
 									Map[x, y].type = TileTypes.DestroyableWall;
-									Map[x, y].rotation = Rotations.None;
-								}
 								break;
 						}
 					}

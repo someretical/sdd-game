@@ -6,8 +6,10 @@ using DungeonGeneratorNamespace;
 public class DoorManager : MonoBehaviour
 {
 	public GameObject door;
-	public void Init(DungeonGenerator dungeonGenerator)
+	public void Start()
 	{
+		var dungeonGenerator = transform.parent.gameObject.GetComponent<DungeonManager>().dungeonGenerator;
+
 		for (int x = 0; x < dungeonGenerator.columns; ++x)
 			for (int y = 0; y < dungeonGenerator.rows; ++y)
 				if (dungeonGenerator.Map[x, y].type == TileTypes.Door)
@@ -21,7 +23,7 @@ public class DoorManager : MonoBehaviour
 							break;
 						case Rotations.East:
 							newDoor = Instantiate(door, new Vector3(x + 0.5f, dungeonGenerator.rows - 0.5f - y, 0f), Quaternion.identity);
-							newDoor.transform.Rotate(new Vector3Int(0, 0, -90));
+							newDoor.transform.Rotate(new Vector3Int(0, 0, 270));
 							break;
 						case Rotations.South:
 							newDoor = Instantiate(door, new Vector3(x + 0.5f, dungeonGenerator.rows - 0.5f - y, 0f), Quaternion.identity);

@@ -13,16 +13,20 @@ namespace DungeonGeneratorNamespace
 		public TextAsset intersectionRoomsJSON;
 		public TextAsset secretRoomsJSON;
 		public TextAsset treasureRoomsJSON;
-		private readonly RoomManager roomManager = new RoomManager();
+		public RoomManager roomManager = new RoomManager();
 		private GameObject currentLevelManager;
 		void Start()
 		{
 			roomManager.Init(this);
 
-			currentLevelManager = Instantiate(levelManager, new Vector3Int(0, 0, 0), Quaternion.identity, transform);
+			CreateLevel();
+		}
+		public void CreateLevel()
+		{
+			Destroy(currentLevelManager);
 
-			var dungeonManager = currentLevelManager.transform.Find("Dungeon").gameObject.GetComponent<DungeonManager>();
-			dungeonManager.Init(roomManager);
+			currentLevelManager = Instantiate(levelManager, new Vector3Int(0, 0, 0), Quaternion.identity, transform);
+			currentLevelManager.transform.SetParent(transform);
 		}
 	}
 }

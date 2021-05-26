@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -25,11 +26,9 @@ public class DungeonManager : MonoBehaviour
 	public int maximumAttempts = 100;
 	public Tilemap groundTilemap;
 	public Tilemap wallsTilemap;
-	public Tilemap tileEntitiesTilemap;
 	public Tilemap decorationsTilemap;
 	public Tilemap darknessTilemap;
-	public TileBase entranceTile;
-	public TileBase exitTile;
+	public TileBase darknessTile;
 	public TileBase[] groundTiles;
 	public TileBase[] pathTiles;
 	public TileBase[] northWallTiles;
@@ -39,12 +38,54 @@ public class DungeonManager : MonoBehaviour
 	public TileBase[] innerCornerTiles;
 	public TileBase[] outerCornerTiles;
 	public DoorManager doorManager;
-	private DoorManager _doorManager;
-	private DungeonGenerator dungeonGenerator;
+	public DungeonGenerator dungeonGenerator;
+	public static Vector3Int RoundPosition(Vector3 position)
+	{
+		return new Vector3Int((int)Math.Floor(position.x), (int)Math.Floor(position.y), 0);
+	}
 	void Awake()
 	{
-		_doorManager = Instantiate(doorManager);
+		var _doorManager = Instantiate(doorManager);
 		_doorManager.transform.parent = transform;
+	}
+	void Start()
+	{
+		dungeonGenerator = new DungeonGenerator(
+			transform.parent.parent.gameObject.GetComponent<GameManager>().roomManager,
+			mapWidth,
+			mapHeight,
+			maximumRooms,
+			intersectionRoomProbability,
+			minimumChestRooms,
+			maximumChestRooms,
+			minimumSecretRooms,
+			maximumSecretRooms,
+			minimumSinglePathLength,
+			maximumSinglePathLength,
+			minimumMultiPathSegmentLength,
+			maximumMultiPathSegmentLength,
+			minimumMultiPathTotal,
+			maximumMultiPathTotal,
+			minimumPathTurns,
+			maximumPathTurns,
+			pathTurnProbability,
+			maximumAttempts
+		);
+
+		dungeonGenerator.Generate();
+
+		PlaceGroundTiles();
+
+		PlaceWallTiles();
+
+		PlaceDestroyableWalls();
+
+		PlaceDecorations();
+
+		PlaceDarkness();
+
+		// Reveal original room
+		UpdateDarkness(new Vector3(79f, 71f, 0));
 	}
 	public bool CheckIfGround(int x, int y, bool includeDoor = true)
 	{
@@ -88,46 +129,10 @@ public class DungeonManager : MonoBehaviour
 
 		return false;
 	}
-	public void Init(RoomManager roomManager)
-	{
-		dungeonGenerator = new DungeonGenerator(
-			roomManager,
-			mapWidth,
-			mapHeight,
-			maximumRooms,
-			intersectionRoomProbability,
-			minimumChestRooms,
-			maximumChestRooms,
-			minimumSecretRooms,
-			maximumSecretRooms,
-			minimumSinglePathLength,
-			maximumSinglePathLength,
-			minimumMultiPathSegmentLength,
-			maximumMultiPathSegmentLength,
-			minimumMultiPathTotal,
-			maximumMultiPathTotal,
-			minimumPathTurns,
-			maximumPathTurns,
-			pathTurnProbability,
-			maximumAttempts
-		);
-
-		dungeonGenerator.Generate();
-
-		PlaceGroundTiles();
-
-		PlaceWallTiles();
-
-		_doorManager.Init(dungeonGenerator);
-
-		PlaceTileEntities();
-
-		PlaceDecorations();
-	}
 	public void PlaceGroundTiles()
 	{
-		for (int x = 0; x < mapWidth; ++x)
-			for (int y = 0; y < mapHeight; ++y)
+		for (var x = 0; x < mapWidth; ++x)
+			for (var y = 0; y < mapHeight; ++y)
 				switch (dungeonGenerator.Map[x, y].type)
 				{
 					case TileTypes.Ground:
@@ -146,8 +151,8 @@ public class DungeonManager : MonoBehaviour
 	}
 	public void PlaceWallTiles()
 	{
-		for (int x = 0; x < mapWidth; ++x)
-			for (int y = 0; y < mapHeight; ++y)
+		for (var x = 0; x < mapWidth; ++x)
+			for (var y = 0; y < mapHeight; ++y)
 				if (CheckIfWall(x, y))
 				{
 					if (CheckIfWall(x - 1, y) && CheckIfWall(x + 1, y))
@@ -199,20 +204,142 @@ public class DungeonManager : MonoBehaviour
 							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), outerCornerTiles[3]);
 				}
 	}
-	public void PlaceTileEntities()
+	public void PlaceDestroyableWalls()
 	{
-
+		for (var x = 0; x < mapWidth; ++x)
+			for (var y = 0; y < mapHeight; ++y)
+				if (dungeonGenerator.Map[x, y].type == TileTypes.DestroyableWall)
+					switch (dungeonGenerator.Map[x, y].rotation)
+					{
+						case Rotations.North:
+							// Set tiles east and west
+							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), Util.GetArrayRandom(northWallTiles));
+							wallsTilemap.SetTile(new Vector3Int(x + 1, mapHeight - 1 - y, 0), Util.GetArrayRandom(northWallTiles));
+							wallsTilemap.SetTile(new Vector3Int(x - 1, mapHeight - 1 - y, 0), Util.GetArrayRandom(northWallTiles));
+							break;
+						case Rotations.East:
+							// Set tiles north and south
+							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), Util.GetArrayRandom(eastWallTiles));
+							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - y, 0), Util.GetArrayRandom(eastWallTiles));
+							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 2 - y, 0), Util.GetArrayRandom(eastWallTiles));
+							break;
+						case Rotations.South:
+							// Set tiles east and west
+							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), Util.GetArrayRandom(southWallTiles));
+							wallsTilemap.SetTile(new Vector3Int(x + 1, mapHeight - 1 - y, 0), Util.GetArrayRandom(southWallTiles));
+							wallsTilemap.SetTile(new Vector3Int(x - 1, mapHeight - 1 - y, 0), Util.GetArrayRandom(southWallTiles));
+							break;
+						case Rotations.West:
+							// Set tiles north and south
+							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), Util.GetArrayRandom(westWallTiles));
+							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - y, 0), Util.GetArrayRandom(westWallTiles));
+							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 2 - y, 0), Util.GetArrayRandom(westWallTiles));
+							break;
+					}
 	}
 	public void PlaceDecorations()
 	{
 
 	}
-	public void UpdateAdjacentWalls()
+	public void PlaceDarkness()
 	{
+		for (var i = 0; i < dungeonGenerator.PathPoints.Count; ++i)
+			for (var j = 0; j < dungeonGenerator.PathPoints[i].Count; ++j)
+				darknessTilemap.SetTile(
+					new Vector3Int(
+						dungeonGenerator.PathPoints[i][j].x,
+						mapHeight - 1 - dungeonGenerator.PathPoints[i][j].y,
+						0
+					),
+					darknessTile
+				);
 
+		for (var i = 0; i < dungeonGenerator.RoomPoints.Count; ++i)
+			for (var j = 0; j < dungeonGenerator.RoomPoints[i].Count; ++j)
+				darknessTilemap.SetTile(
+					new Vector3Int(
+						dungeonGenerator.RoomPoints[i][j].x,
+						mapHeight - 1 - dungeonGenerator.RoomPoints[i][j].y,
+						0
+					),
+					darknessTile
+				);
 	}
-	public void UpdateDarkness()
+	public void UpdateDoorLocation(Vector3 position)
 	{
+		var rounded = RoundPosition(position);
 
+		// Fill in tile where the door was so enemies can pathfind
+		groundTilemap.SetTile(rounded, groundTiles[0]);
+	}
+	public void UpdateDarkness(Vector3 position, bool revealRoom = true)
+	{
+		var rounded = RoundPosition(position);
+
+		var roomID = dungeonGenerator.Map[rounded.x, mapHeight - 1 - rounded.y].roomID;
+		if (roomID != -1 && revealRoom)
+			for (var i = 0; i < dungeonGenerator.RoomPoints[roomID].Count; ++i)
+				darknessTilemap.SetTile(
+					new Vector3Int(
+						dungeonGenerator.RoomPoints[roomID][i].x,
+						mapHeight - 1 - dungeonGenerator.RoomPoints[roomID][i].y,
+						0
+					),
+					null
+				);
+
+		var pathID = dungeonGenerator.Map[rounded.x, mapHeight - 1 - rounded.y].pathID;
+		if (pathID != -1)
+			for (var i = 0; i < dungeonGenerator.PathPoints[pathID].Count; ++i)
+				darknessTilemap.SetTile(
+					new Vector3Int(
+						dungeonGenerator.PathPoints[pathID][i].x,
+						mapHeight - 1 - dungeonGenerator.PathPoints[pathID][i].y,
+						0
+					),
+					null
+				);
+	}
+	public void ProcessBlank(Vector3 position)
+	{
+		var rounded = RoundPosition(position);
+
+		var roomID = dungeonGenerator.Map[rounded.x, mapHeight - 1 - rounded.y].roomID;
+		if (roomID == -1)
+			return;
+
+		for (int i = 0; i < dungeonGenerator.RoomPoints[roomID].Count; ++i)
+		{
+			var p = dungeonGenerator.RoomPoints[roomID][i];
+
+			if (dungeonGenerator.Map[p.x, p.y].type == TileTypes.DestroyableWall)
+			{
+				var coords = new Vector3Int(p.x, mapHeight - 1 - p.y, 0);
+				wallsTilemap.SetTile(coords, null);
+				groundTilemap.SetTile(coords, Util.GetArrayRandom(pathTiles));
+
+				switch (dungeonGenerator.Map[p.x, p.y].rotation)
+				{
+					case Rotations.North:
+						wallsTilemap.SetTile(new Vector3Int(p.x + 1, mapHeight - 1 - p.y, 0), innerCornerTiles[1]); //
+						wallsTilemap.SetTile(new Vector3Int(p.x - 1, mapHeight - 1 - p.y, 0), innerCornerTiles[0]); //
+						break;
+					case Rotations.East:
+						wallsTilemap.SetTile(new Vector3Int(p.x, mapHeight - 2 - p.y, 0), innerCornerTiles[3]);
+						wallsTilemap.SetTile(new Vector3Int(p.x, mapHeight - p.y, 0), innerCornerTiles[1]); //
+						break;
+					case Rotations.South:
+						wallsTilemap.SetTile(new Vector3Int(p.x + 1, mapHeight - 1 - p.y, 0), innerCornerTiles[3]);
+						wallsTilemap.SetTile(new Vector3Int(p.x - 1, mapHeight - 1 - p.y, 0), innerCornerTiles[2]); //
+						break;
+					case Rotations.West:
+						wallsTilemap.SetTile(new Vector3Int(p.x, mapHeight - 2 - p.y, 0), innerCornerTiles[2]); //
+						wallsTilemap.SetTile(new Vector3Int(p.x, mapHeight - p.y, 0), innerCornerTiles[0]); //
+						break;
+				}
+
+				UpdateDarkness(new Vector3(p.x, mapHeight - 1 - p.y, 0f), false);
+			}
+		}
 	}
 }
