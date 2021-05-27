@@ -84,6 +84,18 @@ namespace DungeonGeneratorNamespace
 						case "EX":
 							tiles[y, x] = new Tile(TileTypes.Exit);
 							break;
+						case "CN":
+							tiles[y, x] = new Tile(TileTypes.Chest, Rotations.North);
+							break;
+						case "CE":
+							tiles[y, x] = new Tile(TileTypes.Chest, Rotations.East);
+							break;
+						case "CS":
+							tiles[y, x] = new Tile(TileTypes.Chest, Rotations.South);
+							break;
+						case "CW":
+							tiles[y, x] = new Tile(TileTypes.Chest, Rotations.West);
+							break;
 						default:
 							tiles[y, x] = new Tile(TileTypes.Any);
 							break;

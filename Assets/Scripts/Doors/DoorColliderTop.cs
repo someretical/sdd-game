@@ -2,18 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoorColliderTop : MonoBehaviour
+public class DoorColliderTop : DoorCollider
 {
-	void OnTriggerEnter2D(Collider2D c2d)
+	void Awake()
 	{
-		if (
-			c2d.gameObject.CompareTag("Player") &&
-			!gameObject.transform.parent.gameObject.GetComponent<DoorController>().playerEntered
-		)
-		{
-			gameObject.transform.parent.gameObject.GetComponent<DoorController>().playerEntered = true;
-
-			gameObject.SendMessageUpwards("OnPlayerEnter", 0, SendMessageOptions.RequireReceiver);
-		}
+		id = 0;
 	}
 }

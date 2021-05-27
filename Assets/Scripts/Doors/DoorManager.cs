@@ -10,33 +10,25 @@ public class DoorManager : MonoBehaviour
 	{
 		var dungeonGenerator = transform.parent.gameObject.GetComponent<DungeonManager>().dungeonGenerator;
 
-		for (int x = 0; x < dungeonGenerator.columns; ++x)
-			for (int y = 0; y < dungeonGenerator.rows; ++y)
+		for (var x = 0; x < dungeonGenerator.columns; ++x)
+			for (var y = 0; y < dungeonGenerator.rows; ++y)
 				if (dungeonGenerator.Map[x, y].type == TileTypes.Door)
 				{
-					GameObject newDoor = null;
+					var newDoor = Instantiate(door, new Vector3(x + 0.5f, dungeonGenerator.rows - 0.5f - y, 0f), Quaternion.identity);
+					newDoor.transform.SetParent(transform);
 
 					switch (dungeonGenerator.Map[x, y].rotation)
 					{
-						case Rotations.North:
-							newDoor = Instantiate(door, new Vector3(x + 0.5f, dungeonGenerator.rows - 0.5f - y, 0f), Quaternion.identity);
-							break;
 						case Rotations.East:
-							newDoor = Instantiate(door, new Vector3(x + 0.5f, dungeonGenerator.rows - 0.5f - y, 0f), Quaternion.identity);
 							newDoor.transform.Rotate(new Vector3Int(0, 0, 270));
 							break;
 						case Rotations.South:
-							newDoor = Instantiate(door, new Vector3(x + 0.5f, dungeonGenerator.rows - 0.5f - y, 0f), Quaternion.identity);
 							newDoor.transform.Rotate(new Vector3Int(0, 0, 180));
 							break;
 						case Rotations.West:
-							newDoor = Instantiate(door, new Vector3(x + 0.5f, dungeonGenerator.rows - 0.5f - y, 0f), Quaternion.identity);
 							newDoor.transform.Rotate(new Vector3Int(0, 0, 90));
 							break;
 					}
-
-					if (newDoor != null)
-						newDoor.transform.SetParent(transform);
 				}
 	}
 }

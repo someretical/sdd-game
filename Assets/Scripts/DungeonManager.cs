@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using DungeonGeneratorNamespace;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using DungeonGeneratorNamespace;
 public class DungeonManager : MonoBehaviour
 {
+	public DoorManager doorManager;
+	public ChestManager chestManager;
 	public int mapWidth = 150;
 	public int mapHeight = 150;
 	public int maximumRooms = 30;
@@ -24,6 +26,7 @@ public class DungeonManager : MonoBehaviour
 	public int maximumPathTurns = 2;
 	public int pathTurnProbability = 30;
 	public int maximumAttempts = 100;
+	public Tilemap backgroundTilemap;
 	public Tilemap groundTilemap;
 	public Tilemap wallsTilemap;
 	public Tilemap decorationsTilemap;
@@ -37,8 +40,8 @@ public class DungeonManager : MonoBehaviour
 	public TileBase[] westWallTiles;
 	public TileBase[] innerCornerTiles;
 	public TileBase[] outerCornerTiles;
-	public DoorManager doorManager;
 	public DungeonGenerator dungeonGenerator;
+	public GameObject itemManager;
 	public static Vector3Int RoundPosition(Vector3 position)
 	{
 		return new Vector3Int((int)Math.Floor(position.x), (int)Math.Floor(position.y), 0);
@@ -47,6 +50,12 @@ public class DungeonManager : MonoBehaviour
 	{
 		var _doorManager = Instantiate(doorManager);
 		_doorManager.transform.parent = transform;
+
+		var _chestManager = Instantiate(chestManager);
+		_chestManager.transform.parent = transform;
+
+		itemManager = new GameObject("ItemManager");
+		itemManager.transform.parent = transform;
 	}
 	void Start()
 	{
@@ -74,20 +83,17 @@ public class DungeonManager : MonoBehaviour
 
 		dungeonGenerator.Generate();
 
+		PlaceBackground();
 		PlaceGroundTiles();
-
 		PlaceWallTiles();
-
 		PlaceDestroyableWalls();
-
 		PlaceDecorations();
-
 		PlaceDarkness();
 
 		// Reveal original room
 		UpdateDarkness(new Vector3(79f, 71f, 0));
 	}
-	public bool CheckIfGround(int x, int y, bool includeDoor = true)
+	public bool CheckIfGround(int x, int y, bool includeDoors = true)
 	{
 		if (x < 1 || x > mapWidth - 1 || y < 1 || y > mapHeight - 1)
 			return false;
@@ -95,9 +101,7 @@ public class DungeonManager : MonoBehaviour
 		switch (dungeonGenerator.Map[x, y].type)
 		{
 			case TileTypes.Door:
-				if (includeDoor)
-					return true;
-				break;
+				return includeDoors;
 			case TileTypes.Ground:
 				return true;
 			case TileTypes.SecretGround:
@@ -128,6 +132,19 @@ public class DungeonManager : MonoBehaviour
 		}
 
 		return false;
+	}
+	public void PlaceBackground()
+	{
+		for (var x = 0; x < mapWidth; ++x)
+			for (var y = 0; y < mapHeight; ++y)
+				if (
+					!CheckIfWall(x, y) &&
+					!CheckIfGround(x, y, false) &&
+					dungeonGenerator.Map[x, y].type != TileTypes.Void &&
+					dungeonGenerator.Map[x, y].type != TileTypes.Any &&
+					dungeonGenerator.Map[x, y].type != TileTypes.OuterWall
+				)
+					backgroundTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), groundTiles[0]);
 	}
 	public void PlaceGroundTiles()
 	{
@@ -264,13 +281,6 @@ public class DungeonManager : MonoBehaviour
 					),
 					darknessTile
 				);
-	}
-	public void UpdateDoorLocation(Vector3 position)
-	{
-		var rounded = RoundPosition(position);
-
-		// Fill in tile where the door was so enemies can pathfind
-		groundTilemap.SetTile(rounded, groundTiles[0]);
 	}
 	public void UpdateDarkness(Vector3 position, bool revealRoom = true)
 	{

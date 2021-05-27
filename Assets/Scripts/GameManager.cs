@@ -25,7 +25,7 @@ namespace DungeonGeneratorNamespace
 		{
 			Destroy(currentLevelManager);
 
-			currentLevelManager = Instantiate(levelManager, new Vector3Int(0, 0, 0), Quaternion.identity, transform);
+			currentLevelManager = Instantiate(levelManager);
 			currentLevelManager.transform.SetParent(transform);
 		}
 	}

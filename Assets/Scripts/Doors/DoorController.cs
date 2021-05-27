@@ -14,10 +14,6 @@ public class DoorController : MonoBehaviour
 
 		transform.parent.parent.gameObject
 			.GetComponent<DungeonManager>()
-			.UpdateDoorLocation(transform.position);
-
-		transform.parent.parent.gameObject
-			.GetComponent<DungeonManager>()
 			.UpdateDarkness(transform.position);
 
 		Destroy(topEdgeCollider.GetComponent<EdgeCollider2D>());
