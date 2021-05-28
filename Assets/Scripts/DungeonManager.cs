@@ -8,6 +8,9 @@ public class DungeonManager : MonoBehaviour
 {
 	public DoorManager doorManager;
 	public ChestManager chestManager;
+	public EntranceExitManager entranceExitManager;
+	public ItemManager itemManager;
+	public TrapManager trapManager;
 	public int mapWidth = 150;
 	public int mapHeight = 150;
 	public int maximumRooms = 30;
@@ -41,11 +44,6 @@ public class DungeonManager : MonoBehaviour
 	public TileBase[] innerCornerTiles;
 	public TileBase[] outerCornerTiles;
 	public DungeonGenerator dungeonGenerator;
-	public GameObject itemManager;
-	public static Vector3Int RoundPosition(Vector3 position)
-	{
-		return new Vector3Int((int)Math.Floor(position.x), (int)Math.Floor(position.y), 0);
-	}
 	void Awake()
 	{
 		var _doorManager = Instantiate(doorManager);
@@ -54,13 +52,41 @@ public class DungeonManager : MonoBehaviour
 		var _chestManager = Instantiate(chestManager);
 		_chestManager.transform.parent = transform;
 
-		itemManager = new GameObject("ItemManager");
-		itemManager.transform.parent = transform;
+		var _entraceExitManager = Instantiate(entranceExitManager);
+		_entraceExitManager.transform.parent = transform;
+
+		var _itemManager = Instantiate(itemManager);
+		_itemManager.transform.parent = transform;
+
+		var _trapManager = Instantiate(trapManager);
+		_trapManager.transform.parent = transform;
 	}
 	void Start()
 	{
+		GenerateDungeon();
+
+		PlacePlayer();
+		PlaceBackground();
+		PlaceGroundTiles();
+		PlaceWallTiles();
+		PlaceDestroyableWalls();
+		PlaceDecorations();
+		PlaceDarkness();
+
+		// Reveal original room
+		UpdateDarkness(new Vector3(mapWidth / 2 + 4, mapHeight / 2 - 3, 0f));
+	}
+	public void GenerateDungeon()
+	{
+		var gameManager = transform.parent.parent.gameObject.GetComponent<GameManager>();
+
+		// Bandage scaling code lmao
+		mapWidth += (int)Math.Ceiling((gameManager.levelCounter - 1) * mapWidth * gameManager.levelSizeIncreasePercentage);
+		mapHeight += (int)Math.Ceiling((gameManager.levelCounter - 1) * mapHeight * gameManager.levelSizeIncreasePercentage);
+		maximumRooms += (int)Math.Ceiling((gameManager.levelCounter - 1) * maximumRooms * gameManager.maxRoomIncreasePercentage);
+
 		dungeonGenerator = new DungeonGenerator(
-			transform.parent.parent.gameObject.GetComponent<GameManager>().roomManager,
+			gameManager.roomManager,
 			mapWidth,
 			mapHeight,
 			maximumRooms,
@@ -82,16 +108,13 @@ public class DungeonManager : MonoBehaviour
 		);
 
 		dungeonGenerator.Generate();
-
-		PlaceBackground();
-		PlaceGroundTiles();
-		PlaceWallTiles();
-		PlaceDestroyableWalls();
-		PlaceDecorations();
-		PlaceDarkness();
-
-		// Reveal original room
-		UpdateDarkness(new Vector3(79f, 71f, 0));
+	}
+	public void PlacePlayer()
+	{
+		for (var x = 0; x < mapWidth; ++x)
+			for (var y = 0; y < mapHeight; ++y)
+				if (dungeonGenerator.Map[x, y].type == TileTypes.Entrance)
+					transform.parent.GetChild(0).position = new Vector3(x + 0.5f, mapHeight - 0.5f - y, 0f);
 	}
 	public bool CheckIfGround(int x, int y, bool includeDoors = true)
 	{
@@ -256,7 +279,8 @@ public class DungeonManager : MonoBehaviour
 	}
 	public void PlaceDecorations()
 	{
-
+		// Might get around to doing this if I have enough time left
+		// Probably not going to happen
 	}
 	public void PlaceDarkness()
 	{
@@ -284,7 +308,7 @@ public class DungeonManager : MonoBehaviour
 	}
 	public void UpdateDarkness(Vector3 position, bool revealRoom = true)
 	{
-		var rounded = RoundPosition(position);
+		var rounded = Util.RoundPosition(position);
 
 		var roomID = dungeonGenerator.Map[rounded.x, mapHeight - 1 - rounded.y].roomID;
 		if (roomID != -1 && revealRoom)
@@ -312,7 +336,7 @@ public class DungeonManager : MonoBehaviour
 	}
 	public void ProcessBlank(Vector3 position)
 	{
-		var rounded = RoundPosition(position);
+		var rounded = Util.RoundPosition(position);
 
 		var roomID = dungeonGenerator.Map[rounded.x, mapHeight - 1 - rounded.y].roomID;
 		if (roomID == -1)

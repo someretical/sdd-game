@@ -12,6 +12,8 @@ TagManager:
   - Decorations
   - Darkness
   - Background
+  - Entrance
+  - Hazard
   layers:
   - Default
   - TransparentFX
@@ -21,10 +23,10 @@ TagManager:
   - UI
   - 
   - 
+  - Environment
   - Player
   - Enemies
   - Items
-  - 
   - 
   - 
   - 

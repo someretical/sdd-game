@@ -12,11 +12,15 @@ public class ChestManager : MonoBehaviour
 
 		for (var x = 0; x < dungeonGenerator.columns; ++x)
 			for (var y = 0; y < dungeonGenerator.rows; ++y)
-				if (dungeonGenerator.Map[x, y].type == TileTypes.Chest)
+				if (
+					dungeonGenerator.Map[x, y].type == TileTypes.Chest ||
+					dungeonGenerator.Map[x, y].type == TileTypes.SecretChest
+				)
 				{
-					var selectedChest = chests[Random.Range(0, chests.Length)];
+					var selectedChest = Util.GetArrayRandom(chests);
 					var newChest = Instantiate(selectedChest, new Vector3(x + 0.5f, dungeonGenerator.rows - 0.5f - y, 0f), Quaternion.identity);
 					newChest.transform.SetParent(transform);
+					newChest.GetComponent<ChestController>().needsKey = dungeonGenerator.Map[x, y].type == TileTypes.Chest;
 
 					switch (dungeonGenerator.Map[x, y].rotation)
 					{

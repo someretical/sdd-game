@@ -12,6 +12,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: GreenChest Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 1672963885658584538, guid: d523a56852c67544885e035a1442106a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 7200660238234577403, guid: d523a56852c67544885e035a1442106a,
         type: 3}
       propertyPath: coin
@@ -20,9 +25,15 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 7200660238234577403, guid: d523a56852c67544885e035a1442106a,
         type: 3}
-      propertyPath: openedSprite
+      propertyPath: lockedSprite
       value: 
       objectReference: {fileID: 3360777976935596823, guid: 86f96467c71444a4ead1ebc017c432f9,
+        type: 3}
+    - target: {fileID: 7200660238234577403, guid: d523a56852c67544885e035a1442106a,
+        type: 3}
+      propertyPath: openedSprite
+      value: 
+      objectReference: {fileID: -7583737851726763313, guid: 86f96467c71444a4ead1ebc017c432f9,
         type: 3}
     - target: {fileID: 7200660238234577403, guid: d523a56852c67544885e035a1442106a,
         type: 3}
@@ -35,6 +46,17 @@ PrefabInstance:
       propertyPath: highlightedSprite
       value: 
       objectReference: {fileID: 9011289960348594601, guid: 86f96467c71444a4ead1ebc017c432f9,
+        type: 3}
+    - target: {fileID: 7200660238234577403, guid: d523a56852c67544885e035a1442106a,
+        type: 3}
+      propertyPath: lootTable.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7200660238234577403, guid: d523a56852c67544885e035a1442106a,
+        type: 3}
+      propertyPath: lootTable.Array.data[0]
+      value: 
+      objectReference: {fileID: 5273371731175848475, guid: 450114f5a5a9200429dff01045790682,
         type: 3}
     - target: {fileID: 7656376368184379361, guid: d523a56852c67544885e035a1442106a,
         type: 3}

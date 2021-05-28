@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1194968261803922715}
   - component: {fileID: 1070122940782206018}
   - component: {fileID: 7200660238234577403}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: RedChest
   m_TagString: Chest
   m_Icon: {fileID: 0}
@@ -175,7 +175,11 @@ MonoBehaviour:
     type: 3}
   highlightedSprite: {fileID: 4032033871735927925, guid: 86f96467c71444a4ead1ebc017c432f9,
     type: 3}
-  openedSprite: {fileID: 6983191744819231628, guid: 86f96467c71444a4ead1ebc017c432f9,
+  lockedSprite: {fileID: 6983191744819231628, guid: 86f96467c71444a4ead1ebc017c432f9,
+    type: 3}
+  openedSprite: {fileID: 2424983929796287158, guid: 86f96467c71444a4ead1ebc017c432f9,
     type: 3}
   spriteRenderer: {fileID: 8588868608439395111}
-  coin: {fileID: 5273371731175848475, guid: 450114f5a5a9200429dff01045790682, type: 3}
+  lootTable:
+  - {fileID: 5273371731175848475, guid: 450114f5a5a9200429dff01045790682, type: 3}
+  needsKey: 0

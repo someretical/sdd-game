@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 public class ItemCollider : MonoBehaviour
 {
+	public string id;
 	public Sprite defaultSprite;
 	public Sprite highlightedSprite;
 	public SpriteRenderer spriteRenderer;
@@ -70,6 +71,8 @@ public class ItemCollider : MonoBehaviour
 			player.canInteract = false;
 
 			player.currentlyTouchingItem = Guid.Empty;
+
+			player.OnItemPickup(id);
 
 			Destroy(gameObject);
 		}

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using UnityEngine;
 using Newtonsoft.Json;
+using UnityEngine;
 
 namespace DungeonGeneratorNamespace
 {
@@ -95,6 +95,18 @@ namespace DungeonGeneratorNamespace
 							break;
 						case "CW":
 							tiles[y, x] = new Tile(TileTypes.Chest, Rotations.West);
+							break;
+						case "SCN":
+							tiles[y, x] = new Tile(TileTypes.SecretChest, Rotations.North);
+							break;
+						case "SCE":
+							tiles[y, x] = new Tile(TileTypes.SecretChest, Rotations.East);
+							break;
+						case "SCS":
+							tiles[y, x] = new Tile(TileTypes.SecretChest, Rotations.South);
+							break;
+						case "SCW":
+							tiles[y, x] = new Tile(TileTypes.SecretChest, Rotations.West);
 							break;
 						default:
 							tiles[y, x] = new Tile(TileTypes.Any);

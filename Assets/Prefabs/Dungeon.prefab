@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6288439300580408230}
   - component: {fileID: 9040631641521199137}
   - component: {fileID: 6704917109095762138}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Darkness
   m_TagString: Darkness
   m_Icon: {fileID: 0}
@@ -128,7 +128,7 @@ GameObject:
   - component: {fileID: 3218826438791752038}
   - component: {fileID: 3218826438791730841}
   - component: {fileID: 6143259425549700063}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Dungeon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -182,6 +182,12 @@ MonoBehaviour:
   doorManager: {fileID: 4206861104622948155, guid: 19e6627e4445be445b33f3bf50891543,
     type: 3}
   chestManager: {fileID: 8030745013634637239, guid: 4d3bb3208bbc31b4ca4afffae3045bc1,
+    type: 3}
+  entranceExitManager: {fileID: 1401974716764903460, guid: e7ef5d352e025a64badc9bef3a272d62,
+    type: 3}
+  itemManager: {fileID: 1032600071951770664, guid: fb568a39c04e1e84e82466fb677a2750,
+    type: 3}
+  trapManager: {fileID: 5179000421546328181, guid: 6e089db4990dc8a4d9f276deaa9ab5a7,
     type: 3}
   mapWidth: 150
   mapHeight: 150
@@ -284,7 +290,7 @@ GameObject:
   - component: {fileID: 3218826439527071629}
   - component: {fileID: 3218826439527071631}
   - component: {fileID: 3218826439527071628}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Ground
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -404,7 +410,7 @@ GameObject:
   - component: {fileID: 3218826440017941972}
   - component: {fileID: 4024552161602429773}
   - component: {fileID: 6135607661327188451}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Tile entities
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -585,7 +591,7 @@ GameObject:
   - component: {fileID: 3218826440141103162}
   - component: {fileID: 7322715320115201315}
   - component: {fileID: 7388959404557993177}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Decorations
   m_TagString: Decorations
   m_Icon: {fileID: 0}
@@ -766,7 +772,7 @@ GameObject:
   - component: {fileID: 3218826440361200036}
   - component: {fileID: 6811225036052259971}
   - component: {fileID: 8577991869863283734}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Walls
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -944,7 +950,7 @@ GameObject:
   - component: {fileID: 4700781392091714350}
   - component: {fileID: 5671214891293997399}
   - component: {fileID: 6186919162170269252}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Background
   m_TagString: Ground
   m_Icon: {fileID: 0}

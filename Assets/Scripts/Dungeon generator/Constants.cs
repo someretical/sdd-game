@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,6 +26,7 @@ namespace DungeonGeneratorNamespace
 		Pit,
 		Goo,
 		Chest,
+		SecretChest,
 		SecretGround,
 		SecretDoor,
 		SecretPath,
@@ -84,6 +86,10 @@ namespace DungeonGeneratorNamespace
 	}
 	public static class Util
 	{
+		public static Vector3Int RoundPosition(Vector3 position)
+		{
+			return new Vector3Int((int)Math.Floor(position.x), (int)Math.Floor(position.y), 0);
+		}
 		public static int GetListSum(List<int> list)
 		{
 			// Basically reduce/aggregate
@@ -96,12 +102,12 @@ namespace DungeonGeneratorNamespace
 		}
 		public static T GetListRandom<T>(this List<T> list)
 		{
-			return list[Random.Range(0, list.Count)];
+			return list[UnityEngine.Random.Range(0, list.Count)];
 		}
 
 		public static T GetArrayRandom<T>(this T[] array)
 		{
-			return array[Random.Range(0, array.Length)];
+			return array[UnityEngine.Random.Range(0, array.Length)];
 		}
 	}
 }

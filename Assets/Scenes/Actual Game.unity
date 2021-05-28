@@ -173,3 +173,15 @@ MonoBehaviour:
     type: 3}
   secretRoomsJSON: {fileID: 4900000, guid: 9f4f7920e69daaa41810ea10b5b4f5b2, type: 3}
   treasureRoomsJSON: {fileID: 4900000, guid: 72380121c9e5ac849a779371e97867a9, type: 3}
+  levelCounter: 0
+  levelSizeIncreasePercentage: 0.2
+  maxRoomIncreasePercentage: 0.4
+  itemPriceIncreasePercentage: 0.4
+  enemyHealthIncreasePercentage: 0.2
+  maxHp: 6
+  hp: 6
+  mana: 100
+  armour: 0
+  coins: 0
+  blanks: 2
+  keys: 0

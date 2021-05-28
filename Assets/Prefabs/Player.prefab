@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5020592001005566298}
   - component: {fileID: 5020592001005566373}
   - component: {fileID: 5020592001005566375}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 5020592002468953125}
   - component: {fileID: 5020592002468953124}
   - component: {fileID: 5020592002468954072}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -229,5 +229,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseSpeed: 5
   rb2d: {fileID: 5020592002468953124}
+  spriteRenderer: {fileID: 5020592002468954074}
+  defaultState: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  invulnerableState: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
   canBlank: 1
   canInteract: 1
+  canShoot: 1
+  canMove: 1
+  invulnerable: 0
