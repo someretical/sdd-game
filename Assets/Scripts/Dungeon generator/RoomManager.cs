@@ -12,6 +12,7 @@ namespace DungeonGeneratorNamespace
 		public List<Room> intersectionRooms = new List<Room>();
 		public List<Room> secretRooms = new List<Room>();
 		public List<Room> treasureRooms = new List<Room>();
+		public List<Room> shopRooms = new List<Room>();
 		public void Init(GameManager gameManager)
 		{
 			RotateRooms(JsonConvert.DeserializeObject<JSONRoomData>(gameManager.defaultRoomsJSON.text).rooms, defaultRooms);
@@ -20,6 +21,7 @@ namespace DungeonGeneratorNamespace
 			RotateRooms(JsonConvert.DeserializeObject<JSONRoomData>(gameManager.intersectionRoomsJSON.text).rooms, intersectionRooms);
 			RotateRooms(JsonConvert.DeserializeObject<JSONRoomData>(gameManager.secretRoomsJSON.text).rooms, secretRooms);
 			RotateRooms(JsonConvert.DeserializeObject<JSONRoomData>(gameManager.treasureRoomsJSON.text).rooms, treasureRooms);
+			RotateRooms(JsonConvert.DeserializeObject<JSONRoomData>(gameManager.shopRoomsJSON.text).rooms, shopRooms);
 		}
 		public static Tile[,] ConvertToTiles(string[,] matrix)
 		{
@@ -107,6 +109,9 @@ namespace DungeonGeneratorNamespace
 							break;
 						case "SCW":
 							tiles[y, x] = new Tile(TileTypes.SecretChest, Rotations.West);
+							break;
+						case "I_":
+							tiles[y, x] = new Tile(TileTypes.ShopItem);
 							break;
 						default:
 							tiles[y, x] = new Tile(TileTypes.Any);
@@ -249,6 +254,5 @@ namespace DungeonGeneratorNamespace
 
 			return new Room(copy);
 		}
-
 	}
 }

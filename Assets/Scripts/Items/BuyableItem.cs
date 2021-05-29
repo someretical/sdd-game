@@ -1,38 +1,55 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 public class BuyableItem : MonoBehaviour
 {
 	public string id;
 	public int basePrice;
 	public int scaledPrice;
-	// public Text priceTag;
 	public Sprite defaultSprite;
 	public Sprite highlightedSprite;
 	public Sprite lockedSprite;
-	public SpriteRenderer spriteRenderer;
 	private Guid uid = Guid.NewGuid();
+	private bool onDefaultSprite = true;
+	private bool playerTouching = false;
 	private bool tempLocked = false;
+	private SpriteRenderer spriteRenderer;
+	private TextMeshPro textMeshPro;
 	private PlayerController player;
 	private GameManager gameManager;
 	void Start()
 	{
+		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 		player = transform.parent.parent.parent.GetChild(0).gameObject.GetComponent<PlayerController>();
 		gameManager = transform.parent.parent.parent.parent.gameObject.GetComponent<GameManager>();
+
 		scaledPrice = basePrice + (int)Math.Ceiling((gameManager.levelCounter - 1) * basePrice * gameManager.itemPriceIncreasePercentage);
+		textMeshPro = transform.GetChild(0).gameObject.GetComponent<TextMeshPro>();
+		textMeshPro.text = scaledPrice.ToString();
 
 		// Holy SHIT this piece of code worked in one try 
 		// First time that's happened in so long
-		Physics2D.IgnoreCollision(player.gameObject.GetComponent<Collider2D>(), transform.gameObject.GetComponent<Collider2D>());
+		Physics2D.IgnoreCollision(player.gameObject.GetComponent<Collider2D>(), gameObject.GetComponent<Collider2D>());
+	}
+	void Update()
+	{
+		if (!tempLocked && !playerTouching && !onDefaultSprite)
+			spriteRenderer.sprite = defaultSprite;
 	}
 	bool PrelimCheck(Collider2D other)
 	{
-		return !other.gameObject.CompareTag("Player") || tempLocked;
+		return !other.gameObject.CompareTag("Player");
 	}
 	void OnTriggerEnter2D(Collider2D other)
 	{
 		if (PrelimCheck(other))
+			return;
+
+		playerTouching = true;
+
+		if (tempLocked)
 			return;
 
 		if (player.currentlyTouchingItem == Guid.Empty)
@@ -40,13 +57,14 @@ public class BuyableItem : MonoBehaviour
 			player.currentlyTouchingItem = uid;
 
 			spriteRenderer.sprite = highlightedSprite;
+			onDefaultSprite = false;
 
 			CheckInteract();
 		}
 	}
 	void OnTriggerStay2D(Collider2D other)
 	{
-		if (PrelimCheck(other))
+		if (PrelimCheck(other) || tempLocked)
 			return;
 
 		if (player.currentlyTouchingItem == uid)
@@ -56,6 +74,7 @@ public class BuyableItem : MonoBehaviour
 			player.currentlyTouchingItem = uid;
 
 			spriteRenderer.sprite = highlightedSprite;
+			onDefaultSprite = false;
 
 			CheckInteract();
 		}
@@ -65,11 +84,17 @@ public class BuyableItem : MonoBehaviour
 		if (PrelimCheck(other))
 			return;
 
+		playerTouching = false;
+
+		if (tempLocked)
+			return;
+
 		if (player.currentlyTouchingItem == uid)
 		{
 			player.currentlyTouchingItem = Guid.Empty;
 
 			spriteRenderer.sprite = defaultSprite;
+			onDefaultSprite = true;
 		}
 	}
 	void CheckInteract()
@@ -84,13 +109,14 @@ public class BuyableItem : MonoBehaviour
 				tempLocked = true;
 
 				spriteRenderer.sprite = lockedSprite;
+				onDefaultSprite = false;
 
 				StartCoroutine(TempLock());
 			}
 			else
 			{
-				player.OnItemPickup(id);
 				gameManager.coins -= scaledPrice;
+				player.OnItemPickup(id);
 
 				Destroy(gameObject);
 			}
@@ -100,7 +126,6 @@ public class BuyableItem : MonoBehaviour
 	{
 		yield return new WaitForSeconds(0.5f);
 
-		spriteRenderer.sprite = defaultSprite;
 		tempLocked = false;
 	}
 }

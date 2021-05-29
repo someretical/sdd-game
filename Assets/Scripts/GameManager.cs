@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
 	public TextAsset intersectionRoomsJSON;
 	public TextAsset secretRoomsJSON;
 	public TextAsset treasureRoomsJSON;
+	public TextAsset shopRoomsJSON;
 	public RoomManager roomManager = new RoomManager();
 	public int levelCounter = 0;
 	public float levelSizeIncreasePercentage = 0.2f;

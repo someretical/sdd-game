@@ -19,6 +19,8 @@ public class DungeonManager : MonoBehaviour
 	public int maximumChestRooms = 2;
 	public int minimumSecretRooms = 2;
 	public int maximumSecretRooms = 2;
+	public int minimumShopRooms = 1;
+	public int maximumShopRooms = 1;
 	public int minimumSinglePathLength = 1;
 	public int maximumSinglePathLength = 1;
 	public int minimumMultiPathSegmentLength = 3;
@@ -71,7 +73,7 @@ public class DungeonManager : MonoBehaviour
 		PlaceWallTiles();
 		PlaceDestroyableWalls();
 		PlaceDecorations();
-		PlaceDarkness();
+		// PlaceDarkness();
 
 		// Reveal original room
 		UpdateDarkness(new Vector3(mapWidth / 2 + 4, mapHeight / 2 - 3, 0f));
@@ -95,6 +97,8 @@ public class DungeonManager : MonoBehaviour
 			maximumChestRooms,
 			minimumSecretRooms,
 			maximumSecretRooms,
+			minimumShopRooms,
+			maximumShopRooms,
 			minimumSinglePathLength,
 			maximumSinglePathLength,
 			minimumMultiPathSegmentLength,
@@ -126,11 +130,11 @@ public class DungeonManager : MonoBehaviour
 			case TileTypes.Door:
 				return includeDoors;
 			case TileTypes.Ground:
-				return true;
+			// FALL THROUGH
 			case TileTypes.SecretGround:
-				return true;
+			// FALL THROUGH
 			case TileTypes.Path:
-				return true;
+			// FALL THROUGH
 			case TileTypes.SecretPath:
 				return true;
 		}
@@ -145,11 +149,11 @@ public class DungeonManager : MonoBehaviour
 		switch (dungeonGenerator.Map[x, y].type)
 		{
 			case TileTypes.Wall:
-				return true;
+			// FALL THROUGH
 			case TileTypes.PathWall:
-				return true;
+			// FALL THROUGH
 			case TileTypes.SecretWall:
-				return true;
+			// FALL THROUGH
 			case TileTypes.SecretPathWall:
 				return true;
 		}
@@ -175,15 +179,15 @@ public class DungeonManager : MonoBehaviour
 			for (var y = 0; y < mapHeight; ++y)
 				switch (dungeonGenerator.Map[x, y].type)
 				{
+					case TileTypes.ShopItem:
+					// FALL THROUGH
 					case TileTypes.Ground:
-						groundTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), Util.GetArrayRandom(groundTiles));
-						break;
+					// FALL THROUGH
 					case TileTypes.SecretGround:
 						groundTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), Util.GetArrayRandom(groundTiles));
 						break;
 					case TileTypes.Path:
-						groundTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), Util.GetArrayRandom(pathTiles));
-						break;
+					// FALL THROUGH
 					case TileTypes.SecretPath:
 						groundTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), Util.GetArrayRandom(pathTiles));
 						break;

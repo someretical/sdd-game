@@ -43,10 +43,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 258d0e43e12687e48b049f0c759467d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lootTable:
+  roomClearLootTable:
   - {fileID: 1869212973299653274, guid: 18f5d7d55b0cc2e4a847be4a5b54ea9c, type: 3}
   - {fileID: 284326689069948252, guid: b94ce260de98a9e429040dabb62b00d8, type: 3}
   - {fileID: 698280364484825987, guid: ccc6a8fbe229aba4685a3e53749d50ad, type: 3}
+  - {fileID: 3742707510695376848, guid: db133cd002d26aa43af34037d83a0487, type: 3}
   - {fileID: 5343919208989093557, guid: acf9bc4d7a4537042a045c36cb879fe3, type: 3}
   - {fileID: 1254882294067499426, guid: 3befc3f53c82853448e17cca031ff8c1, type: 3}
-  - {fileID: 3742707510695376848, guid: db133cd002d26aa43af34037d83a0487, type: 3}
+  shopLootTable:
+  - {fileID: 3174573197766090441, guid: a04bc9e67681547468b1953149910995, type: 3}

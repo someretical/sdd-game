@@ -6,13 +6,32 @@ using UnityEngine;
 
 public class ItemManager : MonoBehaviour
 {
-	public GameObject[] lootTable;
+	public GameObject[] roomClearLootTable;
+	public GameObject[] shopLootTable;
 	private DungeonManager dungeonManager;
 	private DungeonGenerator dungeonGenerator;
 	void Start()
 	{
 		dungeonManager = transform.parent.gameObject.GetComponent<DungeonManager>();
 		dungeonGenerator = dungeonManager.dungeonGenerator;
+
+		SpawnShopItems();
+	}
+	public void SpawnShopItems()
+	{
+		for (var x = 0; x < dungeonManager.mapWidth; ++x)
+			for (var y = 0; y < dungeonManager.mapHeight; ++y)
+				if (dungeonGenerator.Map[x, y].type == TileTypes.ShopItem)
+					Instantiate(
+						Util.GetArrayRandom(shopLootTable),
+						new Vector3(
+							x + 0.5f,
+							dungeonManager.mapHeight - 0.5f - y,
+							0f
+						),
+						Quaternion.identity,
+						transform
+					);
 	}
 	public void SpawnItem(Vector3 position)
 	{
@@ -35,14 +54,14 @@ public class ItemManager : MonoBehaviour
 		var tile = Util.GetListRandom(suitableTiles);
 
 		var newDrop = Instantiate(
-			Util.GetArrayRandom(lootTable),
+			Util.GetArrayRandom(roomClearLootTable),
 			new Vector3(
 				 tile.x + 0.5f,
 				 dungeonManager.mapHeight - 0.5f - tile.y,
 				 0f
 				),
-			Quaternion.identity
+			Quaternion.identity,
+			transform
 		);
-		newDrop.transform.SetParent(transform);
 	}
 }

@@ -34,7 +34,8 @@ namespace DungeonGeneratorNamespace
 		SecretPathWall,
 		DestroyableWall,
 		Entrance,
-		Exit
+		Exit,
+		ShopItem
 	}
 	public enum RoomTypes
 	{
@@ -43,7 +44,8 @@ namespace DungeonGeneratorNamespace
 		Intersection,
 		Default,
 		Entrance,
-		Exit
+		Exit,
+		Shop
 	}
 	public class Tile
 	{

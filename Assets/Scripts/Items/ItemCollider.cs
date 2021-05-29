@@ -7,16 +7,17 @@ public class ItemCollider : MonoBehaviour
 	public string id;
 	public Sprite defaultSprite;
 	public Sprite highlightedSprite;
-	public SpriteRenderer spriteRenderer;
 	private Guid uid = Guid.NewGuid();
+	private SpriteRenderer spriteRenderer;
 	private PlayerController player;
 	void Start()
 	{
+		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 		player = transform.parent.parent.parent.GetChild(0).gameObject.GetComponent<PlayerController>();
 
 		// Holy SHIT this piece of code worked in one try 
 		// First time that's happened in so long
-		Physics2D.IgnoreCollision(player.gameObject.GetComponent<Collider2D>(), transform.gameObject.GetComponent<Collider2D>());
+		Physics2D.IgnoreCollision(player.gameObject.GetComponent<Collider2D>(), gameObject.GetComponent<Collider2D>());
 	}
 	bool PrelimCheck(Collider2D other)
 	{

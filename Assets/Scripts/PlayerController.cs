@@ -7,8 +7,6 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 	public float baseSpeed = 1f;
-	public Rigidbody2D rb2d;
-	public SpriteRenderer spriteRenderer;
 	public Sprite defaultState;
 	public Sprite invulnerableState;
 	public bool canBlank = true;
@@ -17,16 +15,24 @@ public class PlayerController : MonoBehaviour
 	public bool canMove = true;
 	public bool invulnerable = false;
 	public Guid currentlyTouchingItem = Guid.Empty;
+	private SpriteRenderer spriteRenderer;
+	private Rigidbody2D rb2d;
 	private GameManager gameManager;
+	private LevelManager levelManager;
 	private DungeonManager dungeonManager;
 	void Start()
 	{
-		dungeonManager = transform.parent.GetChild(1).gameObject.GetComponent<DungeonManager>();
-
+		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+		rb2d = gameObject.GetComponent<Rigidbody2D>();
 		gameManager = transform.parent.parent.gameObject.GetComponent<GameManager>();
+		levelManager = transform.parent.gameObject.GetComponent<LevelManager>();
+		dungeonManager = transform.parent.GetChild(1).gameObject.GetComponent<DungeonManager>();
 	}
 	void Update()
 	{
+		if (!levelManager.ready)
+			return;
+
 		ProcessMovement();
 		CheckBlank();
 		CheckInteract();
@@ -55,13 +61,13 @@ public class PlayerController : MonoBehaviour
 	{
 		if (!Input.GetKey(KeyCode.E) && !canInteract)
 			canInteract = true;
-		else if (Input.GetKey(KeyCode.E) && canInteract)
-		{
-			canInteract = false;
+		// else if (Input.GetKey(KeyCode.E) && canInteract)
+		// {
+		// 	canInteract = false;
 
-			// Temporary very unoptimised code
-			transform.parent.GetChild(1).GetChild(9).gameObject.GetComponent<ItemManager>().SpawnItem(transform.position);
-		}
+		// 	// Temporary very unoptimised code
+		// 	transform.parent.GetChild(1).GetChild(9).gameObject.GetComponent<ItemManager>().SpawnItem(transform.position);
+		// }
 	}
 	public void OnItemPickup(string id)
 	{

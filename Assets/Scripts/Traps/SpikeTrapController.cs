@@ -6,13 +6,14 @@ public class SpikeTrapController : MonoBehaviour
 {
 	public Sprite passiveState;
 	public Sprite activeState;
-	public SpriteRenderer spriteRenderer;
 	private bool timerRunning = false;
 	private bool playerTouching = false;
 	private bool canDamage = false;
+	private SpriteRenderer spriteRenderer;
 	private PlayerController player;
 	void Start()
 	{
+		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 		spriteRenderer.sprite = passiveState;
 		player = transform.parent.parent.parent.GetChild(0).gameObject.GetComponent<PlayerController>();
 	}

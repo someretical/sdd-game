@@ -17,6 +17,8 @@ namespace DungeonGeneratorNamespace
 		public readonly int maximumChestRooms;
 		public readonly int minimumSecretRooms;
 		public readonly int maximumSecretRooms;
+		public readonly int minimumShopRooms;
+		public readonly int maximumShopRooms;
 		public readonly int minimumSinglePathLength;
 		public readonly int maximumSinglePathLength;
 		public readonly int minimumMultiPathSegmentLength;
@@ -50,6 +52,8 @@ namespace DungeonGeneratorNamespace
 			int p_maximumChestRooms,
 			int p_minimumSecretRooms,
 			int p_maximumSecretRooms,
+			int p_minimumShopRooms,
+			int p_maximumShopRooms,
 			int p_minimumSinglePathLength,
 			int p_maximumSinglePathLength,
 			int p_minimumMultiPathSegmentLength,
@@ -71,6 +75,8 @@ namespace DungeonGeneratorNamespace
 			maximumChestRooms = p_maximumChestRooms;
 			minimumSecretRooms = p_minimumSecretRooms;
 			maximumSecretRooms = p_maximumSecretRooms;
+			minimumShopRooms = p_minimumShopRooms;
+			maximumShopRooms = p_maximumShopRooms;
 			minimumSinglePathLength = p_minimumSinglePathLength;
 			maximumSinglePathLength = p_maximumSinglePathLength;
 			minimumMultiPathSegmentLength = p_minimumMultiPathSegmentLength;
@@ -513,6 +519,7 @@ namespace DungeonGeneratorNamespace
 				{
 					// Place east and west tiles there as well
 					case Rotations.North:
+					// FALL THROUGH
 					case Rotations.South:
 						Map[x + 1, y].pathID = PathPoints.Count - 1;
 						PathPoints[PathPoints.Count - 1].Add(new Vector2Int(x + 1, y));
@@ -522,6 +529,7 @@ namespace DungeonGeneratorNamespace
 
 					// Place north and south wall tiles there as well
 					case Rotations.East:
+					// FALL THROUGH
 					case Rotations.West:
 						Map[x, y - 1].pathID = PathPoints.Count - 1;
 						PathPoints[PathPoints.Count - 1].Add(new Vector2Int(x, y - 1));
@@ -667,6 +675,8 @@ namespace DungeonGeneratorNamespace
 						roomManager.secretRooms :
 					type == RoomTypes.Entrance ?
 						roomManager.entranceRooms :
+					type == RoomTypes.Shop ?
+						roomManager.shopRooms :
 					roomManager.exitRooms;
 
 				var (roomIsBuildable, room, topLeftPoint) = LookaheadRoom(possibleRooms, pathPoints, pathSegmentStartPoint, finalSegmentDirection);
@@ -701,12 +711,14 @@ namespace DungeonGeneratorNamespace
 			var roomCounter = 1;
 			var chestRoomCount = Random.Range(minimumChestRooms, maximumChestRooms);
 			var secretRoomCount = Random.Range(minimumSecretRooms, maximumSecretRooms);
+			var shopRoomCount = Random.Range(minimumShopRooms, maximumShopRooms);
 			var chestRoomCounter = 0;
 			var secretRoomCounter = 0;
+			var shopRoomCounter = 0;
 
 			// Add in default rooms
 			// -1 at the end because will need to add in exit too
-			var roomsLeft = maximumRooms - chestRoomCount - secretRoomCount - 1;
+			var roomsLeft = maximumRooms - chestRoomCount - secretRoomCount - shopRoomCount - 1;
 			for (var i = 0; (roomCounter < roomsLeft) && (i < maximumAttempts); ++i)
 			{
 				var addIntersection = Random.Range(0, 100) < intersectionRoomProbability;
@@ -733,6 +745,13 @@ namespace DungeonGeneratorNamespace
 			for (var i = 0; (secretRoomCounter < secretRoomCount) && (i < maximumAttempts); ++i)
 				if (AddRoom(RoomTypes.Secret, true))
 					++secretRoomCounter;
+
+			// Shop rooms were added much later than the rest of the code here
+			// I'm so glad I took the time to refactor this crap
+			// Otherwise I would have spent literally ages trying to get it to work
+			for (var i = 0; (shopRoomCounter < shopRoomCount) && (i < maximumAttempts); ++i)
+				if (AddRoom(RoomTypes.Shop))
+					++shopRoomCounter;
 
 			// Add in exit
 			for (var i = 0; i < maximumAttempts; ++i)
