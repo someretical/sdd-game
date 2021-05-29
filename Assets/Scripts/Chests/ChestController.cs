@@ -127,13 +127,24 @@ public class ChestController : MonoBehaviour
 
 		tempLocked = false;
 	}
-	void DropLoot()
+	public GameObject GetRandomItem()
+	{
+		var chances = new List<int>();
+
+		for (var i = 0; i < lootTable.Length; ++i)
+			for (var l = 0; l < lootTable[i].GetComponent<ItemCollider>().chestWeight; ++l)
+				chances.Add(i);
+
+		return lootTable[Util.GetListRandom(chances)];
+	}
+	public void DropLoot()
 	{
 		for (var i = 0; i < 2; ++i)
-		{
-			var offset = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0f);
-			var item = Util.GetArrayRandom(lootTable);
-			Instantiate(item, transform.position + offset, Quaternion.identity, chestManagerTransform);
-		}
+			Instantiate(
+				GetRandomItem(),
+				transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0f),
+				Quaternion.identity,
+				chestManagerTransform
+			);
 	}
 }

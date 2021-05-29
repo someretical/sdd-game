@@ -49,6 +49,8 @@ public class GameManager : MonoBehaviour
 		Destroy(currentLevelManager);
 
 		++levelCounter;
+		if (blanks < 2)
+			blanks = 2;
 
 		currentLevelManager = Instantiate(levelManager);
 		currentLevelManager.transform.SetParent(transform);

@@ -73,7 +73,7 @@ public class DungeonManager : MonoBehaviour
 		PlaceWallTiles();
 		PlaceDestroyableWalls();
 		PlaceDecorations();
-		// PlaceDarkness();
+		PlaceDarkness();
 
 		// Reveal original room
 		UpdateDarkness(new Vector3(mapWidth / 2 + 4, mapHeight / 2 - 3, 0f));

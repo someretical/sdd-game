@@ -61,17 +61,56 @@ public class PlayerController : MonoBehaviour
 	{
 		if (!Input.GetKey(KeyCode.E) && !canInteract)
 			canInteract = true;
-		// else if (Input.GetKey(KeyCode.E) && canInteract)
-		// {
-		// 	canInteract = false;
+		else if (Input.GetKey(KeyCode.E) && canInteract)
+		{
+			canInteract = false;
 
-		// 	// Temporary very unoptimised code
-		// 	transform.parent.GetChild(1).GetChild(9).gameObject.GetComponent<ItemManager>().SpawnItem(transform.position);
-		// }
+			// Temporary very unoptimised code
+			transform.parent.GetChild(1).GetChild(9).gameObject.GetComponent<ItemManager>().SpawnRoomClearReward(transform.position);
+		}
 	}
 	public void OnItemPickup(string id)
 	{
-
+		switch (id)
+		{
+			case "CoinStack":
+				gameManager.coins += 15 + (int)Math.Ceiling((gameManager.levelCounter - 1) * 15 * gameManager.itemPriceIncreasePercentage);
+				break;
+			case "CoinPickup":
+				++gameManager.coins;
+				break;
+			case "KeyPickup":
+			// FALL THROUGH
+			case "KeyShopItem":
+				++gameManager.keys;
+				break;
+			case "BlankPickup":
+			// FALL THROUGH
+			case "BlankShopItem":
+				++gameManager.blanks;
+				break;
+			case "ArmourPickup":
+			// FALL THROUGH
+			case "ArmourShopItem":
+				++gameManager.armour;
+				break;
+			case "HeartPickup":
+			// FALL THROUGH
+			case "HeartShopItem":
+				gameManager.hp = Math.Min(gameManager.maxHp, gameManager.hp + 2);
+				break;
+			case "HalfHeartPickup":
+			// FALL THROUGH
+			case "HalfHeartShopItem":
+				if (gameManager.hp < gameManager.maxHp)
+					++gameManager.hp;
+				break;
+			case "MapPickup":
+			// FALL THROUGH
+			case "MapShopItem":
+				// Reveal entire minimap
+				break;
+		}
 	}
 	public void InflictDamage(int damage)
 	{
@@ -91,8 +130,6 @@ public class PlayerController : MonoBehaviour
 		StartCoroutine(IFramesCooldown());
 
 		StartCoroutine(FreezePlayer());
-
-		Debug.Log("damage taken");
 
 		gameManager.hp -= damage;
 	}

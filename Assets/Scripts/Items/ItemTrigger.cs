@@ -5,6 +5,7 @@ using UnityEngine;
 public class ItemTrigger : MonoBehaviour
 {
 	public string id;
+	public int weight;
 	private PlayerController player;
 	void Start()
 	{

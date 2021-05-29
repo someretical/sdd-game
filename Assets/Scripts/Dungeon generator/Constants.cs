@@ -47,6 +47,12 @@ namespace DungeonGeneratorNamespace
 		Exit,
 		Shop
 	}
+	public enum LootTypes
+	{
+		Shop,
+		Enemy,
+		RoomClear
+	}
 	public class Tile
 	{
 		public TileTypes type;

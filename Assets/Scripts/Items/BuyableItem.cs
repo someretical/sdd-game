@@ -6,6 +6,7 @@ using UnityEngine;
 public class BuyableItem : MonoBehaviour
 {
 	public string id;
+	public int weight;
 	public int basePrice;
 	public int scaledPrice;
 	public Sprite defaultSprite;
