@@ -10,6 +10,7 @@ public class ChestController : MonoBehaviour
 	public Sprite lockedSprite;
 	public Sprite openedSprite;
 	public GameObject[] lootTable;
+	public bool rare = false;
 	public bool needsKey;
 	private bool onDefaultSprite = true;
 	private bool tempLocked = false;
@@ -139,7 +140,9 @@ public class ChestController : MonoBehaviour
 	}
 	public void DropLoot()
 	{
-		for (var i = 0; i < 2; ++i)
+		var max = rare ? 4 : 2;
+
+		for (var i = 0; i < max; ++i)
 			Instantiate(
 				GetRandomItem(),
 				transform.position + new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0f),

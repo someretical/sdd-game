@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using DungeonGeneratorNamespace;
+using UnityEngine;
 
 public class DoorManager : MonoBehaviour
 {
@@ -14,8 +14,7 @@ public class DoorManager : MonoBehaviour
 			for (var y = 0; y < dungeonGenerator.rows; ++y)
 				if (dungeonGenerator.Map[x, y].type == TileTypes.Door)
 				{
-					var newDoor = Instantiate(door, new Vector3(x + 0.5f, dungeonGenerator.rows - 0.5f - y, 0f), Quaternion.identity);
-					newDoor.transform.SetParent(transform);
+					var newDoor = Instantiate(door, new Vector3(x + 0.5f, dungeonGenerator.rows - 0.5f - y, 0f), Quaternion.identity, transform);
 
 					switch (dungeonGenerator.Map[x, y].rotation)
 					{

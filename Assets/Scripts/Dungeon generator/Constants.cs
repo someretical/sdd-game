@@ -35,7 +35,8 @@ namespace DungeonGeneratorNamespace
 		DestroyableWall,
 		Entrance,
 		Exit,
-		ShopItem
+		ShopItem,
+		Shop
 	}
 	public enum RoomTypes
 	{
@@ -52,6 +53,11 @@ namespace DungeonGeneratorNamespace
 		Shop,
 		Enemy,
 		RoomClear
+	}
+	public enum ChestType
+	{
+		Common,
+		Rare
 	}
 	public class Tile
 	{

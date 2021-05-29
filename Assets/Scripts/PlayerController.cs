@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
 		rb2d = gameObject.GetComponent<Rigidbody2D>();
 		gameManager = transform.parent.parent.gameObject.GetComponent<GameManager>();
 		levelManager = transform.parent.gameObject.GetComponent<LevelManager>();
-		dungeonManager = transform.parent.GetChild(1).gameObject.GetComponent<DungeonManager>();
+		dungeonManager = transform.parent.GetChild(2).gameObject.GetComponent<DungeonManager>();
 	}
 	void Update()
 	{
@@ -36,6 +36,9 @@ public class PlayerController : MonoBehaviour
 		ProcessMovement();
 		CheckBlank();
 		CheckInteract();
+
+		if (Input.GetKeyDown(KeyCode.G))
+			transform.parent.GetChild(2).GetChild(10).gameObject.GetComponent<ItemManager>().SpawnRoomClearReward(transform.position);
 	}
 	void ProcessMovement()
 	{
@@ -61,13 +64,6 @@ public class PlayerController : MonoBehaviour
 	{
 		if (!Input.GetKey(KeyCode.E) && !canInteract)
 			canInteract = true;
-		else if (Input.GetKey(KeyCode.E) && canInteract)
-		{
-			canInteract = false;
-
-			// Temporary very unoptimised code
-			transform.parent.GetChild(1).GetChild(9).gameObject.GetComponent<ItemManager>().SpawnRoomClearReward(transform.position);
-		}
 	}
 	public void OnItemPickup(string id)
 	{

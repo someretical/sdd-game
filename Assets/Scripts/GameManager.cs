@@ -52,7 +52,6 @@ public class GameManager : MonoBehaviour
 		if (blanks < 2)
 			blanks = 2;
 
-		currentLevelManager = Instantiate(levelManager);
-		currentLevelManager.transform.SetParent(transform);
+		currentLevelManager = Instantiate(levelManager, Vector3.zero, Quaternion.identity, transform);
 	}
 }

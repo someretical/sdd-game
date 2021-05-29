@@ -5,14 +5,13 @@ public class LevelManager : MonoBehaviour
 {
 	public bool ready = false;
 	public GameObject player;
+	public GameObject mainCamera;
 	public GameObject dungeonManager;
 	void Awake()
 	{
-		var _player = Instantiate(player);
-		_player.transform.parent = transform;
-
-		var _dungeonManager = Instantiate(dungeonManager);
-		_dungeonManager.transform.parent = transform;
+		Instantiate(player, Vector3.zero, Quaternion.identity, transform);
+		Instantiate(mainCamera, Vector3.zero, Quaternion.identity, transform);
+		Instantiate(dungeonManager, Vector3.zero, Quaternion.identity, transform);
 	}
 	void Update()
 	{

@@ -113,6 +113,9 @@ namespace DungeonGeneratorNamespace
 						case "I_":
 							tiles[y, x] = new Tile(TileTypes.ShopItem);
 							break;
+						case "SH":
+							tiles[y, x] = new Tile(TileTypes.Shop);
+							break;
 						default:
 							tiles[y, x] = new Tile(TileTypes.Any);
 							break;

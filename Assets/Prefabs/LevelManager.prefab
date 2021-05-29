@@ -45,5 +45,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ready: 0
   player: {fileID: 5020592002468953127, guid: 444e6e914bcaca448bc1d68e28bc36b9, type: 3}
+  mainCamera: {fileID: 3730924854393292003, guid: 94d367ad43a44be4e8828b41fbb16aee,
+    type: 3}
   dungeonManager: {fileID: 3218826438791752039, guid: 35618ff3c8f588f4189509e0d9c1d152,
     type: 3}

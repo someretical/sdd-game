@@ -17,10 +17,19 @@ public class ChestManager : MonoBehaviour
 					dungeonGenerator.Map[x, y].type == TileTypes.SecretChest
 				)
 				{
-					var selectedChest = Util.GetArrayRandom(chests);
-					var newChest = Instantiate(selectedChest, new Vector3(x + 0.5f, dungeonGenerator.rows - 0.5f - y, 0f), Quaternion.identity);
-					newChest.transform.SetParent(transform);
+					var num = Random.Range(0, 10);
+					var rare =
+						num == 0 && dungeonGenerator.Map[x, y].type == TileTypes.Chest ||
+						num < 8 && dungeonGenerator.Map[x, y].type == TileTypes.SecretChest;
+					var newChest = Instantiate(
+						chests[rare ? 0 : 1],
+						new Vector3(x + 0.5f, dungeonGenerator.rows - 0.5f - y, 0f),
+						Quaternion.identity,
+						transform
+					);
 					newChest.GetComponent<ChestController>().needsKey = dungeonGenerator.Map[x, y].type == TileTypes.Chest;
+					if (rare)
+						newChest.GetComponent<ChestController>().rare = true;
 
 					switch (dungeonGenerator.Map[x, y].rotation)
 					{

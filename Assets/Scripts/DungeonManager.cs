@@ -36,7 +36,9 @@ public class DungeonManager : MonoBehaviour
 	public Tilemap wallsTilemap;
 	public Tilemap decorationsTilemap;
 	public Tilemap darknessTilemap;
+	public Tilemap minimapTilemap;
 	public TileBase darknessTile;
+	public TileBase[] minimapTiles;
 	public TileBase[] groundTiles;
 	public TileBase[] pathTiles;
 	public TileBase[] northWallTiles;
@@ -48,20 +50,11 @@ public class DungeonManager : MonoBehaviour
 	public DungeonGenerator dungeonGenerator;
 	void Awake()
 	{
-		var _doorManager = Instantiate(doorManager);
-		_doorManager.transform.parent = transform;
-
-		var _chestManager = Instantiate(chestManager);
-		_chestManager.transform.parent = transform;
-
-		var _entraceExitManager = Instantiate(entranceExitManager);
-		_entraceExitManager.transform.parent = transform;
-
-		var _itemManager = Instantiate(itemManager);
-		_itemManager.transform.parent = transform;
-
-		var _trapManager = Instantiate(trapManager);
-		_trapManager.transform.parent = transform;
+		Instantiate(doorManager, Vector3.zero, Quaternion.identity, transform);
+		Instantiate(chestManager, Vector3.zero, Quaternion.identity, transform);
+		Instantiate(entranceExitManager, Vector3.zero, Quaternion.identity, transform);
+		Instantiate(itemManager, Vector3.zero, Quaternion.identity, transform);
+		Instantiate(trapManager, Vector3.zero, Quaternion.identity, transform);
 	}
 	void Start()
 	{
@@ -179,6 +172,8 @@ public class DungeonManager : MonoBehaviour
 			for (var y = 0; y < mapHeight; ++y)
 				switch (dungeonGenerator.Map[x, y].type)
 				{
+					case TileTypes.Shop:
+					// FALL THROUGH
 					case TileTypes.ShopItem:
 					// FALL THROUGH
 					case TileTypes.Ground:
@@ -286,29 +281,72 @@ public class DungeonManager : MonoBehaviour
 		// Might get around to doing this if I have enough time left
 		// Probably not going to happen
 	}
+	public void PlaceMinimapTile(Vector2Int internalCoords, Vector3Int visibleCoords)
+	{
+		switch (dungeonGenerator.Map[internalCoords.x, internalCoords.y].type)
+		{
+			case TileTypes.DestroyableWall:
+			// FALL THROUGH
+			case TileTypes.PathWall:
+			// FALL THROUGH
+			case TileTypes.Pillar:
+			// FALL THROUGH
+			case TileTypes.SecretPathWall:
+			// FALL THROUGH
+			case TileTypes.SecretWall:
+			// FALL THROUGH
+			case TileTypes.Wall:
+				minimapTilemap.SetTile(visibleCoords, minimapTiles[1]);
+				break;
+			case TileTypes.Door:
+			// FALL THROUGH
+			case TileTypes.Goo:
+			// FALL THROUGH
+			case TileTypes.Ground:
+			// FALL THROUGH
+			case TileTypes.Path:
+			// FALL THROUGH
+			case TileTypes.Pit:
+			// FALL THROUGH
+			case TileTypes.SecretDoor:
+			// FALL THROUGH
+			case TileTypes.SecretGround:
+			// FALL THROUGH
+			case TileTypes.SecretPath:
+			// FALL THROUGH
+			case TileTypes.ShopItem:
+				minimapTilemap.SetTile(visibleCoords, minimapTiles[0]);
+				break;
+			case TileTypes.Entrance:
+				minimapTilemap.SetTile(visibleCoords, minimapTiles[2]);
+				break;
+			case TileTypes.Exit:
+				minimapTilemap.SetTile(visibleCoords, minimapTiles[3]);
+				break;
+			case TileTypes.Chest:
+			// FALL THROUGH
+			case TileTypes.SecretChest:
+			// FALL THROUGH
+			case TileTypes.Shop:
+				minimapTilemap.SetTile(visibleCoords, minimapTiles[4]);
+				break;
+		}
+	}
 	public void PlaceDarkness()
 	{
 		for (var i = 0; i < dungeonGenerator.PathPoints.Count; ++i)
 			for (var j = 0; j < dungeonGenerator.PathPoints[i].Count; ++j)
-				darknessTilemap.SetTile(
-					new Vector3Int(
-						dungeonGenerator.PathPoints[i][j].x,
-						mapHeight - 1 - dungeonGenerator.PathPoints[i][j].y,
-						0
-					),
-					darknessTile
-				);
+			{
+				var position = new Vector3Int(dungeonGenerator.PathPoints[i][j].x, mapHeight - 1 - dungeonGenerator.PathPoints[i][j].y, 0);
+				darknessTilemap.SetTile(position, darknessTile);
+			}
 
 		for (var i = 0; i < dungeonGenerator.RoomPoints.Count; ++i)
 			for (var j = 0; j < dungeonGenerator.RoomPoints[i].Count; ++j)
-				darknessTilemap.SetTile(
-					new Vector3Int(
-						dungeonGenerator.RoomPoints[i][j].x,
-						mapHeight - 1 - dungeonGenerator.RoomPoints[i][j].y,
-						0
-					),
-					darknessTile
-				);
+			{
+				var position = new Vector3Int(dungeonGenerator.RoomPoints[i][j].x, mapHeight - 1 - dungeonGenerator.RoomPoints[i][j].y, 0);
+				darknessTilemap.SetTile(position, darknessTile);
+			}
 	}
 	public void UpdateDarkness(Vector3 position, bool revealRoom = true)
 	{
@@ -317,26 +355,20 @@ public class DungeonManager : MonoBehaviour
 		var roomID = dungeonGenerator.Map[rounded.x, mapHeight - 1 - rounded.y].roomID;
 		if (roomID != -1 && revealRoom)
 			for (var i = 0; i < dungeonGenerator.RoomPoints[roomID].Count; ++i)
-				darknessTilemap.SetTile(
-					new Vector3Int(
-						dungeonGenerator.RoomPoints[roomID][i].x,
-						mapHeight - 1 - dungeonGenerator.RoomPoints[roomID][i].y,
-						0
-					),
-					null
-				);
+			{
+				var _position = new Vector3Int(dungeonGenerator.RoomPoints[roomID][i].x, mapHeight - 1 - dungeonGenerator.RoomPoints[roomID][i].y, 0);
+				darknessTilemap.SetTile(_position, null);
+				PlaceMinimapTile(dungeonGenerator.RoomPoints[roomID][i], _position);
+			}
 
 		var pathID = dungeonGenerator.Map[rounded.x, mapHeight - 1 - rounded.y].pathID;
 		if (pathID != -1)
 			for (var i = 0; i < dungeonGenerator.PathPoints[pathID].Count; ++i)
-				darknessTilemap.SetTile(
-					new Vector3Int(
-						dungeonGenerator.PathPoints[pathID][i].x,
-						mapHeight - 1 - dungeonGenerator.PathPoints[pathID][i].y,
-						0
-					),
-					null
-				);
+			{
+				var _position = new Vector3Int(dungeonGenerator.PathPoints[pathID][i].x, mapHeight - 1 - dungeonGenerator.PathPoints[pathID][i].y, 0);
+				darknessTilemap.SetTile(_position, null);
+				PlaceMinimapTile(dungeonGenerator.PathPoints[pathID][i], _position);
+			}
 	}
 	public void ProcessBlank(Vector3 position)
 	{
@@ -355,6 +387,7 @@ public class DungeonManager : MonoBehaviour
 				var coords = new Vector3Int(p.x, mapHeight - 1 - p.y, 0);
 				wallsTilemap.SetTile(coords, null);
 				groundTilemap.SetTile(coords, Util.GetArrayRandom(pathTiles));
+				minimapTilemap.SetTile(coords, minimapTiles[0]);
 
 				switch (dungeonGenerator.Map[p.x, p.y].rotation)
 				{
