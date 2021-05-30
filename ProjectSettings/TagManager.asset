@@ -15,6 +15,7 @@ TagManager:
   - Entrance
   - Hazard
   - MinimapCamera
+  - Enemy
   layers:
   - Default
   - TransparentFX
