@@ -101,10 +101,24 @@ public class PlayerController : MonoBehaviour
 				if (gameManager.hp < gameManager.maxHp)
 					++gameManager.hp;
 				break;
-			case "MapPickup":
+			case "MapItem":
 			// FALL THROUGH
 			case "MapShopItem":
-				// Reveal entire minimap
+				var dungeonGenerator = dungeonManager.dungeonGenerator;
+
+				for (var i = 0; i < dungeonGenerator.PathPoints.Count; ++i)
+					for (var j = 0; j < dungeonGenerator.PathPoints[i].Count; ++j)
+					{
+						var position = new Vector3Int(dungeonGenerator.PathPoints[i][j].x, dungeonManager.mapHeight - 1 - dungeonGenerator.PathPoints[i][j].y, 0);
+						dungeonManager.PlaceMinimapTile(dungeonGenerator.PathPoints[i][j], position);
+					}
+
+				for (var i = 0; i < dungeonGenerator.RoomPoints.Count; ++i)
+					for (var j = 0; j < dungeonGenerator.RoomPoints[i].Count; ++j)
+					{
+						var position = new Vector3Int(dungeonGenerator.RoomPoints[i][j].x, dungeonManager.mapHeight - 1 - dungeonGenerator.RoomPoints[i][j].y, 0);
+						dungeonManager.PlaceMinimapTile(dungeonGenerator.RoomPoints[i][j], position);
+					}
 				break;
 		}
 	}
