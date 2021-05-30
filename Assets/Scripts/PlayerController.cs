@@ -37,8 +37,11 @@ public class PlayerController : MonoBehaviour
 		CheckBlank();
 		CheckInteract();
 
+		// Temporary debugging code
 		if (Input.GetKeyDown(KeyCode.G))
-			transform.parent.GetChild(2).GetChild(10).gameObject.GetComponent<ItemManager>().SpawnRoomClearReward(transform.position);
+			transform.parent.GetChild(2).GetChild(9).gameObject.GetComponent<ItemManager>().SpawnRoomClearReward(transform.position);
+		if (Input.GetKeyDown(KeyCode.H))
+			transform.parent.GetChild(2).GetChild(11).gameObject.GetComponent<EnemyManager>().SpawnEnemy(transform.position);
 	}
 	void ProcessMovement()
 	{
@@ -74,6 +77,21 @@ public class PlayerController : MonoBehaviour
 				break;
 			case "CoinPickup":
 				++gameManager.coins;
+				break;
+			case "2CoinPickup":
+				gameManager.coins += 2;
+				break;
+			case "5CoinPickup":
+				gameManager.coins += 5;
+				break;
+			case "10CoinPickup":
+				gameManager.coins += 10;
+				break;
+			case "20CoinPickup":
+				gameManager.coins += 20;
+				break;
+			case "50CoinPickup":
+				gameManager.coins += 50;
 				break;
 			case "KeyPickup":
 			// FALL THROUGH

@@ -12,11 +12,13 @@ public class ItemManager : MonoBehaviour
 	private DungeonManager dungeonManager;
 	private DungeonGenerator dungeonGenerator;
 	private PlayerController player;
+	private GameManager gameManager;
 	void Start()
 	{
 		dungeonManager = transform.parent.gameObject.GetComponent<DungeonManager>();
 		dungeonGenerator = dungeonManager.dungeonGenerator;
 		player = transform.parent.parent.GetChild(0).GetComponent<PlayerController>();
+		gameManager = transform.parent.parent.parent.gameObject.GetComponent<GameManager>();
 
 		SpawnShopItems();
 	}
@@ -66,9 +68,37 @@ public class ItemManager : MonoBehaviour
 						transform
 					);
 	}
-	public void SpawnEnemyDrops(Vector3 position)
+	public Vector3 GetRandomOffset(Vector3 position)
 	{
+		var x = UnityEngine.Random.Range(-0.4f, 0.4f);
+		var y = UnityEngine.Random.Range(-0.4f, 0.4f);
 
+		return position + new Vector3(x, y, 0f);
+	}
+	public void SpawnEnemyDrops(Vector3 position, int baseReward)
+	{
+		var scaled = baseReward + (int)Math.Ceiling((gameManager.levelCounter - 1) * baseReward * gameManager.itemPriceIncreasePercentage);
+		// Visual studio code says int casts are redundant but they aren't lmao
+		// Thanks omnisharp
+		var fifties = (int)scaled / 50;
+		var twenties = (int)(scaled - (50 * fifties)) / 20;
+		var tens = (int)(scaled - (50 * fifties) - (20 * twenties)) / 10;
+		var fives = (int)(scaled - (50 * fifties) - (20 * twenties) - (10 * tens)) / 5;
+		var twos = (int)(scaled - (50 * fifties) - (20 * twenties) - (10 * tens) - (5 * fives)) / 2;
+		var ones = (int)(scaled - (50 * fifties) - (20 * twenties) - (10 * tens) - (5 * fives) - (2 * twos));
+
+		for (int i = 0; i < fifties; ++i)
+			Instantiate(enemyLootTable[5], GetRandomOffset(position), Quaternion.identity, transform);
+		for (int i = 0; i < twenties; ++i)
+			Instantiate(enemyLootTable[4], GetRandomOffset(position), Quaternion.identity, transform);
+		for (int i = 0; i < tens; ++i)
+			Instantiate(enemyLootTable[3], GetRandomOffset(position), Quaternion.identity, transform);
+		for (int i = 0; i < fives; ++i)
+			Instantiate(enemyLootTable[2], GetRandomOffset(position), Quaternion.identity, transform);
+		for (int i = 0; i < twos; ++i)
+			Instantiate(enemyLootTable[1], GetRandomOffset(position), Quaternion.identity, transform);
+		for (int i = 0; i < ones; ++i)
+			Instantiate(enemyLootTable[0], GetRandomOffset(position), Quaternion.identity, transform);
 	}
 	public void SpawnRoomClearReward(Vector3 position)
 	{

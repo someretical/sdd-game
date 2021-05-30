@@ -25,7 +25,7 @@ public class ChestController : MonoBehaviour
 	{
 		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 		player = transform.parent.parent.parent.GetChild(0).gameObject.GetComponent<PlayerController>();
-		chestManagerTransform = transform.parent.parent.GetChild(9);
+		chestManagerTransform = transform.parent.parent.GetChild(8);
 		gameManager = transform.parent.parent.parent.parent.gameObject.GetComponent<GameManager>();
 	}
 	void Update()

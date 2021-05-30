@@ -179,7 +179,7 @@ MonoBehaviour:
     type: 3}
   openedSprite: {fileID: 2424983929796287158, guid: 86f96467c71444a4ead1ebc017c432f9,
     type: 3}
-  spriteRenderer: {fileID: 8588868608439395111}
   lootTable:
   - {fileID: 5273371731175848475, guid: 450114f5a5a9200429dff01045790682, type: 3}
+  rare: 0
   needsKey: 0

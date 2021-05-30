@@ -45,6 +45,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyLootTable:
   - {fileID: 698280364484825987, guid: ccc6a8fbe229aba4685a3e53749d50ad, type: 3}
+  - {fileID: 2245592438769268592, guid: e830f697944676f4d891ca96adb38393, type: 3}
+  - {fileID: 7050589233446943492, guid: ce41ca282831c1343b2629e349a4be76, type: 3}
+  - {fileID: 7553058583530872930, guid: d4ddd4bf615a2ea48be5d42629d9a35b, type: 3}
+  - {fileID: 4079554380838823793, guid: 53cf0631cef3473448b9f8b2ac9b25d6, type: 3}
+  - {fileID: 2373390841499215255, guid: 053083cd2ed471a4e83735b1e7ca7c7c, type: 3}
   roomClearLootTable:
   - {fileID: 1254882294067499426, guid: 3befc3f53c82853448e17cca031ff8c1, type: 3}
   - {fileID: 5343919208989093557, guid: acf9bc4d7a4537042a045c36cb879fe3, type: 3}

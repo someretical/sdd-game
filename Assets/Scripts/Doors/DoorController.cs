@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using DungeonGeneratorNamespace;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class DoorController : MonoBehaviour
 {
@@ -11,22 +13,25 @@ public class DoorController : MonoBehaviour
 	private SpriteRenderer spriteRenderer;
 	private EdgeCollider2D _topEdgeCollider;
 	private EdgeCollider2D _bottomEdgeCollider;
+	private NavMeshObstacle navMeshCollider;
+	private DungeonManager dungeonManager;
 	void Start()
 	{
 		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 		_topEdgeCollider = topEdgeCollider.GetComponent<EdgeCollider2D>();
 		_bottomEdgeCollider = bottomEdgeCollider.GetComponent<EdgeCollider2D>();
+		navMeshCollider = gameObject.GetComponent<NavMeshObstacle>();
+		dungeonManager = transform.parent.parent.gameObject.GetComponent<DungeonManager>();
 	}
 	void OnPlayerEnter(int direction)
 	{
 		playerEntered = true;
 
-		transform.parent.parent.gameObject
-			.GetComponent<DungeonManager>()
-			.UpdateDarkness(transform.position);
+		dungeonManager.UpdateDarkness(transform.position);
 
 		Destroy(_topEdgeCollider);
 		Destroy(_bottomEdgeCollider);
+		Destroy(navMeshCollider);
 
 		// 0 = top
 		// 1 = bottom

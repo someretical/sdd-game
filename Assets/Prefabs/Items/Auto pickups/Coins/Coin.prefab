@@ -145,4 +145,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: CoinPickup
-  weight: 90
+  weight: 0
