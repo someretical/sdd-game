@@ -426,7 +426,7 @@ public class DungeonManager : MonoBehaviour
 				UpdateDarkness(new Vector3(p.x, mapHeight - 1 - p.y, 0f), false);
 				minimapTilemap.SetTile(coords, minimapTiles[0]);
 
-				navMesh.BuildNavMesh();
+				navMesh.UpdateNavMesh(navMesh.navMeshData);
 			}
 		}
 	}

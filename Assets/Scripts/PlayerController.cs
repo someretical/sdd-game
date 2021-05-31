@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
 	private LevelManager levelManager;
 	private DungeonManager dungeonManager;
 	private GameObject miniMap;
-	private List<GameObject> fullScreenMap = new List<GameObject>();
+	private readonly List<GameObject> fullScreenMap = new List<GameObject>();
 	void Start()
 	{
 		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();

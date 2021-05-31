@@ -31,6 +31,5 @@ public class CameraController : MonoBehaviour
 			var norm = mouseOffset.normalized;
 			transform.position = new Vector3(norm.x * radius + player.position.x, norm.y * radius + player.position.y, transform.position.z);
 		}
-
 	}
 }
