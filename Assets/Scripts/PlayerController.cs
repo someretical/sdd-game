@@ -15,11 +15,15 @@ public class PlayerController : MonoBehaviour
 	public bool canMove = true;
 	public bool invulnerable = false;
 	public Guid currentlyTouchingItem = Guid.Empty;
+	public bool inCombat = false;
+	private bool mapOpen = false;
 	private SpriteRenderer spriteRenderer;
 	private Rigidbody2D rb2d;
 	private GameManager gameManager;
 	private LevelManager levelManager;
 	private DungeonManager dungeonManager;
+	private GameObject miniMap;
+	private List<GameObject> fullScreenMap = new List<GameObject>();
 	void Start()
 	{
 		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
@@ -27,15 +31,21 @@ public class PlayerController : MonoBehaviour
 		gameManager = transform.parent.parent.gameObject.GetComponent<GameManager>();
 		levelManager = transform.parent.gameObject.GetComponent<LevelManager>();
 		dungeonManager = transform.parent.GetChild(2).gameObject.GetComponent<DungeonManager>();
+		miniMap = transform.GetChild(0).GetChild(0).gameObject;
+
+		var c = transform.GetChild(0).GetChild(1).childCount;
+		for (int i = 0; i < c; ++i)
+			fullScreenMap.Add(transform.GetChild(0).GetChild(1).GetChild(i).gameObject);
 	}
 	void Update()
 	{
 		if (!levelManager.ready)
 			return;
 
-		ProcessMovement();
+		CheckFullScreenMap();
 		CheckBlank();
 		CheckInteract();
+		ProcessMovement();
 
 		// Temporary debugging code
 		if (Input.GetKeyDown(KeyCode.G))
@@ -43,13 +53,44 @@ public class PlayerController : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.H))
 			transform.parent.GetChild(2).GetChild(11).gameObject.GetComponent<EnemyManager>().SpawnEnemy(transform.position);
 	}
+	void CheckFullScreenMap()
+	{
+		if (!mapOpen && Input.GetKey(KeyCode.Tab))
+		{
+			mapOpen = true;
+
+			miniMap.SetActive(false);
+			for (var i = 0; i < fullScreenMap.Count; ++i)
+				fullScreenMap[i].SetActive(true);
+		}
+		else if (mapOpen && !Input.GetKey(KeyCode.Tab))
+		{
+			mapOpen = false;
+
+			for (var i = 0; i < fullScreenMap.Count; ++i)
+				fullScreenMap[i].SetActive(false);
+			miniMap.SetActive(true);
+		}
+	}
+	float GetScaledSpeed()
+	{
+		float scaledSpeed = baseSpeed;
+
+		if (mapOpen)
+			scaledSpeed *= 0.5f;
+
+		if (!inCombat)
+			scaledSpeed *= 1.5f;
+
+		return scaledSpeed;
+	}
 	void ProcessMovement()
 	{
 		var direction = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 		var speed = Mathf.Clamp(direction.magnitude, 0f, 1f);
 		direction.Normalize();
 
-		rb2d.velocity = canMove ? baseSpeed * speed * direction : new Vector2();
+		rb2d.velocity = canMove ? GetScaledSpeed() * speed * direction : new Vector2();
 	}
 	void CheckBlank()
 	{

@@ -4,13 +4,33 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-	private PlayerController player;
+	public float radius;
+	private Transform player;
+	private Camera cam;
 	void Start()
 	{
-		player = transform.parent.GetChild(0).gameObject.GetComponent<PlayerController>();
+		player = transform.parent.GetChild(0);
+		cam = gameObject.GetComponent<Camera>();
 	}
-	void LateUpdate()
+
+	public void LateUpdate()
 	{
-		transform.position = new Vector3(player.gameObject.transform.position.x, player.gameObject.transform.position.y, transform.position.z);
+		var mousePos1 = Input.mousePosition;
+		var mouseOffset = cam.ScreenToWorldPoint(new Vector3(mousePos1.x, mousePos1.y, transform.position.z - cam.transform.position.z)) - player.position;
+		var mousePos2 = cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -transform.position.z));
+
+		transform.position = new Vector3(
+			(mousePos2.x - player.position.x) * 0.1f + player.position.x,
+			(mousePos2.y - player.position.y) * 0.1f + player.position.y,
+			transform.position.z
+		);
+
+		var dist = Vector2.Distance(new Vector2(transform.position.x, transform.position.y), new Vector2(player.position.x, player.position.y));
+		if (dist > radius)
+		{
+			var norm = mouseOffset.normalized;
+			transform.position = new Vector3(norm.x * radius + player.position.x, norm.y * radius + player.position.y, transform.position.z);
+		}
+
 	}
 }

@@ -397,26 +397,29 @@ public class DungeonManager : MonoBehaviour
 			if (dungeonGenerator.Map[p.x, p.y].type == TileTypes.DestroyableWall)
 			{
 				var coords = new Vector3Int(p.x, mapHeight - 1 - p.y, 0);
+				if (wallsTilemap.GetTile(coords) == null)
+					return;
+
 				wallsTilemap.SetTile(coords, null);
 				groundTilemap.SetTile(coords, Util.GetArrayRandom(pathTiles));
 
 				switch (dungeonGenerator.Map[p.x, p.y].rotation)
 				{
 					case Rotations.North:
-						wallsTilemap.SetTile(new Vector3Int(p.x + 1, mapHeight - 1 - p.y, 0), innerCornerTiles[1]); //
-						wallsTilemap.SetTile(new Vector3Int(p.x - 1, mapHeight - 1 - p.y, 0), innerCornerTiles[0]); //
+						wallsTilemap.SetTile(new Vector3Int(p.x + 1, mapHeight - 1 - p.y, 0), innerCornerTiles[1]);
+						wallsTilemap.SetTile(new Vector3Int(p.x - 1, mapHeight - 1 - p.y, 0), innerCornerTiles[0]);
 						break;
 					case Rotations.East:
 						wallsTilemap.SetTile(new Vector3Int(p.x, mapHeight - 2 - p.y, 0), innerCornerTiles[3]);
-						wallsTilemap.SetTile(new Vector3Int(p.x, mapHeight - p.y, 0), innerCornerTiles[1]); //
+						wallsTilemap.SetTile(new Vector3Int(p.x, mapHeight - p.y, 0), innerCornerTiles[1]);
 						break;
 					case Rotations.South:
 						wallsTilemap.SetTile(new Vector3Int(p.x + 1, mapHeight - 1 - p.y, 0), innerCornerTiles[3]);
-						wallsTilemap.SetTile(new Vector3Int(p.x - 1, mapHeight - 1 - p.y, 0), innerCornerTiles[2]); //
+						wallsTilemap.SetTile(new Vector3Int(p.x - 1, mapHeight - 1 - p.y, 0), innerCornerTiles[2]);
 						break;
 					case Rotations.West:
-						wallsTilemap.SetTile(new Vector3Int(p.x, mapHeight - 2 - p.y, 0), innerCornerTiles[2]); //
-						wallsTilemap.SetTile(new Vector3Int(p.x, mapHeight - p.y, 0), innerCornerTiles[0]); //
+						wallsTilemap.SetTile(new Vector3Int(p.x, mapHeight - 2 - p.y, 0), innerCornerTiles[2]);
+						wallsTilemap.SetTile(new Vector3Int(p.x, mapHeight - p.y, 0), innerCornerTiles[0]);
 						break;
 				}
 
