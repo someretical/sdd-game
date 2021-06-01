@@ -16,6 +16,7 @@ TagManager:
   - Hazard
   - MinimapCamera
   - Enemy
+  - PlayerDodgeRollHitbox
   layers:
   - Default
   - TransparentFX
@@ -76,6 +77,9 @@ TagManager:
     locked: 0
   - name: Entities
     uniqueID: 172548445
+    locked: 0
+  - name: Player
+    uniqueID: 708524393
     locked: 0
   - name: Darkness
     uniqueID: 1983024109

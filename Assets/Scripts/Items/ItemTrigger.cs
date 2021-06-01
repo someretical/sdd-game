@@ -13,7 +13,7 @@ public class ItemTrigger : MonoBehaviour
 	}
 	bool PrelimCheck(Collider2D other)
 	{
-		return !other.gameObject.CompareTag("Player");
+		return !other.gameObject.CompareTag("PlayerDodgeRollHitbox");
 	}
 	void OnTriggerEnter2D(Collider2D other)
 	{

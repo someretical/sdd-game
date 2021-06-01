@@ -390,6 +390,7 @@ public class DungeonManager : MonoBehaviour
 		if (roomID == -1)
 			return;
 
+		var secretRoomExists = false;
 		for (int i = 0; i < dungeonGenerator.RoomPoints[roomID].Count; ++i)
 		{
 			var p = dungeonGenerator.RoomPoints[roomID][i];
@@ -426,9 +427,13 @@ public class DungeonManager : MonoBehaviour
 				UpdateDarkness(new Vector3(p.x, mapHeight - 1 - p.y, 0f), false);
 				minimapTilemap.SetTile(coords, minimapTiles[0]);
 
-				navMesh.UpdateNavMesh(navMesh.navMeshData);
+				secretRoomExists = true;
 			}
 		}
+
+		// Compute as few times as possible
+		if (secretRoomExists)
+			navMesh.UpdateNavMesh(navMesh.navMeshData);
 	}
 	public void BuildNavMesh()
 	{

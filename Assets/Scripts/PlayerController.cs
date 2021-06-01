@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DungeonGeneratorNamespace;
 using UnityEngine;
-
+[System.Serializable]
 public class PlayerController : MonoBehaviour
 {
 	public float baseSpeed = 1f;
@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
 	public bool canInteract = true;
 	public bool canShoot = true;
 	public bool canMove = true;
+	public bool dodgeRolling = false;
 	public bool invulnerable = false;
 	public Guid currentlyTouchingItem = Guid.Empty;
 	public bool inCombat = false;
@@ -23,6 +24,8 @@ public class PlayerController : MonoBehaviour
 	private LevelManager levelManager;
 	private DungeonManager dungeonManager;
 	private GameObject miniMap;
+	private Camera fullScreenMapCamera;
+	private BoxCollider2D dodgeRollCollider;
 	private readonly List<GameObject> fullScreenMap = new List<GameObject>();
 	void Start()
 	{
@@ -31,31 +34,43 @@ public class PlayerController : MonoBehaviour
 		gameManager = transform.parent.parent.gameObject.GetComponent<GameManager>();
 		levelManager = transform.parent.gameObject.GetComponent<LevelManager>();
 		dungeonManager = transform.parent.GetChild(2).gameObject.GetComponent<DungeonManager>();
-		miniMap = transform.GetChild(0).GetChild(0).gameObject;
+		miniMap = transform.GetChild(1).GetChild(0).gameObject;
+		fullScreenMapCamera = transform.GetChild(3).GetChild(0).gameObject.GetComponent<Camera>();
+		dodgeRollCollider = transform.GetChild(0).GetChild(1).gameObject.GetComponent<BoxCollider2D>();
 
-		var c = transform.GetChild(0).GetChild(1).childCount;
+		var c = transform.GetChild(1).GetChild(1).childCount;
 		for (int i = 0; i < c; ++i)
-			fullScreenMap.Add(transform.GetChild(0).GetChild(1).GetChild(i).gameObject);
+			fullScreenMap.Add(transform.GetChild(1).GetChild(1).GetChild(i).gameObject);
 	}
 	void Update()
 	{
 		if (!levelManager.ready)
 			return;
 
+		CheckInteract();
 		CheckFullScreenMap();
 		CheckBlank();
-		CheckInteract();
 		ProcessMovement();
 
 		// Temporary debugging code
+		if (Input.GetKeyDown(KeyCode.K))
+			currentlyTouchingItem = Guid.Empty;
 		if (Input.GetKeyDown(KeyCode.G))
 			transform.parent.GetChild(2).GetChild(9).gameObject.GetComponent<ItemManager>().SpawnRoomClearReward(transform.position);
 		if (Input.GetKeyDown(KeyCode.H))
 			transform.parent.GetChild(2).GetChild(11).gameObject.GetComponent<EnemyManager>().SpawnEnemy(transform.position);
 	}
+	void CheckInteract()
+	{
+		// Had to use GetButton because for some reason this was
+		// the only way it would work with the item system I
+		// implemented
+		if (!Input.GetButton("Interact") && !canInteract)
+			canInteract = true;
+	}
 	void CheckFullScreenMap()
 	{
-		if (!mapOpen && Input.GetKey(KeyCode.Tab))
+		if (Input.GetButtonDown("Map"))
 		{
 			mapOpen = true;
 
@@ -63,7 +78,7 @@ public class PlayerController : MonoBehaviour
 			for (var i = 0; i < fullScreenMap.Count; ++i)
 				fullScreenMap[i].SetActive(true);
 		}
-		else if (mapOpen && !Input.GetKey(KeyCode.Tab))
+		else if (Input.GetButtonUp("Map"))
 		{
 			mapOpen = false;
 
@@ -71,6 +86,12 @@ public class PlayerController : MonoBehaviour
 				fullScreenMap[i].SetActive(false);
 			miniMap.SetActive(true);
 		}
+
+		if (mapOpen && Input.GetAxis("Scroll") > 0f)
+			fullScreenMapCamera.orthographicSize = Math.Min(100, fullScreenMapCamera.orthographicSize + 1);
+
+		if (mapOpen && Input.GetAxis("Scroll") < 0f)
+			fullScreenMapCamera.orthographicSize = Math.Max(20, fullScreenMapCamera.orthographicSize - 1);
 	}
 	float GetScaledSpeed()
 	{
@@ -79,35 +100,62 @@ public class PlayerController : MonoBehaviour
 		if (mapOpen)
 			scaledSpeed *= 0.5f;
 
+		if (dodgeRolling)
+			scaledSpeed *= 0.75f;
+
 		if (!inCombat)
 			scaledSpeed *= 1.5f;
 
 		return scaledSpeed;
 	}
+	IEnumerator DodgeRoll()
+	{
+		dodgeRollCollider.enabled = false;
+		dodgeRolling = true;
+		spriteRenderer.sprite = invulnerableState;
+
+		yield return new WaitForSeconds(0.5f);
+
+		dodgeRollCollider.enabled = true;
+		dodgeRolling = false;
+		spriteRenderer.sprite = defaultState;
+	}
 	void ProcessMovement()
 	{
-		var direction = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-		var speed = Mathf.Clamp(direction.magnitude, 0f, 1f);
-		direction.Normalize();
+		if (!canMove || dodgeRolling)
+			return;
 
-		rb2d.velocity = canMove ? GetScaledSpeed() * speed * direction : new Vector2();
+		// Rigid body will continue moving if the velocity is NOT set to zero
+		// This is why the movement is snappy, because it is being updated every frame by this statement
+		// (If no movement keys are pressed the direction will be zero)
+		// However, during a dodgeroll, the player cannot be stopped until they land
+		// Hence, we just need to set the velocity and prevent it from being updated
+		// for a certain amount of time
+		if (
+			Input.GetButtonDown("DodgeRoll") &&
+			(Input.GetAxisRaw("Horizontal") != 0f || Input.GetAxisRaw("Vertical") != 0f)
+		)
+			StartCoroutine(DodgeRoll());
+
+		rb2d.velocity = GetScaledSpeed() * new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
+	}
+	IEnumerator BlankCooldown()
+	{
+		yield return new WaitForSeconds(1f);
+
+		canBlank = true;
 	}
 	void CheckBlank()
 	{
-		if (!Input.GetKey(KeyCode.Q) && !canBlank)
-			canBlank = true;
-		else if (Input.GetKey(KeyCode.Q) && canBlank)
+		if (Input.GetButtonDown("Blank") && canBlank)
 		{
 			canBlank = false;
 			--gameManager.blanks;
 
 			dungeonManager.ProcessBlank(transform.position);
+
+			StartCoroutine(BlankCooldown());
 		}
-	}
-	void CheckInteract()
-	{
-		if (!Input.GetKey(KeyCode.E) && !canInteract)
-			canInteract = true;
 	}
 	public void OnItemPickup(string id)
 	{
@@ -192,6 +240,7 @@ public class PlayerController : MonoBehaviour
 			return;
 		}
 
+		rb2d.velocity = Vector2.zero;
 		spriteRenderer.sprite = invulnerableState;
 		invulnerable = true;
 		canMove = false;

@@ -29,9 +29,9 @@ public class DoorController : MonoBehaviour
 
 		dungeonManager.UpdateDarkness(transform.position);
 
-		Destroy(_topEdgeCollider);
-		Destroy(_bottomEdgeCollider);
-		Destroy(navMeshCollider);
+		_topEdgeCollider.enabled = false;
+		_bottomEdgeCollider.enabled = false;
+		navMeshCollider.enabled = false;
 
 		// 0 = top
 		// 1 = bottom

@@ -15,13 +15,12 @@ public class CameraController : MonoBehaviour
 
 	public void LateUpdate()
 	{
-		var mousePos1 = Input.mousePosition;
-		var mouseOffset = cam.ScreenToWorldPoint(new Vector3(mousePos1.x, mousePos1.y, transform.position.z - cam.transform.position.z)) - player.position;
-		var mousePos2 = cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -transform.position.z));
+		var mouseOffset = cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - cam.transform.position.z)) - player.position;
+		var mousePos = cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -transform.position.z));
 
 		transform.position = new Vector3(
-			(mousePos2.x - player.position.x) * 0.1f + player.position.x,
-			(mousePos2.y - player.position.y) * 0.1f + player.position.y,
+			(mousePos.x - player.position.x) * 0.1f + player.position.x,
+			(mousePos.y - player.position.y) * 0.1f + player.position.y,
 			transform.position.z
 		);
 

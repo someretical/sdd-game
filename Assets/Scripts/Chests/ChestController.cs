@@ -27,6 +27,8 @@ public class ChestController : MonoBehaviour
 		player = transform.parent.parent.parent.GetChild(0).gameObject.GetComponent<PlayerController>();
 		chestManagerTransform = transform.parent.parent.GetChild(8);
 		gameManager = transform.parent.parent.parent.parent.gameObject.GetComponent<GameManager>();
+
+		Physics2D.IgnoreCollision(player.transform.GetChild(0).GetChild(1).gameObject.GetComponent<BoxCollider2D>(), gameObject.GetComponent<Collider2D>());
 	}
 	void Update()
 	{
@@ -35,7 +37,7 @@ public class ChestController : MonoBehaviour
 	}
 	bool PrelimCheck(Collider2D other)
 	{
-		return !other.gameObject.CompareTag("Player") || opened;
+		return !other.gameObject.CompareTag("PlayerDodgeRollHitbox") || opened;
 	}
 	void OnTriggerEnter2D(Collider2D other)
 	{
@@ -94,7 +96,7 @@ public class ChestController : MonoBehaviour
 	}
 	void CheckInteract()
 	{
-		if (Input.GetKey(KeyCode.E) && player.canInteract)
+		if (Input.GetButtonDown("Interact") && player.canInteract)
 		{
 			player.canInteract = false;
 			player.currentlyTouchingItem = Guid.Empty;

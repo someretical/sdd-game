@@ -28,6 +28,8 @@ public class GameManager : MonoBehaviour
 	private GameObject currentLevelManager;
 	void Start()
 	{
+		Cursor.lockState = CursorLockMode.Locked;
+
 		roomManager.Init(this);
 
 		CreateNewLevel();

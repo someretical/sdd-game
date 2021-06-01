@@ -19,11 +19,12 @@ public class ItemCollider : MonoBehaviour
 
 		// Holy SHIT this piece of code worked in one try 
 		// First time that's happened in so long
-		Physics2D.IgnoreCollision(player.gameObject.GetComponent<Collider2D>(), gameObject.GetComponent<Collider2D>());
+		Physics2D.IgnoreCollision(player.transform.GetChild(0).GetChild(0).gameObject.GetComponent<BoxCollider2D>(), gameObject.GetComponent<Collider2D>());
+		Physics2D.IgnoreCollision(player.transform.GetChild(0).GetChild(1).gameObject.GetComponent<BoxCollider2D>(), gameObject.GetComponent<Collider2D>());
 	}
 	bool PrelimCheck(Collider2D other)
 	{
-		return !other.gameObject.CompareTag("Player");
+		return !other.gameObject.CompareTag("PlayerDodgeRollHitbox");
 	}
 	void OnTriggerEnter2D(Collider2D other)
 	{
@@ -69,12 +70,10 @@ public class ItemCollider : MonoBehaviour
 	}
 	void CheckInteract()
 	{
-		if (Input.GetKey(KeyCode.E) && player.canInteract)
+		if (Input.GetButton("Interact") && player.canInteract)
 		{
 			player.canInteract = false;
-
 			player.currentlyTouchingItem = Guid.Empty;
-
 			player.OnItemPickup(id);
 
 			Destroy(gameObject);
