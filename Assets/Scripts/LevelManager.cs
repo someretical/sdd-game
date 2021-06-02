@@ -6,8 +6,11 @@ using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour
 {
+	[HideInInspector]
 	public bool ready = false;
+	[HideInInspector]
 	public bool transitioning = false;
+	[Header("Level components")]
 	public GameObject player;
 	public GameObject mainCamera;
 	public GameObject dungeonManager;

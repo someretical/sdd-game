@@ -7,6 +7,8 @@ public class ItemCollider : MonoBehaviour
 	public string id;
 	public int chestWeight = 0;
 	public int roomClearWeight = 0;
+	[Space]
+	[Header("Sprites")]
 	public Sprite defaultSprite;
 	public Sprite highlightedSprite;
 	private Guid uid = Guid.NewGuid();

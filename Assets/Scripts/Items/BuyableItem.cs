@@ -9,6 +9,8 @@ public class BuyableItem : MonoBehaviour
 	public int weight;
 	public int basePrice;
 	public int scaledPrice;
+	[Space]
+	[Header("Sprites")]
 	public Sprite defaultSprite;
 	public Sprite highlightedSprite;
 	public Sprite lockedSprite;

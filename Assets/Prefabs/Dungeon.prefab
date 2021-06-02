@@ -107,7 +107,7 @@ TilemapRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1983024109
-  m_SortingLayer: 10
+  m_SortingLayer: 11
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
@@ -201,11 +201,11 @@ MonoBehaviour:
   minimumShopRooms: 1
   maximumShopRooms: 1
   minimumSinglePathLength: 1
-  maximumSinglePathLength: 1
-  minimumMultiPathSegmentLength: 3
-  maximumMultiPathSegmentLength: 5
-  minimumMultiPathTotal: 8
-  maximumMultiPathTotal: 10
+  maximumSinglePathLength: 2
+  minimumMultiPathSegmentLength: 5
+  maximumMultiPathSegmentLength: 8
+  minimumMultiPathTotal: 10
+  maximumMultiPathTotal: 15
   minimumPathTurns: 1
   maximumPathTurns: 2
   pathTurnProbability: 30
@@ -290,6 +290,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 133178ad88735e34bbd54a74b66271ed, type: 2}
   - {fileID: 11400000, guid: 646d356c0d0a8044785d7f5621f59c52, type: 2}
   navMesh: {fileID: 0}
+  bulletManager: {fileID: 0}
 --- !u!1 &3218826439527071626
 GameObject:
   m_ObjectHideFlags: 0
@@ -759,9 +760,9 @@ Rigidbody2D:
   m_AngularDrag: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_Interpolate: 1
+  m_SleepingMode: 0
+  m_CollisionDetection: 1
   m_Constraints: 7
 --- !u!66 &8577991869863283734
 CompositeCollider2D:
@@ -910,7 +911,7 @@ TilemapRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1236401209
-  m_SortingLayer: 11
+  m_SortingLayer: 13
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}

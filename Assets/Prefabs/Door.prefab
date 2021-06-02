@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4653034678666750542}
   m_Layer: 8
   m_Name: TopEdgeCollider
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -48,8 +48,8 @@ EdgeCollider2D:
   m_Offset: {x: 0, y: 0.2}
   m_EdgeRadius: 0
   m_Points:
-  - {x: -0.5, y: 0}
-  - {x: 0.5, y: 0}
+  - {x: -0.7, y: 0}
+  - {x: 0.7, y: 0}
 --- !u!114 &4653034678666750542
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,9 +184,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   openedState: {fileID: -2357392545137382666, guid: 39620068444774442b32cd11e2f743e1,
     type: 3}
+  playerEntered: 0
   topEdgeCollider: {fileID: 1433417137343965024}
   bottomEdgeCollider: {fileID: 5427478250846024792}
-  playerEntered: 0
 --- !u!208 &-385991715547587257
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -216,7 +216,7 @@ GameObject:
   - component: {fileID: 3144437422547834062}
   m_Layer: 8
   m_Name: BottomEdgeCollider
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -251,8 +251,8 @@ EdgeCollider2D:
   m_Offset: {x: 0, y: -0.2}
   m_EdgeRadius: 0
   m_Points:
-  - {x: -0.5, y: 0}
-  - {x: 0.5, y: 0}
+  - {x: -0.7, y: 0}
+  - {x: 0.7, y: 0}
 --- !u!114 &3144437422547834062
 MonoBehaviour:
   m_ObjectHideFlags: 0

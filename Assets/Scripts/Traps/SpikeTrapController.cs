@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SpikeTrapController : MonoBehaviour
 {
+	[Header("Sprites")]
 	public Sprite passiveState;
 	public Sprite activeState;
 	private bool timerRunning = false;

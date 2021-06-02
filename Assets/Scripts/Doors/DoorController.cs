@@ -7,9 +7,11 @@ using UnityEngine.AI;
 public class DoorController : MonoBehaviour
 {
 	public Sprite openedState;
+	public bool playerEntered = false;
+	[Space]
+	[Header("Colliders")]
 	public GameObject topEdgeCollider;
 	public GameObject bottomEdgeCollider;
-	public bool playerEntered = false;
 	private SpriteRenderer spriteRenderer;
 	private EdgeCollider2D _topEdgeCollider;
 	private EdgeCollider2D _bottomEdgeCollider;

@@ -6,18 +6,37 @@ using UnityEngine;
 [System.Serializable]
 public class PlayerController : MonoBehaviour
 {
+	[Header("Speed")]
 	public float baseSpeed = 1f;
+	[Space]
+	[Header("Sprites")]
 	public Sprite defaultState;
 	public Sprite invulnerableState;
+	public Sprite dodgeRollingState;
+	[Space]
+	[Header("Bullets")]
+	public Transform firePoint;
+	public GameObject bulletPrefab;
+	public float bulletForce = 10f;
+	[HideInInspector]
 	public bool canBlank = true;
+	[HideInInspector]
 	public bool canInteract = true;
+	[HideInInspector]
 	public bool canShoot = true;
+	[HideInInspector]
 	public bool canMove = true;
+	[HideInInspector]
 	public bool canDodgeRoll = true;
+	[HideInInspector]
 	public bool dodgeRolling = false;
+	[HideInInspector]
 	public bool invulnerable = false;
+	[HideInInspector]
 	public Guid currentlyTouchingItem = Guid.Empty;
+	[HideInInspector]
 	public bool inCombat = false;
+	[HideInInspector]
 	private bool mapOpen = false;
 	private SpriteRenderer spriteRenderer;
 	private Rigidbody2D rb2d;
@@ -26,6 +45,7 @@ public class PlayerController : MonoBehaviour
 	private DungeonManager dungeonManager;
 	private GameObject miniMap;
 	private Camera fullScreenMapCamera;
+	private Camera cam;
 	private BoxCollider2D dodgeRollCollider;
 	private readonly List<GameObject> fullScreenMap = new List<GameObject>();
 	void Start()
@@ -37,6 +57,7 @@ public class PlayerController : MonoBehaviour
 		dungeonManager = transform.parent.GetChild(2).gameObject.GetComponent<DungeonManager>();
 		miniMap = transform.GetChild(1).GetChild(0).gameObject;
 		fullScreenMapCamera = transform.GetChild(3).GetChild(0).gameObject.GetComponent<Camera>();
+		cam = transform.parent.GetChild(1).gameObject.GetComponent<Camera>();
 		dodgeRollCollider = transform.GetChild(0).GetChild(1).gameObject.GetComponent<BoxCollider2D>();
 
 		var c = transform.GetChild(1).GetChild(1).childCount;
@@ -51,6 +72,8 @@ public class PlayerController : MonoBehaviour
 		CheckInteract();
 		CheckFullScreenMap();
 		CheckBlank();
+		ProcessRotation();
+		CheckFire();
 		ProcessMovement();
 
 		// Temporary debugging code
@@ -112,7 +135,7 @@ public class PlayerController : MonoBehaviour
 		canDodgeRoll = false;
 		dodgeRollCollider.enabled = false;
 		dodgeRolling = true;
-		spriteRenderer.sprite = invulnerableState;
+		spriteRenderer.sprite = dodgeRollingState;
 
 		yield return new WaitForSeconds(0.5f);
 
@@ -122,6 +145,21 @@ public class PlayerController : MonoBehaviour
 
 		yield return new WaitForSeconds(0.1f);
 		canDodgeRoll = true;
+	}
+	void ProcessRotation()
+	{
+		var mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
+		var lookDir = mousePos - transform.position;
+		var angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
+		rb2d.rotation = angle;
+	}
+	void CheckFire()
+	{
+		if (!Input.GetButtonDown("Attack"))
+			return;
+
+		var bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation, dungeonManager.bulletManager.transform);
+		bullet.GetComponent<Rigidbody2D>().velocity = firePoint.up * bulletForce;
 	}
 	void ProcessMovement()
 	{

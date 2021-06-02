@@ -7,12 +7,15 @@ using UnityEngine.AI;
 using UnityEngine.Tilemaps;
 public class DungeonManager : MonoBehaviour
 {
+	[Header("Level components")]
 	public DoorManager doorManager;
 	public ChestManager chestManager;
 	public EntranceExitManager entranceExitManager;
 	public ItemManager itemManager;
 	public TrapManager trapManager;
 	public EnemyManager enemyManager;
+	[Space]
+	[Header("Dungeon generation values")]
 	public int mapWidth = 150;
 	public int mapHeight = 150;
 	public int maximumRooms = 30;
@@ -33,11 +36,15 @@ public class DungeonManager : MonoBehaviour
 	public int maximumPathTurns = 2;
 	public int pathTurnProbability = 30;
 	public int maximumAttempts = 100;
+	[Space]
+	[Header("Tilemaps")]
 	public Tilemap groundTilemap;
 	public Tilemap wallsTilemap;
 	public Tilemap decorationsTilemap;
 	public Tilemap darknessTilemap;
 	public Tilemap minimapTilemap;
+	[Space]
+	[Header("Tile assets")]
 	public TileBase darknessTile;
 	public TileBase pillarTile;
 	public TileBase[] minimapTiles;
@@ -49,8 +56,12 @@ public class DungeonManager : MonoBehaviour
 	public TileBase[] westWallTiles;
 	public TileBase[] innerCornerTiles;
 	public TileBase[] outerCornerTiles;
+	[HideInInspector]
 	public DungeonGenerator dungeonGenerator;
+	[HideInInspector]
 	public NavMeshSurface2d navMesh;
+	[HideInInspector]
+	public GameObject bulletManager;
 	void Awake()
 	{
 		Instantiate(doorManager, Vector3.zero, Quaternion.identity, transform);
@@ -59,6 +70,8 @@ public class DungeonManager : MonoBehaviour
 		Instantiate(itemManager, Vector3.zero, Quaternion.identity, transform);
 		Instantiate(trapManager, Vector3.zero, Quaternion.identity, transform);
 		Instantiate(enemyManager, Vector3.zero, Quaternion.identity, transform);
+		bulletManager = new GameObject("BulletManager");
+		bulletManager.transform.parent = transform;
 	}
 	void Start()
 	{

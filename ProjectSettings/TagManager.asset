@@ -17,6 +17,9 @@ TagManager:
   - MinimapCamera
   - Enemy
   - PlayerDodgeRollHitbox
+  - PlayerBullet
+  - EnemyBullet
+  - Exit
   layers:
   - Default
   - TransparentFX
@@ -33,7 +36,7 @@ TagManager:
   - Minimap
   - HUD
   - Blackout
-  - 
+  - Bullets
   - 
   - 
   - 
@@ -81,14 +84,17 @@ TagManager:
   - name: Player
     uniqueID: 708524393
     locked: 0
+  - name: Bullets
+    uniqueID: 2654879137
+    locked: 0
   - name: Darkness
     uniqueID: 1983024109
     locked: 0
+  - name: BulletExplosions
+    uniqueID: 1208972925
+    locked: 0
   - name: Minimap
     uniqueID: 1236401209
-    locked: 0
-  - name: Minimap icons
-    uniqueID: 750447581
     locked: 0
   - name: HUD
     uniqueID: 924236777

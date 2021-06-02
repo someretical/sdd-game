@@ -5,12 +5,17 @@ using DungeonGeneratorNamespace;
 using UnityEngine;
 public class ChestController : MonoBehaviour
 {
+	[Header("Sprites")]
 	public Sprite defaultSprite;
 	public Sprite highlightedSprite;
 	public Sprite lockedSprite;
 	public Sprite openedSprite;
+	[Space]
+	[Header("Loot table")]
 	public GameObject[] lootTable;
+	[HideInInspector]
 	public bool rare = false;
+	[HideInInspector]
 	public bool needsKey;
 	private bool onDefaultSprite = true;
 	private bool tempLocked = false;
