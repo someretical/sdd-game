@@ -829,6 +829,14 @@ namespace DungeonGeneratorNamespace
 						}
 					}
 		}
+		public void ReplaceOuterWalls()
+		{
+			// Replaces outer walls with void tiles
+			for (var x = 0; x < columns; x++)
+				for (var y = 0; y < rows; y++)
+					if (Map[x, y].type == TileTypes.OuterWall)
+						Map[x, y].type = TileTypes.Void;
+		}
 		public void Generate()
 		{
 			while (true)
@@ -839,6 +847,7 @@ namespace DungeonGeneratorNamespace
 				{
 					HideSecretRooms();
 					BlockDoors();
+					ReplaceOuterWalls();
 
 					break;
 				}

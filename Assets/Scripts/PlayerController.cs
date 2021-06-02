@@ -54,12 +54,10 @@ public class PlayerController : MonoBehaviour
 		ProcessMovement();
 
 		// Temporary debugging code
-		if (Input.GetKeyDown(KeyCode.K))
-			currentlyTouchingItem = Guid.Empty;
 		if (Input.GetKeyDown(KeyCode.G))
-			transform.parent.GetChild(2).GetChild(9).gameObject.GetComponent<ItemManager>().SpawnRoomClearReward(transform.position);
+			transform.parent.GetChild(2).GetChild(8).gameObject.GetComponent<ItemManager>().SpawnRoomClearReward(transform.position);
 		if (Input.GetKeyDown(KeyCode.H))
-			transform.parent.GetChild(2).GetChild(11).gameObject.GetComponent<EnemyManager>().SpawnEnemy(transform.position);
+			transform.parent.GetChild(2).GetChild(10).gameObject.GetComponent<EnemyManager>().SpawnEnemy(transform.position);
 	}
 	void CheckInteract()
 	{
@@ -122,7 +120,7 @@ public class PlayerController : MonoBehaviour
 		dodgeRolling = false;
 		spriteRenderer.sprite = defaultState;
 
-		yield return new WaitForSeconds(0.5f);
+		yield return new WaitForSeconds(0.1f);
 		canDodgeRoll = true;
 	}
 	void ProcessMovement()
