@@ -88,6 +88,7 @@ public class LevelManager : MonoBehaviour
 		transitioning = false;
 		ready = true;
 		Cursor.lockState = CursorLockMode.None;
+		Cursor.visible = true;
 	}
 	void Update()
 	{

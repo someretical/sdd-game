@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7402766805847694718}
   - component: {fileID: 7388669383421655384}
   - component: {fileID: 8137277977633433979}
+  - component: {fileID: -3991484536877681942}
   - component: {fileID: 3985595159312989734}
   m_Layer: 8
   m_Name: Entrance
@@ -132,6 +133,22 @@ Rigidbody2D:
   m_SleepingMode: 0
   m_CollisionDetection: 0
   m_Constraints: 7
+--- !u!208 &-3991484536877681942
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8126508759373102815}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 0
+  m_Extents: {x: 0.6, y: 0.5, z: 0.6}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!114 &3985595159312989734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,7 +161,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9eb8f19276597e543bb112e6da0cf29c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bc2d: {fileID: 7388669383421655384}
-  spriteRenderer: {fileID: 7402766805847694718}
   closedState: {fileID: -2186017444305452852, guid: 589d338ea021c9c4aa1727a98356bdb4,
     type: 3}

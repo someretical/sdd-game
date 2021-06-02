@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
 	public bool canInteract = true;
 	public bool canShoot = true;
 	public bool canMove = true;
+	public bool canDodgeRoll = true;
 	public bool dodgeRolling = false;
 	public bool invulnerable = false;
 	public Guid currentlyTouchingItem = Guid.Empty;
@@ -110,6 +111,7 @@ public class PlayerController : MonoBehaviour
 	}
 	IEnumerator DodgeRoll()
 	{
+		canDodgeRoll = false;
 		dodgeRollCollider.enabled = false;
 		dodgeRolling = true;
 		spriteRenderer.sprite = invulnerableState;
@@ -119,6 +121,9 @@ public class PlayerController : MonoBehaviour
 		dodgeRollCollider.enabled = true;
 		dodgeRolling = false;
 		spriteRenderer.sprite = defaultState;
+
+		yield return new WaitForSeconds(0.5f);
+		canDodgeRoll = true;
 	}
 	void ProcessMovement()
 	{
@@ -134,6 +139,7 @@ public class PlayerController : MonoBehaviour
 		if (
 			Input.GetButtonDown("DodgeRoll") &&
 			(Input.GetAxisRaw("Horizontal") != 0f || Input.GetAxisRaw("Vertical") != 0f)
+			&& canDodgeRoll
 		)
 			StartCoroutine(DodgeRoll());
 

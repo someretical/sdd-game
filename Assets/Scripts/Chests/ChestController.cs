@@ -27,8 +27,6 @@ public class ChestController : MonoBehaviour
 		player = transform.parent.parent.parent.GetChild(0).gameObject.GetComponent<PlayerController>();
 		chestManagerTransform = transform.parent.parent.GetChild(8);
 		gameManager = transform.parent.parent.parent.parent.gameObject.GetComponent<GameManager>();
-
-		Physics2D.IgnoreCollision(player.transform.GetChild(0).GetChild(1).gameObject.GetComponent<BoxCollider2D>(), gameObject.GetComponent<Collider2D>());
 	}
 	void Update()
 	{
@@ -96,7 +94,7 @@ public class ChestController : MonoBehaviour
 	}
 	void CheckInteract()
 	{
-		if (Input.GetButtonDown("Interact") && player.canInteract)
+		if (Input.GetButton("Interact") && player.canInteract)
 		{
 			player.canInteract = false;
 			player.currentlyTouchingItem = Guid.Empty;

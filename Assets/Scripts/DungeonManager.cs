@@ -33,13 +33,13 @@ public class DungeonManager : MonoBehaviour
 	public int maximumPathTurns = 2;
 	public int pathTurnProbability = 30;
 	public int maximumAttempts = 100;
-	public Tilemap backgroundTilemap;
 	public Tilemap groundTilemap;
 	public Tilemap wallsTilemap;
 	public Tilemap decorationsTilemap;
 	public Tilemap darknessTilemap;
 	public Tilemap minimapTilemap;
 	public TileBase darknessTile;
+	public TileBase pillarTile;
 	public TileBase[] minimapTiles;
 	public TileBase[] groundTiles;
 	public TileBase[] pathTiles;
@@ -65,7 +65,6 @@ public class DungeonManager : MonoBehaviour
 		GenerateDungeon();
 
 		PlacePlayer();
-		PlaceBackground();
 		PlaceGroundTiles();
 		PlaceWallTiles();
 		PlaceDestroyableWalls();
@@ -125,19 +124,25 @@ public class DungeonManager : MonoBehaviour
 
 		switch (dungeonGenerator.Map[x, y].type)
 		{
-			case TileTypes.Door:
+			case TileTypes.Any:
 			// FALL THROUGH
-			case TileTypes.Ground:
+			case TileTypes.Void:
 			// FALL THROUGH
-			case TileTypes.SecretGround:
+			case TileTypes.Pillar:
 			// FALL THROUGH
-			case TileTypes.Path:
+			case TileTypes.DestroyableWall:
 			// FALL THROUGH
-			case TileTypes.SecretPath:
-				return true;
+			case TileTypes.Wall:
+			// FALL THROUGH
+			case TileTypes.PathWall:
+			// FALL THROUGH
+			case TileTypes.SecretWall:
+			// FALL THROUGH
+			case TileTypes.SecretPathWall:
+				return false;
 		}
 
-		return false;
+		return true;
 	}
 	public bool CheckIfWall(int x, int y)
 	{
@@ -146,6 +151,8 @@ public class DungeonManager : MonoBehaviour
 
 		switch (dungeonGenerator.Map[x, y].type)
 		{
+			case TileTypes.Pillar:
+			// FALL THROUGH
 			case TileTypes.DestroyableWall:
 			// FALL THROUGH
 			case TileTypes.Wall:
@@ -160,35 +167,28 @@ public class DungeonManager : MonoBehaviour
 
 		return false;
 	}
-	public void PlaceBackground()
-	{
-		for (var x = 0; x < mapWidth; ++x)
-			for (var y = 0; y < mapHeight; ++y)
-				if (
-					!CheckIfWall(x, y) &&
-					!CheckIfGround(x, y) &&
-					dungeonGenerator.Map[x, y].type != TileTypes.Shop &&
-					dungeonGenerator.Map[x, y].type != TileTypes.ShopItem &&
-					dungeonGenerator.Map[x, y].type != TileTypes.Void &&
-					dungeonGenerator.Map[x, y].type != TileTypes.Any &&
-					dungeonGenerator.Map[x, y].type != TileTypes.OuterWall
-				)
-					backgroundTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), groundTiles[0]);
-	}
 	public void PlaceGroundTiles()
 	{
 		for (var x = 0; x < mapWidth; ++x)
 			for (var y = 0; y < mapHeight; ++y)
 				switch (dungeonGenerator.Map[x, y].type)
 				{
-					case TileTypes.Shop:
+					case TileTypes.Any:
 					// FALL THROUGH
-					case TileTypes.ShopItem:
+					case TileTypes.Void:
 					// FALL THROUGH
-					case TileTypes.Ground:
+					case TileTypes.Pillar:
 					// FALL THROUGH
-					case TileTypes.SecretGround:
-						groundTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), Util.GetArrayRandom(groundTiles));
+					case TileTypes.DestroyableWall:
+					// FALL THROUGH
+					case TileTypes.Wall:
+					// FALL THROUGH
+					case TileTypes.PathWall:
+					// FALL THROUGH
+					case TileTypes.SecretWall:
+					// FALL THROUGH
+					case TileTypes.SecretPathWall:
+						// This is a product of my laziness
 						break;
 					case TileTypes.Path:
 					// FALL THROUGH
@@ -198,6 +198,9 @@ public class DungeonManager : MonoBehaviour
 					case TileTypes.Door:
 						groundTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), groundTiles[0]);
 						break;
+					default:
+						groundTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), Util.GetArrayRandom(groundTiles));
+						break;
 				}
 	}
 	public void PlaceWallTiles()
@@ -206,6 +209,12 @@ public class DungeonManager : MonoBehaviour
 			for (var y = 0; y < mapHeight; ++y)
 				if (CheckIfWall(x, y))
 				{
+					if (dungeonGenerator.Map[x, y].type == TileTypes.Pillar)
+					{
+						wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), pillarTile);
+						continue;
+					}
+
 					if (CheckIfWall(x - 1, y) && CheckIfWall(x + 1, y))
 						if (CheckIfGround(x, y + 1))
 							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), Util.GetArrayRandom(northWallTiles));
