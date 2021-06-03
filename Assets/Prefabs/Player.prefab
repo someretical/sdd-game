@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5592488396423339887}
-  - component: {fileID: 4875221680070718659}
   - component: {fileID: 1602680476805886823}
   m_Layer: 9
   m_Name: EnvironmentHitbox
@@ -32,18 +31,6 @@ Transform:
   m_Father: {fileID: 1441840406757737595}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4875221680070718659
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 562036742648132835}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8e7d49f42e54c546ab7035caa08952a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!58 &1602680476805886823
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -509,7 +496,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7399868590843485220}
-  - component: {fileID: 857418395163492222}
   - component: {fileID: 8970684168691259724}
   m_Layer: 9
   m_Name: DodgeRollHitbox
@@ -532,18 +518,6 @@ Transform:
   m_Father: {fileID: 1441840406757737595}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &857418395163492222
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5590083183181392938}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8e7d49f42e54c546ab7035caa08952a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!58 &8970684168691259724
 CircleCollider2D:
   m_ObjectHideFlags: 0

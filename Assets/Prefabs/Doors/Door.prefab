@@ -74,6 +74,7 @@ GameObject:
   - component: {fileID: 5000414426214997261}
   - component: {fileID: 159748343955073170}
   - component: {fileID: 6034097006744249550}
+  - component: {fileID: 1925907524548403877}
   - component: {fileID: 1901574273387151104}
   - component: {fileID: -385991715547587257}
   m_Layer: 8
@@ -138,7 +139,8 @@ SpriteRenderer:
   m_SortingLayerID: 1528656013
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: 377021096327158232, guid: 39620068444774442b32cd11e2f743e1, type: 3}
+  m_Sprite: {fileID: 1857257749043646430, guid: 39620068444774442b32cd11e2f743e1,
+    type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -170,6 +172,32 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
+--- !u!61 &1925907524548403877
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2220022566231687006}
+  m_Enabled: 0
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 3, y: 3}
+    newSize: {x: 3, y: 3}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.4, y: 0.5}
+  m_EdgeRadius: 0
 --- !u!114 &1901574273387151104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,11 +210,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b649281b9acf38b42b628b07c37f5d62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultState: {fileID: 1857257749043646430, guid: 39620068444774442b32cd11e2f743e1,
+    type: 3}
+  lockedState: {fileID: 377021096327158232, guid: 39620068444774442b32cd11e2f743e1,
+    type: 3}
   openedState: {fileID: -2357392545137382666, guid: 39620068444774442b32cd11e2f743e1,
     type: 3}
-  playerEntered: 0
   topEdgeCollider: {fileID: 1433417137343965024}
   bottomEdgeCollider: {fileID: 5427478250846024792}
+  opened: 0
+  roomID: 0
+  rotation: 0
 --- !u!208 &-385991715547587257
 NavMeshObstacle:
   m_ObjectHideFlags: 0

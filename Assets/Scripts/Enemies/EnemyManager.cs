@@ -38,7 +38,7 @@ public class EnemyManager : MonoBehaviour
 
 		var suitableTiles = new List<Vector2Int>();
 
-		for (int i = 0; i < dungeonGenerator.RoomPoints[roomID].Count; ++i)
+		for (var i = 0; i < dungeonGenerator.RoomPoints[roomID].Count; ++i)
 		{
 			var p = dungeonGenerator.RoomPoints[roomID][i];
 			var realTilePosition = new Vector3(p.x + 0.5f, dungeonManager.mapHeight - 0.5f - p.y, 0f);

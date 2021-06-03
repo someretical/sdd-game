@@ -15,12 +15,14 @@ public class EnemyController : MonoBehaviour
 	public NavMeshObstacle obstacle;
 	private PlayerController player;
 	private SpriteRenderer sprite;
+	private ItemManager itemManager;
 	void Start()
 	{
 		sprite = transform.GetChild(0).GetComponent<SpriteRenderer>();
 		agent = transform.GetChild(1).GetComponent<NavMeshAgent>();
 		obstacle = transform.GetChild(1).GetComponent<NavMeshObstacle>();
 		player = transform.parent.parent.parent.GetChild(0).GetComponent<PlayerController>();
+		itemManager = transform.parent.parent.GetChild(8).GetComponent<ItemManager>();
 
 		var position = new Vector3(transform.position.x, transform.position.y, 0f);
 		transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
@@ -33,10 +35,17 @@ public class EnemyController : MonoBehaviour
 	}
 	public void CheckHealth()
 	{
-		if (health <= 0)
+		if (health == 0)
 		{
+			// I probably astracted this code to the wrong class
+			// Perhaps it would have been better to set the loot tables individually for each type of enemy controller
+			// Then each individual child class could override the SpawnEnemyDrops function or whatever
+			// But that's too bothersome because the current setup already does the bare minimum
+			itemManager.SpawnEnemyDrops(sprite.transform.position, coinReward);
+
 			var death = Instantiate(deathAnimation, sprite.transform.position, Quaternion.identity);
 			Destroy(death, 0.25f);
+
 			Destroy(gameObject);
 		}
 	}

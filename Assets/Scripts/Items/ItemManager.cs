@@ -74,8 +74,8 @@ public class ItemManager : MonoBehaviour
 	{
 		// Don't want to spawn loot all EXACTLY at the location
 		// Hence need an offset
-		var x = UnityEngine.Random.Range(-0.4f, 0.4f);
-		var y = UnityEngine.Random.Range(-0.4f, 0.4f);
+		var x = UnityEngine.Random.Range(-0.2f, 0.2f);
+		var y = UnityEngine.Random.Range(-0.2f, 0.2f);
 
 		return position + new Vector3(x, y, 0f);
 	}
@@ -104,6 +104,8 @@ public class ItemManager : MonoBehaviour
 			Instantiate(enemyLootTable[1], GetRandomOffset(position), Quaternion.identity, transform);
 		for (var i = 0; i < ones; ++i)
 			Instantiate(enemyLootTable[0], GetRandomOffset(position), Quaternion.identity, transform);
+
+		Debug.Log("done");
 	}
 	public void SpawnRoomClearReward(Vector3 position)
 	{

@@ -8,6 +8,9 @@ TextureImporter:
   - first:
       213: 377021096327158232
     second: temp doors_1
+  - first:
+      213: 1857257749043646430
+    second: temp doors_2
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -129,8 +132,8 @@ TextureImporter:
       name: temp doors_1
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
+        x: 48
+        y: 48
         width: 48
         height: 48
       alignment: 0
@@ -142,6 +145,27 @@ TextureImporter:
       bones: []
       spriteID: 8d9986780b27b3500800000000000000
       internalID: 377021096327158232
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: temp doors_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: edf8614251e46c910800000000000000
+      internalID: 1857257749043646430
       vertices: []
       indices: 
       edges: []

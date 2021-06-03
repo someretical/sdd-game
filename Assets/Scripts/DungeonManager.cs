@@ -62,6 +62,10 @@ public class DungeonManager : MonoBehaviour
 	public NavMeshSurface2d navMesh;
 	[HideInInspector]
 	public GameObject bulletManager;
+	[HideInInspector]
+	public List<int> completedRoomIDs = new List<int>();
+	[HideInInspector]
+	public List<DoorController> doors = new List<DoorController>();
 	void Awake()
 	{
 		Instantiate(doorManager, Vector3.zero, Quaternion.identity, transform);
@@ -87,6 +91,7 @@ public class DungeonManager : MonoBehaviour
 
 		// Reveal original room
 		UpdateDarkness(new Vector3(mapWidth / 2 + 4, mapHeight / 2 - 3, 0f));
+		completedRoomIDs.Add(0);
 	}
 	public void GenerateDungeon()
 	{
@@ -476,5 +481,19 @@ public class DungeonManager : MonoBehaviour
 		// Build the intial navmesh used by enemies
 		navMesh = transform.parent.GetChild(3).GetComponent<NavMeshSurface2d>();
 		navMesh.BuildNavMesh();
+	}
+	public void LockRoom(int roomID)
+	{
+		for (var i = 0; i < doors.Count; ++i)
+			if (doors[i].roomID == roomID)
+				doors[i].Lock();
+	}
+	public void UnlockRoom(int roomID)
+	{
+		completedRoomIDs.Add(roomID);
+
+		for (var i = 0; i < doors.Count; ++i)
+			if (doors[i].roomID == roomID)
+				doors[i].Unlock();
 	}
 }

@@ -201,7 +201,7 @@ public class PlayerController : MonoBehaviour
 	}
 	void CheckBlank()
 	{
-		if (Input.GetButtonDown("Blank") && canBlank)
+		if (Input.GetButtonDown("Blank") && canBlank && gameManager.blanks > 0)
 		{
 			canBlank = false;
 			--gameManager.blanks;
