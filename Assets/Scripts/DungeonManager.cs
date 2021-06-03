@@ -90,9 +90,9 @@ public class DungeonManager : MonoBehaviour
 	}
 	public void GenerateDungeon()
 	{
-		var gameManager = transform.parent.parent.gameObject.GetComponent<GameManager>();
+		var gameManager = transform.parent.parent.GetComponent<GameManager>();
 
-		// Bandage scaling code lmao
+		// Bandage scaling code
 		mapWidth += (int)Math.Ceiling((gameManager.levelCounter - 1) * mapWidth * gameManager.levelSizeIncreasePercentage);
 		mapHeight += (int)Math.Ceiling((gameManager.levelCounter - 1) * mapHeight * gameManager.levelSizeIncreasePercentage);
 		maximumRooms += (int)Math.Ceiling((gameManager.levelCounter - 1) * maximumRooms * gameManager.maxRoomIncreasePercentage);
@@ -228,12 +228,14 @@ public class DungeonManager : MonoBehaviour
 						continue;
 					}
 
+					// Check if horizontal wall
 					if (CheckIfWall(x - 1, y) && CheckIfWall(x + 1, y))
 						if (CheckIfGround(x, y + 1))
 							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), Util.GetArrayRandom(northWallTiles));
 						else if (CheckIfGround(x, y - 1))
 							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), Util.GetArrayRandom(southWallTiles));
 
+					// Check if vertical wall
 					if (CheckIfWall(x, y - 1) && CheckIfWall(x, y + 1))
 						if (CheckIfGround(x - 1, y))
 							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), Util.GetArrayRandom(eastWallTiles));
@@ -368,6 +370,9 @@ public class DungeonManager : MonoBehaviour
 	}
 	public void PlaceDarkness()
 	{
+		// Darkness tile placement is optimised so that
+		// it is only placed where there are rooms and paths
+		// This data is stored internally by the dungeonGenerator
 		for (var i = 0; i < dungeonGenerator.PathPoints.Count; ++i)
 			for (var j = 0; j < dungeonGenerator.PathPoints[i].Count; ++j)
 			{
@@ -384,6 +389,7 @@ public class DungeonManager : MonoBehaviour
 	}
 	public void UpdateDarkness(Vector3 position, bool revealRoom = true)
 	{
+		// Remove darkness tiles from map when revealing new map location
 		var rounded = Util.RoundPosition(position);
 
 		var roomID = dungeonGenerator.Map[rounded.x, mapHeight - 1 - rounded.y].roomID;
@@ -406,6 +412,8 @@ public class DungeonManager : MonoBehaviour
 	}
 	public void ProcessBlank(Vector3 position)
 	{
+		// Blanks delete ALL bullets on screen
+		// They also reveal secret rooms
 		var rounded = Util.RoundPosition(position);
 
 		var roomID = dungeonGenerator.Map[rounded.x, mapHeight - 1 - rounded.y].roomID;
@@ -453,12 +461,19 @@ public class DungeonManager : MonoBehaviour
 			}
 		}
 
+		// Delete all bullets
+		// Don't want to play impact animations either
+		for (var i = 0; i < bulletManager.transform.childCount; ++i)
+			Destroy(bulletManager.transform.GetChild(i).gameObject);
+
 		// Compute as few times as possible
+		// since it lags the game kinda bad
 		if (secretRoomExists)
 			navMesh.UpdateNavMesh(navMesh.navMeshData);
 	}
 	public void BuildNavMesh()
 	{
+		// Build the intial navmesh used by enemies
 		navMesh = transform.parent.GetChild(3).GetComponent<NavMeshSurface2d>();
 		navMesh.BuildNavMesh();
 	}

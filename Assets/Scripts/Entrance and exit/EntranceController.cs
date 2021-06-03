@@ -5,19 +5,20 @@ using UnityEngine;
 public class EntranceController : MonoBehaviour
 {
 	public Sprite closedState;
-	private BoxCollider2D bc2d;
+	private CircleCollider2D c2d;
 	private SpriteRenderer spriteRenderer;
 	void Start()
 	{
-		bc2d = gameObject.GetComponent<BoxCollider2D>();
-		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+		c2d = GetComponent<CircleCollider2D>();
+		spriteRenderer = GetComponent<SpriteRenderer>();
 	}
 	void OnTriggerExit2D(Collider2D other)
 	{
 		if (other.gameObject.CompareTag("Player"))
 		{
-			bc2d.size = new Vector2(1f, 1f);
-			bc2d.isTrigger = false;
+			// Make player unable to enter the entrance after leaving its hitbox
+			c2d.radius = 0.55f;
+			c2d.isTrigger = false;
 			spriteRenderer.sprite = closedState;
 		}
 	}

@@ -9,7 +9,7 @@ public class DoorCollider : MonoBehaviour
 	{
 		if (
 			c2d.gameObject.CompareTag("Player") &&
-			!gameObject.transform.parent.gameObject.GetComponent<DoorController>().playerEntered
+			!gameObject.transform.parent.GetComponent<DoorController>().playerEntered
 		)
 			gameObject.SendMessageUpwards("OnPlayerEnter", id, SendMessageOptions.RequireReceiver);
 	}

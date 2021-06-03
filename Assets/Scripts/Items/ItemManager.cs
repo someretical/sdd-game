@@ -15,10 +15,10 @@ public class ItemManager : MonoBehaviour
 	private GameManager gameManager;
 	void Start()
 	{
-		dungeonManager = transform.parent.gameObject.GetComponent<DungeonManager>();
+		dungeonManager = transform.parent.GetComponent<DungeonManager>();
 		dungeonGenerator = dungeonManager.dungeonGenerator;
 		player = transform.parent.parent.GetChild(0).GetComponent<PlayerController>();
-		gameManager = transform.parent.parent.parent.gameObject.GetComponent<GameManager>();
+		gameManager = transform.parent.parent.parent.GetComponent<GameManager>();
 
 		SpawnShopItems();
 	}
@@ -39,6 +39,8 @@ public class ItemManager : MonoBehaviour
 				if ((correctClass = lootTable[i].GetComponent<ItemCollider>()) == null)
 					correctClass = lootTable[i].GetComponent<BuyableItem>();
 
+			// Again, don't care about memory usage here
+			// Just want to quickly get a random value
 			if (correctClass != null)
 			{
 				var weight = correctClass is ItemCollider
@@ -70,6 +72,8 @@ public class ItemManager : MonoBehaviour
 	}
 	public Vector3 GetRandomOffset(Vector3 position)
 	{
+		// Don't want to spawn loot all EXACTLY at the location
+		// Hence need an offset
 		var x = UnityEngine.Random.Range(-0.4f, 0.4f);
 		var y = UnityEngine.Random.Range(-0.4f, 0.4f);
 
@@ -79,6 +83,7 @@ public class ItemManager : MonoBehaviour
 	{
 		var scaled = baseReward + (int)Math.Ceiling((gameManager.levelCounter - 1) * baseReward * gameManager.itemPriceIncreasePercentage);
 		// Visual studio code says int casts are redundant but they aren't lmao
+		// I am just not bothered to use Mathf.Floor or whatever
 		// Thanks omnisharp
 		var fifties = (int)scaled / 50;
 		var twenties = (int)(scaled - (50 * fifties)) / 20;
@@ -87,17 +92,17 @@ public class ItemManager : MonoBehaviour
 		var twos = (int)(scaled - (50 * fifties) - (20 * twenties) - (10 * tens) - (5 * fives)) / 2;
 		var ones = (int)(scaled - (50 * fifties) - (20 * twenties) - (10 * tens) - (5 * fives) - (2 * twos));
 
-		for (int i = 0; i < fifties; ++i)
+		for (var i = 0; i < fifties; ++i)
 			Instantiate(enemyLootTable[5], GetRandomOffset(position), Quaternion.identity, transform);
-		for (int i = 0; i < twenties; ++i)
+		for (var i = 0; i < twenties; ++i)
 			Instantiate(enemyLootTable[4], GetRandomOffset(position), Quaternion.identity, transform);
-		for (int i = 0; i < tens; ++i)
+		for (var i = 0; i < tens; ++i)
 			Instantiate(enemyLootTable[3], GetRandomOffset(position), Quaternion.identity, transform);
-		for (int i = 0; i < fives; ++i)
+		for (var i = 0; i < fives; ++i)
 			Instantiate(enemyLootTable[2], GetRandomOffset(position), Quaternion.identity, transform);
-		for (int i = 0; i < twos; ++i)
+		for (var i = 0; i < twos; ++i)
 			Instantiate(enemyLootTable[1], GetRandomOffset(position), Quaternion.identity, transform);
-		for (int i = 0; i < ones; ++i)
+		for (var i = 0; i < ones; ++i)
 			Instantiate(enemyLootTable[0], GetRandomOffset(position), Quaternion.identity, transform);
 	}
 	public void SpawnRoomClearReward(Vector3 position)
@@ -115,6 +120,7 @@ public class ItemManager : MonoBehaviour
 			var p = dungeonGenerator.RoomPoints[roomID][i];
 			var realTilePosition = new Vector3(p.x + 0.5f, dungeonManager.mapHeight - 0.5f - p.y, 0f);
 
+			// Don't want to spawn the item too close to the player
 			if (
 				dungeonGenerator.Map[p.x, p.y].type == TileTypes.Ground &&
 				Vector3.Distance(realTilePosition, position) > 2

@@ -24,18 +24,19 @@ public class BuyableItem : MonoBehaviour
 	private GameManager gameManager;
 	void Start()
 	{
-		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-		player = transform.parent.parent.parent.GetChild(0).gameObject.GetComponent<PlayerController>();
-		gameManager = transform.parent.parent.parent.parent.gameObject.GetComponent<GameManager>();
+		spriteRenderer = GetComponent<SpriteRenderer>();
+		player = transform.parent.parent.parent.GetChild(0).GetComponent<PlayerController>();
+		gameManager = transform.parent.parent.parent.parent.GetComponent<GameManager>();
 
 		scaledPrice = basePrice + (int)Math.Ceiling((gameManager.levelCounter - 1) * basePrice * gameManager.itemPriceIncreasePercentage);
-		textMeshPro = transform.GetChild(0).gameObject.GetComponent<TextMeshPro>();
+		textMeshPro = transform.GetChild(0).GetComponent<TextMeshPro>();
 		textMeshPro.text = scaledPrice.ToString();
 
-		// Holy SHIT this piece of code worked in one try 
-		// First time that's happened in so long
-		Physics2D.IgnoreCollision(player.transform.GetChild(0).GetChild(0).gameObject.GetComponent<BoxCollider2D>(), gameObject.GetComponent<Collider2D>());
-		Physics2D.IgnoreCollision(player.transform.GetChild(0).GetChild(1).gameObject.GetComponent<BoxCollider2D>(), gameObject.GetComponent<Collider2D>());
+		// These have rigid bodies but I don't want them to interact with the player
+		// Could do it in Physics2D options with different layers but then the
+		// Box colliders wouldn't interact either which IS a problem
+		Physics2D.IgnoreCollision(player.transform.GetChild(0).GetChild(0).GetComponent<Collider2D>(), GetComponent<Collider2D>());
+		Physics2D.IgnoreCollision(player.transform.GetChild(0).GetChild(1).GetComponent<Collider2D>(), GetComponent<Collider2D>());
 	}
 	void Update()
 	{
@@ -128,6 +129,8 @@ public class BuyableItem : MonoBehaviour
 	}
 	IEnumerator TempLock()
 	{
+		// Display red outline if the playe is too poor to buy the item
+
 		yield return new WaitForSeconds(0.5f);
 
 		tempLocked = false;

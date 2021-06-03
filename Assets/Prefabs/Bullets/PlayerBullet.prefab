@@ -145,3 +145,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   impactAnimation: {fileID: 6105960366191189437, guid: 342ef06615ec40a4997d62123db6f248,
     type: 3}
+  damage: 1
+  firedByPlayer: 1

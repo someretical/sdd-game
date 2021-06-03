@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using DungeonGeneratorNamespace;
 using UnityEngine;
-
 public class ChestManager : MonoBehaviour
 {
 	public GameObject[] chests;
 	void Start()
 	{
-		var dungeonGenerator = transform.parent.gameObject.GetComponent<DungeonManager>().dungeonGenerator;
+		var dungeonGenerator = transform.parent.GetComponent<DungeonManager>().dungeonGenerator;
 
 		for (var x = 0; x < dungeonGenerator.columns; ++x)
 			for (var y = 0; y < dungeonGenerator.rows; ++y)
@@ -17,6 +16,7 @@ public class ChestManager : MonoBehaviour
 					dungeonGenerator.Map[x, y].type == TileTypes.SecretChest
 				)
 				{
+					// There is a 20% chance of generating a rare chest vs a common chest
 					var num = Random.Range(0, 10);
 					var rare =
 						num == 0 && dungeonGenerator.Map[x, y].type == TileTypes.Chest ||
@@ -27,6 +27,8 @@ public class ChestManager : MonoBehaviour
 						Quaternion.identity,
 						transform
 					);
+
+					// TileTypes.SecretChest is NOT equal to TileTypes.chest
 					newChest.GetComponent<ChestController>().needsKey = dungeonGenerator.Map[x, y].type == TileTypes.Chest;
 					if (rare)
 						newChest.GetComponent<ChestController>().rare = true;

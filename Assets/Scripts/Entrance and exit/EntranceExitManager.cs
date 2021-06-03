@@ -9,8 +9,9 @@ public class EntranceExitManager : MonoBehaviour
 	public GameObject exit;
 	void Start()
 	{
-		var dungeonGenerator = transform.parent.gameObject.GetComponent<DungeonManager>().dungeonGenerator;
+		var dungeonGenerator = transform.parent.GetComponent<DungeonManager>().dungeonGenerator;
 
+		// Place entrance and exit nodes
 		for (var x = 0; x < dungeonGenerator.columns; ++x)
 			for (var y = 0; y < dungeonGenerator.rows; ++y)
 				if (dungeonGenerator.Map[x, y].type == TileTypes.Entrance)

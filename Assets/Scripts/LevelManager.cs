@@ -32,10 +32,11 @@ public class LevelManager : MonoBehaviour
 	}
 	void Start()
 	{
-		levelText.text = $"Floor {transform.parent.gameObject.GetComponent<GameManager>().levelCounter}";
+		levelText.text = $"Floor {transform.parent.GetComponent<GameManager>().levelCounter}";
 	}
 	IEnumerator RemoveTransitionComponents()
 	{
+		// Remove blackout
 		transitioning = true;
 
 		yield return new WaitForSeconds(1f);
@@ -56,6 +57,7 @@ public class LevelManager : MonoBehaviour
 	}
 	IEnumerator DisplayFloorText()
 	{
+		// Fade in floor # text
 		var start = new Color32(255, 255, 255, 0);
 		var end = new Color32(255, 255, 255, 255);
 
@@ -74,6 +76,7 @@ public class LevelManager : MonoBehaviour
 
 		yield return new WaitForSeconds(2f);
 
+		// Fade out floor # text
 		start = new Color32(255, 255, 255, 255);
 		end = new Color32(255, 255, 255, 0);
 

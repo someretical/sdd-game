@@ -10,13 +10,14 @@ public class EnemyManager : MonoBehaviour
 	private DungeonGenerator dungeonGenerator;
 	void Start()
 	{
-		dungeonManager = transform.parent.gameObject.GetComponent<DungeonManager>();
+		dungeonManager = transform.parent.GetComponent<DungeonManager>();
 		dungeonGenerator = dungeonManager.dungeonGenerator;
 	}
 	public GameObject GetRandomEnemy()
 	{
 		var chances = new List<int>();
 
+		// Very quick and dirty method of implementing probability that doesn't care about memory
 		for (var i = 0; i < enemies.Length; ++i)
 		{
 			var weight = enemies[i].GetComponent<EnemyController>().weight;
@@ -42,6 +43,8 @@ public class EnemyManager : MonoBehaviour
 			var p = dungeonGenerator.RoomPoints[roomID][i];
 			var realTilePosition = new Vector3(p.x + 0.5f, dungeonManager.mapHeight - 0.5f - p.y, 0f);
 
+			// Don't want to spawn the enemy too close to the player position
+			// passed as Vector3 position into this function
 			if (
 				dungeonGenerator.Map[p.x, p.y].type == TileTypes.Ground &&
 				Vector3.Distance(realTilePosition, position) > 2

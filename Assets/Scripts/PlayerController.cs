@@ -46,19 +46,19 @@ public class PlayerController : MonoBehaviour
 	private GameObject miniMap;
 	private Camera fullScreenMapCamera;
 	private Camera cam;
-	private BoxCollider2D dodgeRollCollider;
+	private CircleCollider2D dodgeRollCollider;
 	private readonly List<GameObject> fullScreenMap = new List<GameObject>();
 	void Start()
 	{
-		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-		rb2d = gameObject.GetComponent<Rigidbody2D>();
-		gameManager = transform.parent.parent.gameObject.GetComponent<GameManager>();
-		levelManager = transform.parent.gameObject.GetComponent<LevelManager>();
-		dungeonManager = transform.parent.GetChild(2).gameObject.GetComponent<DungeonManager>();
+		spriteRenderer = gameObject.transform.GetChild(4).GetComponent<SpriteRenderer>();
+		rb2d = GetComponent<Rigidbody2D>();
+		gameManager = transform.parent.parent.GetComponent<GameManager>();
+		levelManager = transform.parent.GetComponent<LevelManager>();
+		dungeonManager = transform.parent.GetChild(2).GetComponent<DungeonManager>();
 		miniMap = transform.GetChild(1).GetChild(0).gameObject;
-		fullScreenMapCamera = transform.GetChild(3).GetChild(0).gameObject.GetComponent<Camera>();
-		cam = transform.parent.GetChild(1).gameObject.GetComponent<Camera>();
-		dodgeRollCollider = transform.GetChild(0).GetChild(1).gameObject.GetComponent<BoxCollider2D>();
+		fullScreenMapCamera = transform.GetChild(3).GetChild(0).GetComponent<Camera>();
+		cam = transform.parent.GetChild(1).GetComponent<Camera>();
+		dodgeRollCollider = transform.GetChild(0).GetChild(1).GetComponent<CircleCollider2D>();
 
 		var c = transform.GetChild(1).GetChild(1).childCount;
 		for (int i = 0; i < c; ++i)
@@ -78,9 +78,9 @@ public class PlayerController : MonoBehaviour
 
 		// Temporary debugging code
 		if (Input.GetKeyDown(KeyCode.G))
-			transform.parent.GetChild(2).GetChild(8).gameObject.GetComponent<ItemManager>().SpawnRoomClearReward(transform.position);
+			transform.parent.GetChild(2).GetChild(8).GetComponent<ItemManager>().SpawnRoomClearReward(transform.position);
 		if (Input.GetKeyDown(KeyCode.H))
-			transform.parent.GetChild(2).GetChild(10).gameObject.GetComponent<EnemyManager>().SpawnEnemy(transform.position);
+			transform.parent.GetChild(2).GetChild(10).GetComponent<EnemyManager>().SpawnEnemy(transform.position);
 	}
 	void CheckInteract()
 	{
@@ -109,14 +109,17 @@ public class PlayerController : MonoBehaviour
 			miniMap.SetActive(true);
 		}
 
+		// Zoom in
 		if (mapOpen && Input.GetAxis("Scroll") > 0f)
 			fullScreenMapCamera.orthographicSize = Math.Min(100, fullScreenMapCamera.orthographicSize + 1);
 
+		// Zoom out
 		if (mapOpen && Input.GetAxis("Scroll") < 0f)
 			fullScreenMapCamera.orthographicSize = Math.Max(20, fullScreenMapCamera.orthographicSize - 1);
 	}
 	float GetScaledSpeed()
 	{
+		// Different speed for different actions
 		float scaledSpeed = baseSpeed;
 
 		if (mapOpen)
@@ -148,18 +151,27 @@ public class PlayerController : MonoBehaviour
 	}
 	void ProcessRotation()
 	{
-		var mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
-		var lookDir = mousePos - transform.position;
-		var angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-		rb2d.rotation = angle;
+		// Fancy piece of code that makes the player rotate towards the cursor
+		var lookDir = cam.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+		spriteRenderer.transform.eulerAngles = new Vector3(0f, 0f, Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f);
+	}
+	IEnumerator ShootCooldown()
+	{
+		canShoot = false;
+
+		yield return new WaitForSeconds(0.2f);
+
+		canShoot = true;
 	}
 	void CheckFire()
 	{
-		if (!Input.GetButtonDown("Attack"))
+		if (!Input.GetButtonDown("Attack") || !canShoot)
 			return;
 
 		var bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation, dungeonManager.bulletManager.transform);
 		bullet.GetComponent<Rigidbody2D>().velocity = firePoint.up * bulletForce;
+
+		StartCoroutine(ShootCooldown());
 	}
 	void ProcessMovement()
 	{

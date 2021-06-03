@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Contains constants and util methods
 namespace DungeonGeneratorNamespace
 {
 	public enum Rotations

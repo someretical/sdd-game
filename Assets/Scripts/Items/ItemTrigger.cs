@@ -9,7 +9,7 @@ public class ItemTrigger : MonoBehaviour
 	private PlayerController player;
 	void Start()
 	{
-		player = transform.parent.parent.parent.GetChild(0).gameObject.GetComponent<PlayerController>();
+		player = transform.parent.parent.parent.GetChild(0).GetComponent<PlayerController>();
 	}
 	bool PrelimCheck(Collider2D other)
 	{

@@ -28,10 +28,10 @@ public class ChestController : MonoBehaviour
 	private GameManager gameManager;
 	void Start()
 	{
-		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-		player = transform.parent.parent.parent.GetChild(0).gameObject.GetComponent<PlayerController>();
+		spriteRenderer = GetComponent<SpriteRenderer>();
+		player = transform.parent.parent.parent.GetChild(0).GetComponent<PlayerController>();
 		chestManagerTransform = transform.parent.parent.GetChild(8);
-		gameManager = transform.parent.parent.parent.parent.gameObject.GetComponent<GameManager>();
+		gameManager = transform.parent.parent.parent.parent.GetComponent<GameManager>();
 	}
 	void Update()
 	{
@@ -104,6 +104,7 @@ public class ChestController : MonoBehaviour
 			player.canInteract = false;
 			player.currentlyTouchingItem = Guid.Empty;
 
+			// Chests in secret rooms do not need keys to open
 			if (gameManager.keys == 0 && needsKey)
 			{
 				tempLocked = true;
@@ -137,6 +138,8 @@ public class ChestController : MonoBehaviour
 	{
 		var chances = new List<int>();
 
+		// Using weight relative to the total weights of all the items
+		// Quick and dirty way that doesn't care about memory
 		for (var i = 0; i < lootTable.Length; ++i)
 			for (var l = 0; l < lootTable[i].GetComponent<ItemCollider>().chestWeight; ++l)
 				chances.Add(i);

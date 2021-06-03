@@ -16,13 +16,14 @@ public class ItemCollider : MonoBehaviour
 	private PlayerController player;
 	void Start()
 	{
-		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-		player = transform.parent.parent.parent.GetChild(0).gameObject.GetComponent<PlayerController>();
+		spriteRenderer = GetComponent<SpriteRenderer>();
+		player = transform.parent.parent.parent.GetChild(0).GetComponent<PlayerController>();
 
-		// Holy SHIT this piece of code worked in one try 
-		// First time that's happened in so long
-		Physics2D.IgnoreCollision(player.transform.GetChild(0).GetChild(0).gameObject.GetComponent<BoxCollider2D>(), gameObject.GetComponent<Collider2D>());
-		Physics2D.IgnoreCollision(player.transform.GetChild(0).GetChild(1).gameObject.GetComponent<BoxCollider2D>(), gameObject.GetComponent<Collider2D>());
+		// These have rigid bodies but I don't want them to interact with the player
+		// Could do it in Physics2D options with different layers but then the
+		// Box colliders wouldn't interact either which IS a problem
+		Physics2D.IgnoreCollision(player.transform.GetChild(0).GetChild(0).GetComponent<Collider2D>(), GetComponent<Collider2D>());
+		Physics2D.IgnoreCollision(player.transform.GetChild(0).GetChild(1).GetComponent<Collider2D>(), GetComponent<Collider2D>());
 	}
 	bool PrelimCheck(Collider2D other)
 	{

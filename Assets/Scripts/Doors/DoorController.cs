@@ -19,11 +19,11 @@ public class DoorController : MonoBehaviour
 	private DungeonManager dungeonManager;
 	void Start()
 	{
-		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+		spriteRenderer = GetComponent<SpriteRenderer>();
 		_topEdgeCollider = topEdgeCollider.GetComponent<EdgeCollider2D>();
 		_bottomEdgeCollider = bottomEdgeCollider.GetComponent<EdgeCollider2D>();
-		navMeshCollider = gameObject.GetComponent<NavMeshObstacle>();
-		dungeonManager = transform.parent.parent.gameObject.GetComponent<DungeonManager>();
+		navMeshCollider = GetComponent<NavMeshObstacle>();
+		dungeonManager = transform.parent.parent.GetComponent<DungeonManager>();
 	}
 	void OnPlayerEnter(int direction)
 	{

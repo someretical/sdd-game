@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 9139038111798782539}
   - component: {fileID: 3479697999908435577}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Enemy
-  m_TagString: Enemy
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -48,9 +48,10 @@ MonoBehaviour:
   weight: 100
   coinReward: 2
   health: 3
-  agent: {fileID: 4159510162198141046, guid: 5ddd69b5c8de1f847b9eb73efbdf1e23, type: 3}
-  obstacle: {fileID: 2063372353280601779, guid: 5ddd69b5c8de1f847b9eb73efbdf1e23,
+  deathAnimation: {fileID: 2759489090139703077, guid: 31f5a309a06073548a4a450e3dd9de25,
     type: 3}
+  agent: {fileID: 0}
+  obstacle: {fileID: 0}
 --- !u!1 &8550172060478166179
 GameObject:
   m_ObjectHideFlags: 0
@@ -179,7 +180,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.1, y: 0.1}
+  m_Size: {x: 0.16, y: 0.16}
   m_EdgeRadius: 0
 --- !u!1 &9139038110035705227
 GameObject:
@@ -192,9 +193,9 @@ GameObject:
   - component: {fileID: 9139038110035705226}
   - component: {fileID: 9139038110035705224}
   - component: {fileID: 9139038110035705225}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: PathFinding
-  m_TagString: Enemy
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

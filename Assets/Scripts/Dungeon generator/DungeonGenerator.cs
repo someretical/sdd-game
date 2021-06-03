@@ -1,4 +1,4 @@
-// This file contains all of the code used to generate the dungeon
+// This file contains all of the code used to generate the internal dungeon
 
 using System;
 using System.Collections.Generic;

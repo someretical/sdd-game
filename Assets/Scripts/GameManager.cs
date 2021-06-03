@@ -60,6 +60,7 @@ public class GameManager : MonoBehaviour
 	{
 		Destroy(currentLevelManager);
 
+		// Player starts every new floor with at least 2 blanks
 		++levelCounter;
 		if (blanks < 2)
 			blanks = 2;

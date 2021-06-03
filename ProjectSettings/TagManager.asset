@@ -4,22 +4,19 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Ground
   - Door
   - Wall
   - Chest
   - Item
   - Decorations
-  - Darkness
-  - Background
   - Entrance
   - Hazard
-  - MinimapCamera
   - Enemy
   - PlayerDodgeRollHitbox
   - PlayerBullet
   - EnemyBullet
   - Exit
+  - Darkness
   layers:
   - Default
   - TransparentFX
@@ -87,11 +84,14 @@ TagManager:
   - name: Bullets
     uniqueID: 2654879137
     locked: 0
-  - name: Darkness
-    uniqueID: 1983024109
+  - name: EnemyExplosions
+    uniqueID: 2474162721
     locked: 0
   - name: BulletExplosions
     uniqueID: 1208972925
+    locked: 0
+  - name: Darkness
+    uniqueID: 1983024109
     locked: 0
   - name: Minimap
     uniqueID: 1236401209

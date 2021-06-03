@@ -14,12 +14,13 @@ public class SpikeTrapController : MonoBehaviour
 	private PlayerController player;
 	void Start()
 	{
-		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+		spriteRenderer = GetComponent<SpriteRenderer>();
 		spriteRenderer.sprite = passiveState;
-		player = transform.parent.parent.parent.GetChild(0).gameObject.GetComponent<PlayerController>();
+		player = transform.parent.parent.parent.GetChild(0).GetComponent<PlayerController>();
 	}
 	void Update()
 	{
+		// This is why the player needs iframes
 		if (canDamage && playerTouching)
 			player.InflictDamage(1);
 	}
@@ -55,6 +56,7 @@ public class SpikeTrapController : MonoBehaviour
 	}
 	IEnumerator DelayedActivation()
 	{
+		// Basically turns trap on
 		timerRunning = true;
 
 		yield return new WaitForSeconds(0.4f);
@@ -66,6 +68,7 @@ public class SpikeTrapController : MonoBehaviour
 	}
 	IEnumerator DelayedDeactivation()
 	{
+		// Turns trap off 
 		yield return new WaitForSeconds(1f);
 
 		if (playerTouching)

@@ -10,8 +10,8 @@ public class ExitController : MonoBehaviour
 	private LevelManager levelManager;
 	void Start()
 	{
-		gameManager = transform.parent.parent.parent.parent.gameObject.GetComponent<GameManager>();
-		levelManager = transform.parent.parent.parent.gameObject.GetComponent<LevelManager>();
+		gameManager = transform.parent.parent.parent.parent.GetComponent<GameManager>();
+		levelManager = transform.parent.parent.parent.GetComponent<LevelManager>();
 	}
 	void OnTriggerEnter2D(Collider2D other)
 	{
@@ -40,6 +40,7 @@ public class ExitController : MonoBehaviour
 
 		if (playerTouching)
 		{
+			// Start exit transition
 			levelManager.transitioning = true;
 			levelManager.ready = false;
 			Cursor.visible = false;
@@ -47,6 +48,7 @@ public class ExitController : MonoBehaviour
 			var start = new Color(levelManager.blackOut.color.r, levelManager.blackOut.color.g, levelManager.blackOut.color.b, 0f);
 			var end = new Color(levelManager.blackOut.color.r, levelManager.blackOut.color.g, levelManager.blackOut.color.b, 1f);
 
+			// Fancy code for gradually applying alpha
 			for (var t = 0f; t < 1f; t += Time.deltaTime)
 			{
 				var normalizedTime = t / 1f;
