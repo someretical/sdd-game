@@ -48,7 +48,7 @@ public class BulletController : MonoBehaviour
 		destroyed = true;
 
 		// Spawn impact animation
-		if (!other.CompareTag("Enemy") && !other.CompareTag("PlayerDodgeRollHitbox"))
+		if (!other.CompareTag("PlayerDodgeRollHitbox"))
 			Destroy(Instantiate(impactAnimation, transform.position, Quaternion.identity), 0.25f);
 
 		if (other.CompareTag("Enemy") || other.CompareTag("JammedEnemy"))

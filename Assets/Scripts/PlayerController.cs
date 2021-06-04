@@ -120,10 +120,12 @@ public class PlayerController : MonoBehaviour
 			scaledSpeed *= 0.5f;
 
 		if (dodgeRolling)
-			scaledSpeed *= 0.75f;
+			scaledSpeed *= 1.2f;
 
 		if (!inCombat)
 			scaledSpeed *= 1.5f;
+		else
+			scaledSpeed *= 0.75f;
 
 		return scaledSpeed;
 	}
@@ -134,13 +136,11 @@ public class PlayerController : MonoBehaviour
 		dodgeRolling = true;
 		spriteRenderer.sprite = dodgeRollingState;
 
-		yield return new WaitForSeconds(inCombat ? 0.75f : 0.5f);
+		yield return new WaitForSeconds(inCombat ? 0.5f : 0.3f);
 
 		dodgeRollCollider.enabled = true;
 		dodgeRolling = false;
 		spriteRenderer.sprite = defaultState;
-
-		yield return new WaitForSeconds(0.1f);
 		canDodgeRoll = true;
 	}
 	void ProcessRotation()

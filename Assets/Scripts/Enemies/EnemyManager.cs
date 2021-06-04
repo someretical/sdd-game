@@ -55,7 +55,7 @@ public class EnemyManager : MonoBehaviour
 
 		// Spawn an enemy for every 8 tiles
 		// I have no idea if this is balanced or not
-		for (var i = 0; i < suitableTiles.Count / 8; ++i)
+		for (var i = 0; i < dungeonGenerator.RoomPoints[roomID].Count / 16; ++i)
 			StartCoroutine(SpawnEnemy(Util.GetListRandom(suitableTiles), roomID));
 	}
 	IEnumerator SpawnEnemy(Vector2Int tile, int roomID)

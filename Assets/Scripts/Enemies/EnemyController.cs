@@ -5,12 +5,19 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
+	[Header("General information")]
 	public int weight;
 	public int coinReward;
 	public int health;
 	public bool jammed;
+	[Space]
+	[Header("Colour tinting")]
 	public Color defaultColor;
 	public Color damageColor;
+	[Space]
+	[Header("Bullets")]
+	public GameObject regularBullet;
+	public GameObject jammedBullet;
 	public GameObject deathAnimation;
 	[HideInInspector]
 	public NavMeshAgent agent;
@@ -18,6 +25,9 @@ public class EnemyController : MonoBehaviour
 	public NavMeshObstacle obstacle;
 	[HideInInspector]
 	public int boundRoomID;
+	private bool firing = false;
+	private bool stunned = false;
+	private int fireCounter = 0;
 	private PlayerController player;
 	private SpriteRenderer sprite;
 	private ItemManager itemManager;
@@ -39,6 +49,30 @@ public class EnemyController : MonoBehaviour
 	void Update()
 	{
 		CheckTarget();
+	}
+	void FixedUpdate()
+	{
+		// Runs every ~.2 seconds
+		++fireCounter;
+
+		if (!firing && Random.Range(0, 10) == 0 && fireCounter > 5)
+			StartCoroutine(Shoot());
+	}
+	IEnumerator Shoot()
+	{
+		firing = true;
+		var bullet = Instantiate(
+			jammed ? jammedBullet : regularBullet,
+			sprite.transform.position,
+			Quaternion.identity,
+			dungeonManager.bulletManager.transform
+		);
+		var vec3Rotation = (player.transform.position - sprite.transform.position).normalized * (jammed ? 5 : 2.5f);
+		bullet.GetComponent<Rigidbody2D>().velocity = new Vector2(vec3Rotation.x, vec3Rotation.y);
+
+		yield return new WaitForSeconds(Random.Range(0.5f, 1.5f));
+
+		firing = false;
 	}
 	public void CheckHealth()
 	{
@@ -69,6 +103,8 @@ public class EnemyController : MonoBehaviour
 	}
 	public void CheckTarget()
 	{
+		if (stunned)
+			return;
 		// Make the enemy an obstacle if it is too close to the player
 		var adjustedAgentPosition = new Vector3(agent.transform.position.x, agent.transform.position.y, 0f);
 		if ((player.transform.position - adjustedAgentPosition).sqrMagnitude < Mathf.Pow(agent.stoppingDistance, 2))
@@ -92,6 +128,7 @@ public class EnemyController : MonoBehaviour
 		health -= damage;
 
 		StartCoroutine(DisplayDamage());
+		StartCoroutine(Stun());
 
 		CheckHealth();
 	}
@@ -102,5 +139,15 @@ public class EnemyController : MonoBehaviour
 		yield return new WaitForSeconds(0.2f);
 
 		sprite.color = defaultColor;
+	}
+	IEnumerator Stun()
+	{
+		stunned = true;
+		agent.enabled = false;
+		obstacle.enabled = true;
+
+		yield return new WaitForSeconds(0.15f);
+
+		stunned = false;
 	}
 }

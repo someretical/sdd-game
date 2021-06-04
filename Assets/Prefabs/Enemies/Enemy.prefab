@@ -51,6 +51,10 @@ MonoBehaviour:
   jammed: 0
   defaultColor: {r: 1, g: 1, b: 1, a: 1}
   damageColor: {r: 1, g: 0, b: 0, a: 1}
+  regularBullet: {fileID: 3060834768621557338, guid: 03274fdebf570954e880742b8dd30de1,
+    type: 3}
+  jammedBullet: {fileID: 2739903368026429711, guid: 55e75fd2fe85b2b44b62e44630f5b967,
+    type: 3}
   deathAnimation: {fileID: 2759489090139703077, guid: 31f5a309a06073548a4a450e3dd9de25,
     type: 3}
   agent: {fileID: 0}
