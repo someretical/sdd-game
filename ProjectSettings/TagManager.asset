@@ -17,6 +17,7 @@ TagManager:
   - EnemyBullet
   - Exit
   - Darkness
+  - JammedEnemy
   layers:
   - Default
   - TransparentFX
@@ -59,6 +60,9 @@ TagManager:
     locked: 0
   - name: Ground
     uniqueID: 1466288339
+    locked: 0
+  - name: EnemySpawningAnimations
+    uniqueID: 2431880065
     locked: 0
   - name: Walls
     uniqueID: 3462706379
