@@ -42,6 +42,10 @@ namespace DungeonGeneratorNamespace
 		{
 			get;
 		}
+		public List<int> CombatRoomIDs
+		{
+			get;
+		}
 		public DungeonGenerator(
 			RoomManager p_roomManager,
 			int p_columns,
@@ -91,6 +95,7 @@ namespace DungeonGeneratorNamespace
 			Map = new Tile[p_columns, p_rows];
 			RoomPoints = new List<List<Vector2Int>>();
 			PathPoints = new List<List<Vector2Int>>();
+			CombatRoomIDs = new List<int>();
 		}
 		public List<int> GeneratePathLengths(int turnCount)
 		{
@@ -171,6 +176,7 @@ namespace DungeonGeneratorNamespace
 		{
 			RoomPoints.Clear();
 			PathPoints.Clear();
+			CombatRoomIDs.Clear();
 
 			// Fill Map with Any tiles and create the centre room
 			for (int x = 0; x < columns; ++x)
@@ -686,6 +692,16 @@ namespace DungeonGeneratorNamespace
 				PathPoints.Add(new List<Vector2Int>());
 				if (type != RoomTypes.Secret)
 					RoomPoints.Add(new List<Vector2Int>());
+
+				// Only default rooms and intersection rooms can spawn enemies
+				switch (type)
+				{
+					case RoomTypes.Default:
+					// FALL THROUGH
+					case RoomTypes.Intersection:
+						CombatRoomIDs.Add(RoomPoints.Count - 1);
+						break;
+				}
 
 				BuildRoom(topLeftPoint, room, secret);
 

@@ -104,8 +104,6 @@ public class ItemManager : MonoBehaviour
 			Instantiate(enemyLootTable[1], GetRandomOffset(position), Quaternion.identity, transform);
 		for (var i = 0; i < ones; ++i)
 			Instantiate(enemyLootTable[0], GetRandomOffset(position), Quaternion.identity, transform);
-
-		Debug.Log("done");
 	}
 	public void SpawnRoomClearReward(Vector3 position)
 	{

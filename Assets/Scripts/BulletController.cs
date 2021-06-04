@@ -7,6 +7,7 @@ public class BulletController : MonoBehaviour
 	public GameObject impactAnimation;
 	public int damage = 1;
 	public bool firedByPlayer = true;
+	public bool jammed = false;
 	private float initializationTime;
 	private bool destroyed = false;
 	void Awake()
@@ -29,7 +30,8 @@ public class BulletController : MonoBehaviour
 			!other.CompareTag("Entrance") &&
 			!other.CompareTag("Exit") &&
 			!other.CompareTag("PlayerDodgeRollHitbox") &&
-			!other.CompareTag("Enemy")
+			!other.CompareTag("Enemy") &&
+			!other.CompareTag("JammedEnemy")
 		)
 			return;
 
@@ -38,7 +40,8 @@ public class BulletController : MonoBehaviour
 		if (
 			destroyed ||
 			firedByPlayer && other.CompareTag("PlayerDodgeRollHitbox") ||
-			!firedByPlayer && other.CompareTag("Enemy")
+			!firedByPlayer && other.CompareTag("Enemy") ||
+			!firedByPlayer && other.CompareTag("JammedEnemy")
 		)
 			return;
 
@@ -48,10 +51,10 @@ public class BulletController : MonoBehaviour
 		if (!other.CompareTag("Enemy") && !other.CompareTag("PlayerDodgeRollHitbox"))
 			Destroy(Instantiate(impactAnimation, transform.position, Quaternion.identity), 0.25f);
 
-		if (other.CompareTag("Enemy"))
-			other.transform.parent.GetComponent<EnemyController>().InflictDamage(damage);
+		if (other.CompareTag("Enemy") || other.CompareTag("JammedEnemy"))
+			other.transform.parent.GetComponent<EnemyController>().InflictDamage(jammed ? damage * 2 : damage);
 		else if (other.CompareTag("PlayerDodgeRollHitbox"))
-			other.transform.parent.parent.GetComponent<PlayerController>().InflictDamage(damage);
+			other.transform.parent.parent.GetComponent<PlayerController>().InflictDamage(jammed ? damage * 2 : damage);
 
 		Destroy(gameObject);
 	}

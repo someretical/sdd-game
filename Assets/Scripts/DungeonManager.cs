@@ -66,6 +66,9 @@ public class DungeonManager : MonoBehaviour
 	public List<int> completedRoomIDs = new List<int>();
 	[HideInInspector]
 	public List<DoorController> doors = new List<DoorController>();
+	private PlayerController playerController;
+	private EnemyManager _enemyManager;
+	private ItemManager _itemManager;
 	void Awake()
 	{
 		Instantiate(doorManager, Vector3.zero, Quaternion.identity, transform);
@@ -73,7 +76,12 @@ public class DungeonManager : MonoBehaviour
 		Instantiate(entranceExitManager, Vector3.zero, Quaternion.identity, transform);
 		Instantiate(itemManager, Vector3.zero, Quaternion.identity, transform);
 		Instantiate(trapManager, Vector3.zero, Quaternion.identity, transform);
-		Instantiate(enemyManager, Vector3.zero, Quaternion.identity, transform);
+
+		var newEnemyManager = Instantiate(enemyManager, Vector3.zero, Quaternion.identity, transform);
+		_enemyManager = newEnemyManager.GetComponent<EnemyManager>();
+
+		_itemManager = transform.GetChild(8).GetComponent<ItemManager>();
+
 		bulletManager = new GameObject("BulletManager");
 		bulletManager.transform.parent = transform;
 	}
@@ -92,6 +100,8 @@ public class DungeonManager : MonoBehaviour
 		// Reveal original room
 		UpdateDarkness(new Vector3(mapWidth / 2 + 4, mapHeight / 2 - 3, 0f));
 		completedRoomIDs.Add(0);
+
+		playerController = transform.parent.GetChild(0).GetComponent<PlayerController>();
 	}
 	public void GenerateDungeon()
 	{
@@ -235,53 +245,60 @@ public class DungeonManager : MonoBehaviour
 
 					// Check if horizontal wall
 					if (CheckIfWall(x - 1, y) && CheckIfWall(x + 1, y))
+					{
 						if (CheckIfGround(x, y + 1))
 							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), Util.GetArrayRandom(northWallTiles));
 						else if (CheckIfGround(x, y - 1))
 							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), Util.GetArrayRandom(southWallTiles));
-
+					}
 					// Check if vertical wall
-					if (CheckIfWall(x, y - 1) && CheckIfWall(x, y + 1))
+					else if (CheckIfWall(x, y - 1) && CheckIfWall(x, y + 1))
+					{
 						if (CheckIfGround(x - 1, y))
 							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), Util.GetArrayRandom(eastWallTiles));
 						else if (CheckIfGround(x + 1, y))
 							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), Util.GetArrayRandom(westWallTiles));
-
+					}
 					// Check if wall above + left
-					if (CheckIfWall(x, y - 1) && CheckIfWall(x - 1, y))
+					else if (CheckIfWall(x, y - 1) && CheckIfWall(x - 1, y))
+					{
 						// Check if there is ground below right (there are two types of walls that fulfill these conditions)
 						// Hence this check is needed to make sure the right one is placed
 						if (CheckIfGround(x + 1, y + 1))
 							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), innerCornerTiles[0]);
 						else
 							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), outerCornerTiles[0]);
-
+					}
 					// Check if wall above + right
-					if (CheckIfWall(x, y - 1) && CheckIfWall(x + 1, y))
+					else if (CheckIfWall(x, y - 1) && CheckIfWall(x + 1, y))
+					{
 						// Check if there is ground below left (there are two types of walls that fulfill these conditions)
 						// Hence this check is needed to make sure the right one is placed
 						if (CheckIfGround(x - 1, y + 1))
 							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), innerCornerTiles[1]);
 						else
 							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), outerCornerTiles[1]);
-
+					}
 					// Check if wall below + left
-					if (CheckIfWall(x, y + 1) && CheckIfWall(x - 1, y))
+					else if (CheckIfWall(x, y + 1) && CheckIfWall(x - 1, y))
+					{
 						// Check if there is ground above right (there are two types of walls that fulfill these conditions)
 						// Hence this check is needed to make sure the right one is placed
 						if (CheckIfGround(x + 1, y - 1))
 							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), innerCornerTiles[2]);
 						else
 							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), outerCornerTiles[2]);
-
+					}
 					// Check if wall below + right
-					if (CheckIfWall(x, y + 1) && CheckIfWall(x + 1, y))
+					else if (CheckIfWall(x, y + 1) && CheckIfWall(x + 1, y))
+					{
 						// Check if there is ground above left (there are two types of walls that fulfill these conditions)
 						// Hence this check is needed to make sure the right one is placed
 						if (CheckIfGround(x - 1, y - 1))
 							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), innerCornerTiles[3]);
 						else
 							wallsTilemap.SetTile(new Vector3Int(x, mapHeight - 1 - y, 0), outerCornerTiles[3]);
+					}
 				}
 	}
 	public void PlaceDestroyableWalls()
@@ -487,6 +504,10 @@ public class DungeonManager : MonoBehaviour
 		for (var i = 0; i < doors.Count; ++i)
 			if (doors[i].roomID == roomID)
 				doors[i].Lock();
+
+		playerController.inCombat = true;
+
+		_enemyManager.SpawnEnemies(playerController.transform.position);
 	}
 	public void UnlockRoom(int roomID)
 	{
@@ -495,5 +516,26 @@ public class DungeonManager : MonoBehaviour
 		for (var i = 0; i < doors.Count; ++i)
 			if (doors[i].roomID == roomID)
 				doors[i].Unlock();
+
+		playerController.inCombat = false;
+	}
+	public void RegisterEnemyDeath(int roomID, Vector3 position)
+	{
+		var enemiesStillAlive = false;
+
+		for (var i = 0; i < _enemyManager.transform.childCount; ++i)
+			if (_enemyManager.transform.GetChild(i).GetComponent<EnemyController>().boundRoomID == roomID)
+			{
+				enemiesStillAlive = true;
+				break;
+			}
+
+		if (!enemiesStillAlive)
+		{
+			if (UnityEngine.Random.Range(0, 10) == 0)
+				_itemManager.SpawnRoomClearReward(position);
+
+			UnlockRoom(roomID);
+		}
 	}
 }

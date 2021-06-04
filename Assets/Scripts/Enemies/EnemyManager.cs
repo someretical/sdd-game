@@ -6,6 +6,7 @@ using UnityEngine;
 public class EnemyManager : MonoBehaviour
 {
 	public GameObject[] enemies;
+	public GameObject spawnAnimation;
 	private DungeonManager dungeonManager;
 	private DungeonGenerator dungeonGenerator;
 	void Start()
@@ -28,7 +29,7 @@ public class EnemyManager : MonoBehaviour
 
 		return enemies[Util.GetListRandom(chances)];
 	}
-	public void SpawnEnemy(Vector3 position)
+	public void SpawnEnemies(Vector3 position)
 	{
 		var rounded = Util.RoundPosition(position);
 
@@ -52,8 +53,28 @@ public class EnemyManager : MonoBehaviour
 				suitableTiles.Add(p);
 		}
 
-		var tile = Util.GetListRandom(suitableTiles);
-		Instantiate(
+		// Spawn an enemy for every 8 tiles
+		// I have no idea if this is balanced or not
+		for (var i = 0; i < suitableTiles.Count / 8; ++i)
+			StartCoroutine(SpawnEnemy(Util.GetListRandom(suitableTiles), roomID));
+	}
+	IEnumerator SpawnEnemy(Vector2Int tile, int roomID)
+	{
+		var animation = Instantiate(
+			spawnAnimation,
+			new Vector3(
+				tile.x + 0.5f,
+				dungeonManager.mapHeight - 0.5f - tile.y,
+				0f
+			),
+			Quaternion.identity
+		);
+
+		yield return new WaitForSeconds(1f);
+
+		Destroy(animation);
+
+		var newEnemy = Instantiate(
 			GetRandomEnemy(),
 			new Vector3(
 				 tile.x + 0.5f,
@@ -63,5 +84,6 @@ public class EnemyManager : MonoBehaviour
 			Quaternion.identity,
 			transform
 		);
+		newEnemy.GetComponent<EnemyController>().boundRoomID = roomID;
 	}
 }

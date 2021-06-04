@@ -37,9 +37,9 @@ public class PlayerController : MonoBehaviour
 	[HideInInspector]
 	public bool inCombat = false;
 	[HideInInspector]
+	public Rigidbody2D rb2d;
 	private bool mapOpen = false;
 	private SpriteRenderer spriteRenderer;
-	private Rigidbody2D rb2d;
 	private GameManager gameManager;
 	private LevelManager levelManager;
 	private DungeonManager dungeonManager;
@@ -75,12 +75,6 @@ public class PlayerController : MonoBehaviour
 		ProcessRotation();
 		CheckFire();
 		ProcessMovement();
-
-		// Temporary debugging code
-		if (Input.GetKeyDown(KeyCode.G))
-			transform.parent.GetChild(2).GetChild(8).GetComponent<ItemManager>().SpawnRoomClearReward(transform.position);
-		if (Input.GetKeyDown(KeyCode.H))
-			transform.parent.GetChild(2).GetChild(10).GetComponent<EnemyManager>().SpawnEnemy(transform.position);
 	}
 	void CheckInteract()
 	{
@@ -117,7 +111,7 @@ public class PlayerController : MonoBehaviour
 		if (mapOpen && Input.GetAxis("Scroll") < 0f)
 			fullScreenMapCamera.orthographicSize = Math.Max(20, fullScreenMapCamera.orthographicSize - 1);
 	}
-	float GetScaledSpeed()
+	public float GetScaledSpeed()
 	{
 		// Different speed for different actions
 		float scaledSpeed = baseSpeed;
@@ -140,7 +134,7 @@ public class PlayerController : MonoBehaviour
 		dodgeRolling = true;
 		spriteRenderer.sprite = dodgeRollingState;
 
-		yield return new WaitForSeconds(0.5f);
+		yield return new WaitForSeconds(inCombat ? 0.75f : 0.5f);
 
 		dodgeRollCollider.enabled = true;
 		dodgeRolling = false;
@@ -317,5 +311,16 @@ public class PlayerController : MonoBehaviour
 		yield return new WaitForSeconds(0.1f);
 
 		canMove = true;
+	}
+	void OnCollisionStay2D(Collision2D other)
+	{
+		CheckEnemy(other);
+	}
+	void CheckEnemy(Collision2D other)
+	{
+		if (other.collider.CompareTag("Enemy"))
+			InflictDamage(1);
+		else if (other.collider.CompareTag("JammedEnemy"))
+			InflictDamage(2);
 	}
 }

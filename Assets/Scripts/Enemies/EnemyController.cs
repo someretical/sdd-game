@@ -8,14 +8,20 @@ public class EnemyController : MonoBehaviour
 	public int weight;
 	public int coinReward;
 	public int health;
+	public bool jammed;
+	public Color defaultColor;
+	public Color damageColor;
 	public GameObject deathAnimation;
 	[HideInInspector]
 	public NavMeshAgent agent;
 	[HideInInspector]
 	public NavMeshObstacle obstacle;
+	[HideInInspector]
+	public int boundRoomID;
 	private PlayerController player;
 	private SpriteRenderer sprite;
 	private ItemManager itemManager;
+	private DungeonManager dungeonManager;
 	void Start()
 	{
 		sprite = transform.GetChild(0).GetComponent<SpriteRenderer>();
@@ -23,6 +29,7 @@ public class EnemyController : MonoBehaviour
 		obstacle = transform.GetChild(1).GetComponent<NavMeshObstacle>();
 		player = transform.parent.parent.parent.GetChild(0).GetComponent<PlayerController>();
 		itemManager = transform.parent.parent.GetChild(8).GetComponent<ItemManager>();
+		dungeonManager = transform.parent.parent.GetComponent<DungeonManager>();
 
 		var position = new Vector3(transform.position.x, transform.position.y, 0f);
 		transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
@@ -42,6 +49,17 @@ public class EnemyController : MonoBehaviour
 			// Then each individual child class could override the SpawnEnemyDrops function or whatever
 			// But that's too bothersome because the current setup already does the bare minimum
 			itemManager.SpawnEnemyDrops(sprite.transform.position, coinReward);
+
+			// Setting actualRoomID to boundRoomID
+			// Then changing boundRoomID to -1 
+			// Have to create and pass a copy because registerEnemyDeath checks the boundRoomID
+			// So if I change it, pass it, then the function checks the changed boundRoomID
+			// which will always return true (and thus fail)
+			// because I can't call registerEnemyDeath AFTER destroy(gameObject)
+			// because at that point this instance will no longer exist
+			var actualRoomID = boundRoomID;
+			boundRoomID = -1;
+			dungeonManager.RegisterEnemyDeath(actualRoomID, sprite.transform.position);
 
 			var death = Instantiate(deathAnimation, sprite.transform.position, Quaternion.identity);
 			Destroy(death, 0.25f);
@@ -67,7 +85,7 @@ public class EnemyController : MonoBehaviour
 
 		// Move the rigid body associated with this gameobject
 		var adjustedPosition = new Vector3(agent.transform.position.x, agent.transform.position.y, 0f);
-		sprite.transform.position = Vector3.Lerp(sprite.transform.position, adjustedPosition, Time.deltaTime * 5);
+		sprite.transform.position = Vector3.Lerp(sprite.transform.position, adjustedPosition, Time.deltaTime * 2);
 	}
 	public void InflictDamage(int damage)
 	{
@@ -79,10 +97,10 @@ public class EnemyController : MonoBehaviour
 	}
 	IEnumerator DisplayDamage()
 	{
-		sprite.color = Color.red;
+		sprite.color = damageColor;
 
 		yield return new WaitForSeconds(0.2f);
 
-		sprite.color = Color.white;
+		sprite.color = defaultColor;
 	}
 }

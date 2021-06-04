@@ -27,6 +27,7 @@ public class DoorController : MonoBehaviour
 	private BoxCollider2D lockCollider;
 	private DungeonManager dungeonManager;
 	private Sprite previousSprite;
+	private PlayerController playerController;
 	void Start()
 	{
 		spriteRenderer = GetComponent<SpriteRenderer>();
@@ -35,6 +36,33 @@ public class DoorController : MonoBehaviour
 		navMeshCollider = GetComponent<NavMeshObstacle>();
 		lockCollider = GetComponent<BoxCollider2D>();
 		dungeonManager = transform.parent.parent.GetComponent<DungeonManager>();
+		playerController = transform.parent.parent.parent.GetChild(0).GetComponent<PlayerController>();
+	}
+	IEnumerator LockRoom()
+	{
+		playerController.canMove = false;
+
+		switch (rotation)
+		{
+			case Rotations.North:
+				playerController.rb2d.velocity = playerController.GetScaledSpeed() * Vector3.down;
+				break;
+			case Rotations.East:
+				playerController.rb2d.velocity = playerController.GetScaledSpeed() * Vector3.left;
+				break;
+			case Rotations.South:
+				playerController.rb2d.velocity = playerController.GetScaledSpeed() * Vector3.up;
+				break;
+			case Rotations.West:
+				playerController.rb2d.velocity = playerController.GetScaledSpeed() * Vector3.right;
+				break;
+		}
+
+		yield return new WaitForSeconds(0.2f);
+
+		dungeonManager.LockRoom(roomID);
+
+		playerController.canMove = true;
 	}
 	void OnPlayerEnter(int direction)
 	{
@@ -46,28 +74,27 @@ public class DoorController : MonoBehaviour
 		_bottomEdgeCollider.enabled = false;
 		navMeshCollider.enabled = false;
 
-		// Debug.Log(direction);
-
 		if (direction == 0)
 			transform.Rotate(new Vector3Int(0, 0, 180));
 
 		spriteRenderer.sprite = openedState;
 
-		// There is a whole lot of logic that needs to be done here
-		// Check if the player is coming from a path or not
-		// If they are, push them along in the right direction into the room
-		// (disable them moving)
-		// Then lock the doors and begin spawning enemies
-		if (!dungeonManager.completedRoomIDs.Contains(roomID))
-		{
-			dungeonManager.LockRoom(roomID);
-		}
+		if (
+			!dungeonManager.completedRoomIDs.Contains(roomID) &&
+			dungeonManager.dungeonGenerator.CombatRoomIDs.Contains(roomID) &&
+			direction == 0
+		)
+			StartCoroutine(LockRoom());
 	}
 	public void Lock()
 	{
-		previousSprite = spriteRenderer.sprite;
+		_topEdgeCollider.enabled = false;
+		_bottomEdgeCollider.enabled = false;
+
 		lockCollider.enabled = true;
 		navMeshCollider.enabled = true;
+
+		previousSprite = spriteRenderer.sprite;
 		spriteRenderer.sprite = lockedState;
 	}
 	public void Unlock()
@@ -77,5 +104,10 @@ public class DoorController : MonoBehaviour
 
 		if (opened)
 			navMeshCollider.enabled = false;
+		else
+		{
+			_topEdgeCollider.enabled = true;
+			_bottomEdgeCollider.enabled = true;
+		}
 	}
 }
