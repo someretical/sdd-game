@@ -8,6 +8,7 @@ public class TrapManager : MonoBehaviour
 	public GameObject spikeTrap;
 	public void Start()
 	{
+	//Generates the traps over the instantiated map, depending on the tiletype.
 		var dungeonGenerator = transform.parent.GetComponent<DungeonManager>().dungeonGenerator;
 
 		for (var x = 0; x < dungeonGenerator.columns; ++x)
