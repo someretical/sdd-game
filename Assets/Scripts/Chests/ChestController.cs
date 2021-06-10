@@ -44,6 +44,7 @@ public class ChestController : MonoBehaviour
 	}
 	void OnTriggerEnter2D(Collider2D other)
 	{
+		//Upon collision, checks for the player.
 		if (PrelimCheck(other))
 			return;
 
@@ -64,9 +65,10 @@ public class ChestController : MonoBehaviour
 	}
 	void OnTriggerStay2D(Collider2D other)
 	{
+		//Checks to see if the player is touching or if the chest is locked.
 		if (PrelimCheck(other) || tempLocked)
 			return;
-
+		
 		if (player.currentlyTouchingItem == uid)
 			CheckInteract();
 		else if (player.currentlyTouchingItem == Guid.Empty)
@@ -81,6 +83,7 @@ public class ChestController : MonoBehaviour
 	}
 	void OnTriggerExit2D(Collider2D other)
 	{
+		//The item is deselected once the player isn't touching the items.
 		if (PrelimCheck(other))
 			return;
 
@@ -148,6 +151,9 @@ public class ChestController : MonoBehaviour
 	}
 	public void DropLoot()
 	{
+		//The max number of items instantiated depends on chest rarity.
+		//If it is a rare chest, there are 4 items.
+		//If it isn't a rare chest, only 2 items are spawned.
 		var max = rare ? 4 : 2;
 
 		for (var i = 0; i < max; ++i)
