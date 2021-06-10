@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DungeonGeneratorNamespace;
@@ -66,6 +66,7 @@ public class PlayerController : MonoBehaviour
 	}
 	void Update()
 	{
+		//If the level manager is ready, it doesn't return the value and runs the functions instead.
 		if (!levelManager.ready)
 			return;
 
@@ -207,6 +208,7 @@ public class PlayerController : MonoBehaviour
 	}
 	public void OnItemPickup(string id)
 	{
+		//When items are picked up, the ID is checked through a switch loop and then adds the object to the player.
 		switch (id)
 		{
 			case "CoinStack":
@@ -279,24 +281,26 @@ public class PlayerController : MonoBehaviour
 	}
 	public void InflictDamage(int damage)
 	{
+		//If the player is invulnerable, the code stops and doesn't proceed with checks.
 		if (invulnerable)
 			return;
-
+		//If invulnerable was set to false, then the armour is checked.
 		if (gameManager.armour > 0)
 		{
+		//Subtracts from the armour and stops after.
 			--gameManager.armour;
 			return;
 		}
-
+		//After the player has been hit, the player is invulnerable for a short period of time.
 		rb2d.velocity = Vector2.zero;
 		spriteRenderer.sprite = invulnerableState;
 		invulnerable = true;
 		canMove = false;
-
+		
 		StartCoroutine(IFramesCooldown());
 
 		StartCoroutine(FreezePlayer());
-
+		//The HP is then decreased after getting hit, given that the player isn't in an invulnerable state and that the player had no armour.
 		gameManager.hp -= damage;
 	}
 	IEnumerator IFramesCooldown()
@@ -314,10 +318,12 @@ public class PlayerController : MonoBehaviour
 	}
 	void OnCollisionStay2D(Collision2D other)
 	{
+		//When the gameObject is touching the enemy, it calls the CheckEnemy function.
 		CheckEnemy(other);
 	}
 	void CheckEnemy(Collision2D other)
 	{
+		//Calls the inflict damage function when one of the conditions is satisfied.
 		if (other.collider.CompareTag("Enemy"))
 			InflictDamage(1);
 		else if (other.collider.CompareTag("JammedEnemy"))
