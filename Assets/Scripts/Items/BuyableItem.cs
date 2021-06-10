@@ -49,6 +49,7 @@ public class BuyableItem : MonoBehaviour
 	}
 	void OnTriggerEnter2D(Collider2D other)
 	{
+		//Checks the tag of the object that has collided.
 		if (PrelimCheck(other))
 			return;
 
@@ -56,7 +57,7 @@ public class BuyableItem : MonoBehaviour
 
 		if (tempLocked)
 			return;
-
+		//Sets the currently touching item to the uid.
 		if (player.currentlyTouchingItem == Guid.Empty)
 		{
 			player.currentlyTouchingItem = uid;
@@ -69,6 +70,7 @@ public class BuyableItem : MonoBehaviour
 	}
 	void OnTriggerStay2D(Collider2D other)
 	{
+		//The player is touching the item, with the option to purchase if they have sufficient coins.
 		if (PrelimCheck(other) || tempLocked)
 			return;
 
@@ -86,6 +88,7 @@ public class BuyableItem : MonoBehaviour
 	}
 	void OnTriggerExit2D(Collider2D other)
 	{
+		//The player is no longer touching the item.
 		if (PrelimCheck(other))
 			return;
 
@@ -111,6 +114,7 @@ public class BuyableItem : MonoBehaviour
 
 			if (gameManager.coins < scaledPrice)
 			{
+				//Item cannot be purchased.
 				tempLocked = true;
 
 				spriteRenderer.sprite = lockedSprite;
@@ -120,6 +124,7 @@ public class BuyableItem : MonoBehaviour
 			}
 			else
 			{
+				//Item is purchased
 				gameManager.coins -= scaledPrice;
 				player.OnItemPickup(id);
 
@@ -129,7 +134,7 @@ public class BuyableItem : MonoBehaviour
 	}
 	IEnumerator TempLock()
 	{
-		// Display red outline if the playe is too poor to buy the item
+		// Display red outline if the player is too poor to buy the item
 
 		yield return new WaitForSeconds(0.5f);
 
