@@ -26,12 +26,14 @@ public class ChestController : MonoBehaviour
 	private PlayerController player;
 	private Transform chestManagerTransform;
 	private GameManager gameManager;
+	private CameraController cameraController;
 	void Start()
 	{
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		player = transform.parent.parent.parent.GetChild(0).GetComponent<PlayerController>();
 		chestManagerTransform = transform.parent.parent.GetChild(8);
 		gameManager = transform.parent.parent.parent.parent.GetComponent<GameManager>();
+		cameraController = transform.parent.parent.parent.parent.GetChild(1).GetComponent<CameraController>();
 	}
 	void Update()
 	{
@@ -68,7 +70,7 @@ public class ChestController : MonoBehaviour
 		//Checks to see if the player is touching or if the chest is locked.
 		if (PrelimCheck(other) || tempLocked)
 			return;
-		
+
 		if (player.currentlyTouchingItem == uid)
 			CheckInteract();
 		else if (player.currentlyTouchingItem == Guid.Empty)
@@ -120,7 +122,10 @@ public class ChestController : MonoBehaviour
 			else
 			{
 				if (needsKey)
+				{
 					--gameManager.keys;
+					cameraController.UpdateHUD();
+				}
 
 				spriteRenderer.sprite = openedSprite;
 				onDefaultSprite = true;
