@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,6 +23,7 @@ public class BulletController : MonoBehaviour
 	}
 	void DeleteBullet(Collider2D other)
 	{
+	//The tags of the other collider's gameObjects are checked, if none of the tags match, the code stops, otherwise it moves onto the second check. 
 		if (
 			!other.CompareTag("Door") &&
 			!other.CompareTag("Wall") &&
@@ -50,18 +51,20 @@ public class BulletController : MonoBehaviour
 		// Spawn impact animation
 		if (!other.CompareTag("PlayerDodgeRollHitbox"))
 			Destroy(Instantiate(impactAnimation, transform.position, Quaternion.identity), 0.25f);
-
+		//Checks the tag of the hit collider's gameObject
 		if (other.CompareTag("Enemy") || other.CompareTag("JammedEnemy"))
 			other.transform.parent.GetComponent<EnemyController>().InflictDamage(jammed ? damage * 2 : damage);
 		else if (other.CompareTag("PlayerDodgeRollHitbox"))
 			other.transform.parent.parent.GetComponent<PlayerController>().InflictDamage(jammed ? damage * 2 : damage);
-
+		//Calls destruction of the bullet
 		Destroy(gameObject);
 	}
+	//Checks if it hits a trigger collider, if it does, it runs the DeleteBullet function before deleting the bullet itself.
 	void OnTriggerEnter2D(Collider2D other)
 	{
 		DeleteBullet(other);
 	}
+	//If the bullet exits a trigger collider, it runs the DeleteBullet function.
 	void OnTriggerExit2D(Collider2D other)
 	{
 		DeleteBullet(other);

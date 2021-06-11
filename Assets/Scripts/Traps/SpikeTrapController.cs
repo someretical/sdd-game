@@ -30,9 +30,10 @@ public class SpikeTrapController : MonoBehaviour
 	}
 	void OnTriggerEnter2D(Collider2D other)
 	{
+		//Checks if the object which collides doesn't have the tag "PlayerDodgeRollHitbox."
 		if (PrelimCheck(other))
 			return;
-
+		//If it does have the tag, it confirms the player is touching and checks if the timer isn't running.
 		playerTouching = true;
 
 		if (!timerRunning)
@@ -40,14 +41,17 @@ public class SpikeTrapController : MonoBehaviour
 	}
 	void OnTriggerStay2D(Collider2D other)
 	{
+		//For every update frame for which the object that collides doesn't have the tag "PlayerDodgeRollHitbox"
 		if (PrelimCheck(other))
 			return;
-
+		
 		if (!timerRunning)
 			StartCoroutine(DelayedActivation());
 	}
 	void OnTriggerExit2D(Collider2D other)
 	{
+	//If the object that is colliding is no longer touching, then it checks the tag.
+	//If the tag check fails, it sets the boolean values to false.
 		if (PrelimCheck(other))
 			return;
 

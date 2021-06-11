@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DungeonGeneratorNamespace;
@@ -71,6 +71,7 @@ public class DungeonManager : MonoBehaviour
 	private ItemManager _itemManager;
 	void Awake()
 	{
+		//Managers are instantiated at coordinates (0, 0, 0) or referenced at the start.
 		Instantiate(doorManager, Vector3.zero, Quaternion.identity, transform);
 		Instantiate(chestManager, Vector3.zero, Quaternion.identity, transform);
 		Instantiate(entranceExitManager, Vector3.zero, Quaternion.identity, transform);
@@ -511,8 +512,9 @@ public class DungeonManager : MonoBehaviour
 	}
 	public void UnlockRoom(int roomID)
 	{
+		//Room ID is passed through and is added to a list of completed rooms.
 		completedRoomIDs.Add(roomID);
-
+		
 		for (var i = 0; i < doors.Count; ++i)
 			if (doors[i].roomID == roomID)
 				doors[i].Unlock();
@@ -532,6 +534,8 @@ public class DungeonManager : MonoBehaviour
 
 		if (!enemiesStillAlive)
 		{
+			//When the enemies are dead, the room is unlocked.
+			//There is a probability that there is a clear reward.
 			if (UnityEngine.Random.Range(0, 10) == 0)
 				_itemManager.SpawnRoomClearReward(position);
 

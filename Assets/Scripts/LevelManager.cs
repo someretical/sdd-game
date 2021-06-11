@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -21,12 +21,12 @@ public class LevelManager : MonoBehaviour
 	void Awake()
 	{
 		Cursor.lockState = CursorLockMode.Locked;
-
+		//Instantiates the player, camera, dungeon manager and navmesh at (0, 0, 0)
 		Instantiate(player, Vector3.zero, Quaternion.identity, transform);
 		cam = Instantiate(mainCamera, Vector3.zero, Quaternion.identity, transform);
 		Instantiate(dungeonManager, Vector3.zero, Quaternion.identity, transform);
 		Instantiate(navMesh, Vector3.zero, Quaternion.Euler(-90f, 0f, 0f), transform);
-
+		//Gameobjects are set by retrieving the components before runtime.
 		blackOut = cam.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Image>();
 		levelText = cam.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>();
 	}
@@ -42,12 +42,13 @@ public class LevelManager : MonoBehaviour
 		yield return new WaitForSeconds(1f);
 
 		StartCoroutine(DisplayFloorText());
-
+		//RGB colours are set based on the image "blackOut"
 		var start = new Color(blackOut.color.r, blackOut.color.g, blackOut.color.b, 1f);
 		var end = new Color(blackOut.color.r, blackOut.color.g, blackOut.color.b, 0f);
 
 		for (var t = 0f; t < 1f; t += Time.deltaTime)
 		{
+			//The colour of blackOut smoothly transitions out to fade using lerp.
 			blackOut.color = Color.Lerp(start, end, t);
 
 			yield return null;
@@ -98,6 +99,7 @@ public class LevelManager : MonoBehaviour
 	}
 	void Update()
 	{
+		//Constantly checks every frame if it is NOT ready and NOT transitioning, then it will run the coroutine.
 		if (!ready && !transitioning)
 			StartCoroutine(RemoveTransitionComponents());
 	}

@@ -36,6 +36,7 @@ public class ItemCollider : MonoBehaviour
 
 		if (player.currentlyTouchingItem == Guid.Empty)
 		{
+			//Sets the player that is touching the item to the item uid.
 			player.currentlyTouchingItem = uid;
 
 			spriteRenderer.sprite = highlightedSprite;
@@ -45,6 +46,7 @@ public class ItemCollider : MonoBehaviour
 	}
 	void OnTriggerStay2D(Collider2D other)
 	{
+		//Checks to see if the player is still touching the item or not.
 		if (PrelimCheck(other))
 			return;
 
@@ -61,6 +63,7 @@ public class ItemCollider : MonoBehaviour
 	}
 	void OnTriggerExit2D(Collider2D other)
 	{
+		//Sets the player to not interact with any items once the player isn't touching the collider.
 		if (PrelimCheck(other))
 			return;
 
