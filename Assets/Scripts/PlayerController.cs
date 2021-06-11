@@ -46,7 +46,8 @@ public class PlayerController : MonoBehaviour
 	private GameObject miniMap;
 	private Camera fullScreenMapCamera;
 	private Camera cam;
-	private CircleCollider2D dodgeRollCollider;
+	private CameraController cameraController;
+	// private CircleCollider2D dodgeRollCollider;
 	private readonly List<GameObject> fullScreenMap = new List<GameObject>();
 	void Start()
 	{
@@ -58,7 +59,8 @@ public class PlayerController : MonoBehaviour
 		miniMap = transform.GetChild(1).GetChild(0).gameObject;
 		fullScreenMapCamera = transform.GetChild(3).GetChild(0).GetComponent<Camera>();
 		cam = transform.parent.GetChild(1).GetComponent<Camera>();
-		dodgeRollCollider = transform.GetChild(0).GetChild(1).GetComponent<CircleCollider2D>();
+		// dodgeRollCollider = transform.GetChild(0).GetChild(1).GetComponent<CircleCollider2D>();
+		cameraController = transform.parent.GetChild(1).GetComponent<CameraController>();
 
 		var c = transform.GetChild(1).GetChild(1).childCount;
 		for (int i = 0; i < c; ++i)
@@ -121,7 +123,7 @@ public class PlayerController : MonoBehaviour
 			scaledSpeed *= 0.5f;
 
 		if (dodgeRolling)
-			scaledSpeed *= 1.2f;
+			scaledSpeed *= 4f;
 
 		if (!inCombat)
 			scaledSpeed *= 1.5f;
@@ -130,24 +132,33 @@ public class PlayerController : MonoBehaviour
 
 		return scaledSpeed;
 	}
+	Vector3 GetLookDirection()
+	{
+		return cam.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+	}
 	IEnumerator DodgeRoll()
 	{
 		canDodgeRoll = false;
-		dodgeRollCollider.enabled = false;
 		dodgeRolling = true;
 		spriteRenderer.sprite = dodgeRollingState;
 
-		yield return new WaitForSeconds(inCombat ? 0.5f : 0.3f);
+		var lookDir = GetLookDirection();
+		lookDir.Normalize();
+		rb2d.velocity = GetScaledSpeed() * new Vector2(lookDir.x, lookDir.y);
 
-		dodgeRollCollider.enabled = true;
+		yield return new WaitForSeconds(inCombat ? 0.16f : 0.12f);
+
 		dodgeRolling = false;
 		spriteRenderer.sprite = defaultState;
+
+		yield return new WaitForSeconds(0.5f);
+
 		canDodgeRoll = true;
 	}
 	void ProcessRotation()
 	{
 		// Fancy piece of code that makes the player rotate towards the cursor
-		var lookDir = cam.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+		var lookDir = GetLookDirection();
 		spriteRenderer.transform.eulerAngles = new Vector3(0f, 0f, Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f);
 	}
 	IEnumerator ShootCooldown()
@@ -179,12 +190,12 @@ public class PlayerController : MonoBehaviour
 		// However, during a dodgeroll, the player cannot be stopped until they land
 		// Hence, we just need to set the velocity and prevent it from being updated
 		// for a certain amount of time
-		if (
-			Input.GetButtonDown("DodgeRoll") &&
-			(Input.GetAxisRaw("Horizontal") != 0f || Input.GetAxisRaw("Vertical") != 0f)
-			&& canDodgeRoll
-		)
+		if (Input.GetButtonDown("DodgeRoll") && canDodgeRoll)
+		{
 			StartCoroutine(DodgeRoll());
+
+			return;
+		}
 
 		rb2d.velocity = GetScaledSpeed() * new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
 	}
@@ -200,6 +211,7 @@ public class PlayerController : MonoBehaviour
 		{
 			canBlank = false;
 			--gameManager.blanks;
+			cameraController.UpdateHUD();
 
 			dungeonManager.ProcessBlank(transform.position);
 
@@ -278,6 +290,8 @@ public class PlayerController : MonoBehaviour
 					}
 				break;
 		}
+
+		cameraController.UpdateHUD();
 	}
 	public void InflictDamage(int damage)
 	{
@@ -302,6 +316,7 @@ public class PlayerController : MonoBehaviour
 		StartCoroutine(FreezePlayer());
 		//The HP is then decreased after getting hit, given that the player isn't in an invulnerable state and that the player had no armour.
 		gameManager.hp -= damage;
+		cameraController.UpdateHUD();
 	}
 	IEnumerator IFramesCooldown()
 	{

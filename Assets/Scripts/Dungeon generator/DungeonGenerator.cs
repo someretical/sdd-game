@@ -265,7 +265,8 @@ namespace DungeonGeneratorNamespace
 
 			// Create copies of doorTuple data since they are passed to the function by reference NOT value
 			// Copy enum https://stackoverflow.com/a/17878912
-			var currentDirection = (Rotations)((int)door.rotation);
+			// Double casting :o
+			var currentDirection = (Rotations)(int)door.rotation;
 			var currentPoint = new Vector2Int(point.x, point.y);
 
 			var pathLengths = createTurns ?
@@ -294,10 +295,7 @@ namespace DungeonGeneratorNamespace
 						// but also passes close by another room. This is why extraPoints exists
 						// Long story short, a path that can't be walled can be formed
 						// Since it doesn't matter if the same is done for a path without a turn, 
-						// this behaviour becomes the default.
-						// I don't know if this will actually fix the rare and annoying bug I keep on seeing
-						// but fingers crossed it will.
-						// If it doesn't, the game is still functional 99% of the time so it's good enough for me lmao
+						// this behaviour becomes the default
 						var topLeft = new Vector2Int(currentPoint.x - 1, currentPoint.y - pathLengths[i]);
 						var bottomRight = new Vector2Int(currentPoint.x + 1, currentPoint.y - 1);
 						var extraPoints = new List<Vector2Int> {

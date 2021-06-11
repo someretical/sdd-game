@@ -36,6 +36,9 @@ public class LevelManager : MonoBehaviour
 	}
 	IEnumerator RemoveTransitionComponents()
 	{
+		// Just inserting this code in here real quickkkkk
+		transform.GetChild(1).GetComponent<CameraController>().UpdateHUD();
+
 		// Remove blackout
 		transitioning = true;
 
