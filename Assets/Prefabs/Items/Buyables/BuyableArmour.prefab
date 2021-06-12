@@ -349,7 +349,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b36dcfaaa6dd0c44680a4ec7bc7f7b67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: ArmourShopitem
+  id: ArmourShopItem
   weight: 19
   basePrice: 25
   scaledPrice: 0
@@ -359,3 +359,5 @@ MonoBehaviour:
     type: 3}
   lockedSprite: {fileID: -2103110824346642147, guid: 21fc1c8483c15074b8c6448ab349ab29,
     type: 3}
+  spriteRenderer: {fileID: 1870434839586712434}
+  textMeshPro: {fileID: 1870434839466599401}

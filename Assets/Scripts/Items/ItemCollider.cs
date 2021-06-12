@@ -17,7 +17,7 @@ public class ItemCollider : MonoBehaviour
 	void Start()
 	{
 		spriteRenderer = GetComponent<SpriteRenderer>();
-		player = transform.parent.parent.parent.GetChild(0).GetComponent<PlayerController>();
+		player = transform.parent.parent.parent.GetChild(2).GetComponent<PlayerController>();
 
 		// These have rigid bodies but I don't want them to interact with the player
 		// Could do it in Physics2D options with different layers but then the

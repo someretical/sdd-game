@@ -17,23 +17,24 @@ public class ChestController : MonoBehaviour
 	public bool rare = false;
 	[HideInInspector]
 	public bool needsKey;
+	[Space]
+	[Header("Helper references")]
+	public SpriteRenderer spriteRenderer;
 	private bool onDefaultSprite = true;
 	private bool tempLocked = false;
 	private bool opened = false;
 	private bool playerTouching = false;
 	private Guid uid = Guid.NewGuid();
-	private SpriteRenderer spriteRenderer;
 	private PlayerController player;
 	private Transform chestManagerTransform;
 	private GameManager gameManager;
 	private CameraController cameraController;
 	void Start()
 	{
-		spriteRenderer = GetComponent<SpriteRenderer>();
-		player = transform.parent.parent.parent.GetChild(0).GetComponent<PlayerController>();
-		chestManagerTransform = transform.parent.parent.GetChild(8);
+		player = transform.parent.parent.parent.GetChild(2).GetComponent<PlayerController>();
+		chestManagerTransform = transform.parent;
 		gameManager = transform.parent.parent.parent.parent.GetComponent<GameManager>();
-		cameraController = transform.parent.parent.parent.parent.GetChild(1).GetComponent<CameraController>();
+		cameraController = transform.parent.parent.parent.GetChild(0).GetComponent<CameraController>();
 	}
 	void Update()
 	{

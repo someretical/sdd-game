@@ -36,40 +36,28 @@ public class PlayerController : MonoBehaviour
 	public Guid currentlyTouchingItem = Guid.Empty;
 	[HideInInspector]
 	public bool inCombat = false;
-	[HideInInspector]
+	[Space]
+	[Header("Helper references")]
 	public Rigidbody2D rb2d;
-	private bool mapOpen = false;
-	private SpriteRenderer spriteRenderer;
+	public SpriteRenderer spriteRenderer;
+	public LevelManager levelManager;
+	public DungeonManager dungeonManager;
+	public GameObject miniMap;
+	public Camera fullScreenMapCamera;
+	public Camera cam;
+	public CameraController cameraController;
+	public GameObject fullScreenMap;
+	public PauseMenu pauseMenu;
 	private GameManager gameManager;
-	private LevelManager levelManager;
-	private DungeonManager dungeonManager;
-	private GameObject miniMap;
-	private Camera fullScreenMapCamera;
-	private Camera cam;
-	private CameraController cameraController;
-	// private CircleCollider2D dodgeRollCollider;
-	private readonly List<GameObject> fullScreenMap = new List<GameObject>();
+	private bool mapOpen = false;
 	void Start()
 	{
-		spriteRenderer = gameObject.transform.GetChild(4).GetComponent<SpriteRenderer>();
-		rb2d = GetComponent<Rigidbody2D>();
 		gameManager = transform.parent.parent.GetComponent<GameManager>();
-		levelManager = transform.parent.GetComponent<LevelManager>();
-		dungeonManager = transform.parent.GetChild(2).GetComponent<DungeonManager>();
-		miniMap = transform.GetChild(1).GetChild(0).gameObject;
-		fullScreenMapCamera = transform.GetChild(3).GetChild(0).GetComponent<Camera>();
-		cam = transform.parent.GetChild(1).GetComponent<Camera>();
-		// dodgeRollCollider = transform.GetChild(0).GetChild(1).GetComponent<CircleCollider2D>();
-		cameraController = transform.parent.GetChild(1).GetComponent<CameraController>();
-
-		var c = transform.GetChild(1).GetChild(1).childCount;
-		for (int i = 0; i < c; ++i)
-			fullScreenMap.Add(transform.GetChild(1).GetChild(1).GetChild(i).gameObject);
 	}
 	void Update()
 	{
 		//If the level manager is ready, it doesn't return the value and runs the functions instead.
-		if (!levelManager.ready)
+		if (!levelManager.ready || pauseMenu.paused)
 			return;
 
 		CheckInteract();
@@ -94,25 +82,23 @@ public class PlayerController : MonoBehaviour
 			mapOpen = true;
 
 			miniMap.SetActive(false);
-			for (var i = 0; i < fullScreenMap.Count; ++i)
-				fullScreenMap[i].SetActive(true);
+			fullScreenMap.SetActive(true);
 		}
 		else if (Input.GetButtonUp("Map"))
 		{
 			mapOpen = false;
 
-			for (var i = 0; i < fullScreenMap.Count; ++i)
-				fullScreenMap[i].SetActive(false);
+			fullScreenMap.SetActive(false);
 			miniMap.SetActive(true);
 		}
 
-		// Zoom in
-		if (mapOpen && Input.GetAxis("Scroll") > 0f)
-			fullScreenMapCamera.orthographicSize = Math.Min(100, fullScreenMapCamera.orthographicSize + 1);
-
 		// Zoom out
-		if (mapOpen && Input.GetAxis("Scroll") < 0f)
+		if (mapOpen && Input.GetAxis("Scroll") > 0f)
 			fullScreenMapCamera.orthographicSize = Math.Max(20, fullScreenMapCamera.orthographicSize - 1);
+
+		// Zoom in
+		if (mapOpen && Input.GetAxis("Scroll") < 0f)
+			fullScreenMapCamera.orthographicSize = Math.Min(100, fullScreenMapCamera.orthographicSize + 1);
 	}
 	public float GetScaledSpeed()
 	{
@@ -126,7 +112,7 @@ public class PlayerController : MonoBehaviour
 			scaledSpeed *= 4f;
 
 		if (!inCombat)
-			scaledSpeed *= 1.5f;
+			scaledSpeed *= 1.3f;
 		else
 			scaledSpeed *= 0.75f;
 
@@ -143,15 +129,14 @@ public class PlayerController : MonoBehaviour
 		spriteRenderer.sprite = dodgeRollingState;
 
 		var lookDir = GetLookDirection();
-		lookDir.Normalize();
-		rb2d.velocity = GetScaledSpeed() * new Vector2(lookDir.x, lookDir.y);
+		rb2d.velocity = GetScaledSpeed() * new Vector2(lookDir.x, lookDir.y).normalized;
 
 		yield return new WaitForSeconds(inCombat ? 0.16f : 0.12f);
 
 		dodgeRolling = false;
 		spriteRenderer.sprite = defaultState;
 
-		yield return new WaitForSeconds(0.5f);
+		yield return new WaitForSeconds(0.3f);
 
 		canDodgeRoll = true;
 	}
@@ -301,7 +286,7 @@ public class PlayerController : MonoBehaviour
 		//If invulnerable was set to false, then the armour is checked.
 		if (gameManager.armour > 0)
 		{
-		//Subtracts from the armour and stops after.
+			//Subtracts from the armour and stops after.
 			--gameManager.armour;
 			return;
 		}
@@ -310,7 +295,7 @@ public class PlayerController : MonoBehaviour
 		spriteRenderer.sprite = invulnerableState;
 		invulnerable = true;
 		canMove = false;
-		
+
 		StartCoroutine(IFramesCooldown());
 
 		StartCoroutine(FreezePlayer());

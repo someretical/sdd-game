@@ -9,15 +9,15 @@ public class ItemManager : MonoBehaviour
 	public GameObject[] enemyLootTable;
 	public GameObject[] roomClearLootTable;
 	public GameObject[] shopLootTable;
-	private DungeonManager dungeonManager;
+	[Space]
+	[Header("Helper references")]
+	public DungeonManager dungeonManager;
+	public PlayerController player;
 	private DungeonGenerator dungeonGenerator;
-	private PlayerController player;
 	private GameManager gameManager;
 	void Start()
 	{
-		dungeonManager = transform.parent.GetComponent<DungeonManager>();
 		dungeonGenerator = dungeonManager.dungeonGenerator;
-		player = transform.parent.parent.GetChild(0).GetComponent<PlayerController>();
 		gameManager = transform.parent.parent.parent.GetComponent<GameManager>();
 
 		SpawnShopItems();

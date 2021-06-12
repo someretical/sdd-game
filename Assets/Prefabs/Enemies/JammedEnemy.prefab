@@ -247,6 +247,7 @@ MonoBehaviour:
     type: 3}
   deathAnimation: {fileID: 2759489090139703077, guid: 31f5a309a06073548a4a450e3dd9de25,
     type: 3}
-  agent: {fileID: 0}
-  obstacle: {fileID: 0}
+  spriteRenderer: {fileID: 5860550511555507125}
+  agent: {fileID: 3277623404103466637}
+  obstacle: {fileID: 3277623404103466636}
   boundRoomID: 0

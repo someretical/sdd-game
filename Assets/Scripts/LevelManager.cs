@@ -10,38 +10,19 @@ public class LevelManager : MonoBehaviour
 	public bool ready = false;
 	[HideInInspector]
 	public bool transitioning = false;
-	[Header("Level components")]
-	public GameObject player;
-	public GameObject mainCamera;
-	public GameObject dungeonManager;
-	public GameObject navMesh;
+	[Header("Helper references")]
 	public Image blackOut;
-	private GameObject cam;
-	private TextMeshProUGUI levelText;
-	void Awake()
-	{
-		Cursor.lockState = CursorLockMode.Locked;
-		//Instantiates the player, camera, dungeon manager and navmesh at (0, 0, 0)
-		Instantiate(player, Vector3.zero, Quaternion.identity, transform);
-		cam = Instantiate(mainCamera, Vector3.zero, Quaternion.identity, transform);
-		Instantiate(dungeonManager, Vector3.zero, Quaternion.identity, transform);
-		Instantiate(navMesh, Vector3.zero, Quaternion.Euler(-90f, 0f, 0f), transform);
-		//Gameobjects are set by retrieving the components before runtime.
-		blackOut = cam.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Image>();
-		levelText = cam.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>();
-	}
+	public TextMeshProUGUI levelText;
+	public CameraController cam;
 	void Start()
 	{
+		Cursor.lockState = CursorLockMode.Locked;
 		levelText.text = $"Floor {transform.parent.GetComponent<GameManager>().levelCounter}";
 	}
 	IEnumerator RemoveTransitionComponents()
 	{
-		// Just inserting this code in here real quickkkkk
-		transform.GetChild(1).GetComponent<CameraController>().UpdateHUD();
-
 		// Remove blackout
 		transitioning = true;
-
 		yield return new WaitForSeconds(1f);
 
 		StartCoroutine(DisplayFloorText());
@@ -58,6 +39,7 @@ public class LevelManager : MonoBehaviour
 		}
 
 		blackOut.color = end;
+		blackOut.gameObject.SetActive(false);
 	}
 	IEnumerator DisplayFloorText()
 	{
@@ -92,18 +74,22 @@ public class LevelManager : MonoBehaviour
 		}
 
 		levelText.color = end;
+		levelText.gameObject.SetActive(false);
 
 		yield return new WaitForSeconds(0.5f);
 
-		transitioning = false;
 		ready = true;
 		Cursor.lockState = CursorLockMode.None;
 		Cursor.visible = true;
 	}
 	void Update()
 	{
-		//Constantly checks every frame if it is NOT ready and NOT transitioning, then it will run the coroutine.
+		//Constantly checks every frame if it is ready and NOT transitioning, then it will run the coroutine.
 		if (!ready && !transitioning)
+		{
+			cam.UpdateHUD();
+
 			StartCoroutine(RemoveTransitionComponents());
+		}
 	}
 }

@@ -44,6 +44,7 @@ public class ExitController : MonoBehaviour
 			levelManager.transitioning = true;
 			levelManager.ready = false;
 			Cursor.visible = false;
+			levelManager.blackOut.gameObject.SetActive(true);
 
 			var start = new Color(levelManager.blackOut.color.r, levelManager.blackOut.color.g, levelManager.blackOut.color.b, 0f);
 			var end = new Color(levelManager.blackOut.color.r, levelManager.blackOut.color.g, levelManager.blackOut.color.b, 1f);

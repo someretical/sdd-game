@@ -75,8 +75,8 @@ GameObject:
   - component: {fileID: 159748343955073170}
   - component: {fileID: 6034097006744249550}
   - component: {fileID: 1925907524548403877}
-  - component: {fileID: 1901574273387151104}
   - component: {fileID: -385991715547587257}
+  - component: {fileID: 1901574273387151104}
   m_Layer: 8
   m_Name: Door
   m_TagString: Door
@@ -137,7 +137,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1528656013
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: 1857257749043646430, guid: 39620068444774442b32cd11e2f743e1,
     type: 3}
@@ -198,29 +198,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.4, y: 0.5}
   m_EdgeRadius: 0
---- !u!114 &1901574273387151104
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2220022566231687006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b649281b9acf38b42b628b07c37f5d62, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  defaultState: {fileID: 1857257749043646430, guid: 39620068444774442b32cd11e2f743e1,
-    type: 3}
-  lockedState: {fileID: 377021096327158232, guid: 39620068444774442b32cd11e2f743e1,
-    type: 3}
-  openedState: {fileID: -2357392545137382666, guid: 39620068444774442b32cd11e2f743e1,
-    type: 3}
-  topEdgeCollider: {fileID: 1433417137343965024}
-  bottomEdgeCollider: {fileID: 5427478250846024792}
-  opened: 0
-  roomID: 0
-  rotation: 0
 --- !u!208 &-385991715547587257
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -237,6 +214,32 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
+--- !u!114 &1901574273387151104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2220022566231687006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b649281b9acf38b42b628b07c37f5d62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 159748343955073170}
+  defaultState: {fileID: 1857257749043646430, guid: 39620068444774442b32cd11e2f743e1,
+    type: 3}
+  lockedState: {fileID: 377021096327158232, guid: 39620068444774442b32cd11e2f743e1,
+    type: 3}
+  openedState: {fileID: -2357392545137382666, guid: 39620068444774442b32cd11e2f743e1,
+    type: 3}
+  topEdgeCollider: {fileID: 2519536244900401066}
+  bottomEdgeCollider: {fileID: 629598786308250297}
+  navMeshCollider: {fileID: -385991715547587257}
+  lockCollider: {fileID: 1925907524548403877}
+  opened: 0
+  roomID: 0
+  rotation: 0
 --- !u!1 &5427478250846024792
 GameObject:
   m_ObjectHideFlags: 0

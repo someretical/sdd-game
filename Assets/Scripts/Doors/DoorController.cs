@@ -7,36 +7,29 @@ using UnityEngine.AI;
 public class DoorController : MonoBehaviour
 {
 	[Header("Sprites")]
+	public SpriteRenderer spriteRenderer;
 	public Sprite defaultState;
 	public Sprite lockedState;
 	public Sprite openedState;
 	[Space]
 	[Header("Colliders")]
-	public GameObject topEdgeCollider;
-	public GameObject bottomEdgeCollider;
+	public EdgeCollider2D topEdgeCollider;
+	public EdgeCollider2D bottomEdgeCollider;
+	public NavMeshObstacle navMeshCollider;
+	public BoxCollider2D lockCollider;
 	[HideInInspector]
 	public bool opened = false;
 	[HideInInspector]
 	public int roomID;
 	[HideInInspector]
 	public Rotations rotation;
-	private SpriteRenderer spriteRenderer;
-	private EdgeCollider2D _topEdgeCollider;
-	private EdgeCollider2D _bottomEdgeCollider;
-	private NavMeshObstacle navMeshCollider;
-	private BoxCollider2D lockCollider;
 	private DungeonManager dungeonManager;
 	private Sprite previousSprite;
 	private PlayerController playerController;
 	void Start()
 	{
-		spriteRenderer = GetComponent<SpriteRenderer>();
-		_topEdgeCollider = topEdgeCollider.GetComponent<EdgeCollider2D>();
-		_bottomEdgeCollider = bottomEdgeCollider.GetComponent<EdgeCollider2D>();
-		navMeshCollider = GetComponent<NavMeshObstacle>();
-		lockCollider = GetComponent<BoxCollider2D>();
 		dungeonManager = transform.parent.parent.GetComponent<DungeonManager>();
-		playerController = transform.parent.parent.parent.GetChild(0).GetComponent<PlayerController>();
+		playerController = transform.parent.parent.parent.GetChild(2).GetComponent<PlayerController>();
 	}
 	IEnumerator LockRoom()
 	{
@@ -70,8 +63,8 @@ public class DoorController : MonoBehaviour
 
 		dungeonManager.UpdateDarkness(transform.position);
 
-		_topEdgeCollider.enabled = false;
-		_bottomEdgeCollider.enabled = false;
+		topEdgeCollider.enabled = false;
+		bottomEdgeCollider.enabled = false;
 		navMeshCollider.enabled = false;
 
 		if (direction == 0)
@@ -88,8 +81,8 @@ public class DoorController : MonoBehaviour
 	}
 	public void Lock()
 	{
-		_topEdgeCollider.enabled = false;
-		_bottomEdgeCollider.enabled = false;
+		topEdgeCollider.enabled = false;
+		bottomEdgeCollider.enabled = false;
 
 		lockCollider.enabled = true;
 		navMeshCollider.enabled = true;
@@ -106,8 +99,8 @@ public class DoorController : MonoBehaviour
 			navMeshCollider.enabled = false;
 		else
 		{
-			_topEdgeCollider.enabled = true;
-			_bottomEdgeCollider.enabled = true;
+			topEdgeCollider.enabled = true;
+			bottomEdgeCollider.enabled = true;
 		}
 	}
 }

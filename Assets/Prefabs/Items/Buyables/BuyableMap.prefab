@@ -359,3 +359,5 @@ MonoBehaviour:
     type: 3}
   lockedSprite: {fileID: -6113606119065762621, guid: a0ff15601d4bcbd46af3f6025ca00868,
     type: 3}
+  spriteRenderer: {fileID: 8065569930246742097}
+  textMeshPro: {fileID: 8065569930114934986}

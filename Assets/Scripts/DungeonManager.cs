@@ -7,14 +7,6 @@ using UnityEngine.AI;
 using UnityEngine.Tilemaps;
 public class DungeonManager : MonoBehaviour
 {
-	[Header("Level components")]
-	public DoorManager doorManager;
-	public ChestManager chestManager;
-	public EntranceExitManager entranceExitManager;
-	public ItemManager itemManager;
-	public TrapManager trapManager;
-	public EnemyManager enemyManager;
-	[Space]
 	[Header("Dungeon generation values")]
 	public int mapWidth = 150;
 	public int mapHeight = 150;
@@ -59,33 +51,16 @@ public class DungeonManager : MonoBehaviour
 	[HideInInspector]
 	public DungeonGenerator dungeonGenerator;
 	[HideInInspector]
-	public NavMeshSurface2d navMesh;
-	[HideInInspector]
-	public GameObject bulletManager;
-	[HideInInspector]
 	public List<int> completedRoomIDs = new List<int>();
 	[HideInInspector]
 	public List<DoorController> doors = new List<DoorController>();
-	private PlayerController playerController;
-	private EnemyManager _enemyManager;
-	private ItemManager _itemManager;
-	void Awake()
-	{
-		//Managers are instantiated at coordinates (0, 0, 0) or referenced at the start.
-		Instantiate(doorManager, Vector3.zero, Quaternion.identity, transform);
-		Instantiate(chestManager, Vector3.zero, Quaternion.identity, transform);
-		Instantiate(entranceExitManager, Vector3.zero, Quaternion.identity, transform);
-		Instantiate(itemManager, Vector3.zero, Quaternion.identity, transform);
-		Instantiate(trapManager, Vector3.zero, Quaternion.identity, transform);
-
-		var newEnemyManager = Instantiate(enemyManager, Vector3.zero, Quaternion.identity, transform);
-		_enemyManager = newEnemyManager.GetComponent<EnemyManager>();
-
-		_itemManager = transform.GetChild(8).GetComponent<ItemManager>();
-
-		bulletManager = new GameObject("BulletManager");
-		bulletManager.transform.parent = transform;
-	}
+	[Space]
+	[Header("Helper references")]
+	public NavMeshSurface2d navMesh;
+	public GameObject bulletManager;
+	public PlayerController playerController;
+	public EnemyManager enemyManager;
+	public ItemManager itemManager;
 	void Start()
 	{
 		GenerateDungeon();
@@ -96,13 +71,12 @@ public class DungeonManager : MonoBehaviour
 		PlaceDestroyableWalls();
 		PlaceDecorations();
 		PlaceDarkness();
-		BuildNavMesh();
+
+		navMesh.BuildNavMesh();
 
 		// Reveal original room
 		UpdateDarkness(new Vector3(mapWidth / 2 + 4, mapHeight / 2 - 3, 0f));
 		completedRoomIDs.Add(0);
-
-		playerController = transform.parent.GetChild(0).GetComponent<PlayerController>();
 	}
 	public void GenerateDungeon()
 	{
@@ -144,7 +118,7 @@ public class DungeonManager : MonoBehaviour
 		for (var x = 0; x < mapWidth; ++x)
 			for (var y = 0; y < mapHeight; ++y)
 				if (dungeonGenerator.Map[x, y].type == TileTypes.Entrance)
-					transform.parent.GetChild(0).position = new Vector3(x + 0.5f, mapHeight - 0.5f - y, 0f);
+					playerController.transform.position = new Vector3(x + 0.5f, mapHeight - 0.5f - y, 0f);
 	}
 	public bool CheckIfGround(int x, int y)
 	{
@@ -494,12 +468,6 @@ public class DungeonManager : MonoBehaviour
 		if (secretRoomExists)
 			navMesh.UpdateNavMesh(navMesh.navMeshData);
 	}
-	public void BuildNavMesh()
-	{
-		// Build the intial navmesh used by enemies
-		navMesh = transform.parent.GetChild(3).GetComponent<NavMeshSurface2d>();
-		navMesh.BuildNavMesh();
-	}
 	public void LockRoom(int roomID)
 	{
 		for (var i = 0; i < doors.Count; ++i)
@@ -508,13 +476,13 @@ public class DungeonManager : MonoBehaviour
 
 		playerController.inCombat = true;
 
-		_enemyManager.SpawnEnemies(playerController.transform.position);
+		enemyManager.SpawnEnemies(playerController.transform.position);
 	}
 	public void UnlockRoom(int roomID)
 	{
 		//Room ID is passed through and is added to a list of completed rooms.
 		completedRoomIDs.Add(roomID);
-		
+
 		for (var i = 0; i < doors.Count; ++i)
 			if (doors[i].roomID == roomID)
 				doors[i].Unlock();
@@ -525,8 +493,8 @@ public class DungeonManager : MonoBehaviour
 	{
 		var enemiesStillAlive = false;
 
-		for (var i = 0; i < _enemyManager.transform.childCount; ++i)
-			if (_enemyManager.transform.GetChild(i).GetComponent<EnemyController>().boundRoomID == roomID)
+		for (var i = 0; i < enemyManager.transform.childCount; ++i)
+			if (enemyManager.transform.GetChild(i).GetComponent<EnemyController>().boundRoomID == roomID)
 			{
 				enemiesStillAlive = true;
 				break;
@@ -537,7 +505,7 @@ public class DungeonManager : MonoBehaviour
 			//When the enemies are dead, the room is unlocked.
 			//There is a probability that there is a clear reward.
 			if (UnityEngine.Random.Range(0, 10) == 0)
-				_itemManager.SpawnRoomClearReward(position);
+				itemManager.SpawnRoomClearReward(position);
 
 			UnlockRoom(roomID);
 		}

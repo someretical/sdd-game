@@ -18,6 +18,12 @@ public class BuyableItem : MonoBehaviour
 	private bool onDefaultSprite = true;
 	private bool playerTouching = false;
 	private bool tempLocked = false;
+	// The reason why I am not assinging the sprite renderer and textmeshpro in the unity editor
+	// is because there may be a LOT of items
+	// and the locations of the components are always the same
+	// so I don't have to drag the components in for EVERY item
+	// which saves a LOT of time since I am getting their references dynamically
+	// and they all have this script running
 	private SpriteRenderer spriteRenderer;
 	private TextMeshPro textMeshPro;
 	private PlayerController player;
@@ -25,7 +31,7 @@ public class BuyableItem : MonoBehaviour
 	void Start()
 	{
 		spriteRenderer = GetComponent<SpriteRenderer>();
-		player = transform.parent.parent.parent.GetChild(0).GetComponent<PlayerController>();
+		player = transform.parent.parent.parent.GetChild(2).GetComponent<PlayerController>();
 		gameManager = transform.parent.parent.parent.parent.GetComponent<GameManager>();
 
 		scaledPrice = basePrice + (int)Math.Ceiling((gameManager.levelCounter - 1) * basePrice * gameManager.itemPriceIncreasePercentage);

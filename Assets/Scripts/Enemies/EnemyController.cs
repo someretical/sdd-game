@@ -19,9 +19,10 @@ public class EnemyController : MonoBehaviour
 	public GameObject regularBullet;
 	public GameObject jammedBullet;
 	public GameObject deathAnimation;
-	[HideInInspector]
+	[Space]
+	[Header("Helper references")]
+	public SpriteRenderer spriteRenderer;
 	public NavMeshAgent agent;
-	[HideInInspector]
 	public NavMeshObstacle obstacle;
 	[HideInInspector]
 	public int boundRoomID;
@@ -29,21 +30,17 @@ public class EnemyController : MonoBehaviour
 	private bool stunned = false;
 	private int fireCounter = 0;
 	private PlayerController player;
-	private SpriteRenderer sprite;
 	private ItemManager itemManager;
 	private DungeonManager dungeonManager;
 	void Start()
 	{
-		sprite = transform.GetChild(0).GetComponent<SpriteRenderer>();
-		agent = transform.GetChild(1).GetComponent<NavMeshAgent>();
-		obstacle = transform.GetChild(1).GetComponent<NavMeshObstacle>();
-		player = transform.parent.parent.parent.GetChild(0).GetComponent<PlayerController>();
-		itemManager = transform.parent.parent.GetChild(8).GetComponent<ItemManager>();
+		player = transform.parent.parent.parent.GetChild(2).GetComponent<PlayerController>();
+		itemManager = transform.parent.parent.GetChild(9).GetComponent<ItemManager>();
 		dungeonManager = transform.parent.parent.GetComponent<DungeonManager>();
 
 		var position = new Vector3(transform.position.x, transform.position.y, 0f);
 		transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
-		sprite.transform.position = position;
+		spriteRenderer.transform.position = position;
 		agent.transform.position = position;
 	}
 	void Update()
@@ -63,11 +60,11 @@ public class EnemyController : MonoBehaviour
 		firing = true;
 		var bullet = Instantiate(
 			jammed ? jammedBullet : regularBullet,
-			sprite.transform.position,
+			spriteRenderer.transform.position,
 			Quaternion.identity,
 			dungeonManager.bulletManager.transform
 		);
-		var vec3Rotation = (player.transform.position - sprite.transform.position).normalized * (jammed ? 5 : 2.5f);
+		var vec3Rotation = (player.transform.position - spriteRenderer.transform.position).normalized * (jammed ? 5 : 2.5f);
 		bullet.GetComponent<Rigidbody2D>().velocity = new Vector2(vec3Rotation.x, vec3Rotation.y);
 
 		yield return new WaitForSeconds(Random.Range(0.5f, 1.5f));
@@ -82,7 +79,7 @@ public class EnemyController : MonoBehaviour
 			// Perhaps it would have been better to set the loot tables individually for each type of enemy controller
 			// Then each individual child class could override the SpawnEnemyDrops function or whatever
 			// But that's too bothersome because the current setup already does the bare minimum
-			itemManager.SpawnEnemyDrops(sprite.transform.position, coinReward);
+			itemManager.SpawnEnemyDrops(spriteRenderer.transform.position, coinReward);
 
 			// Setting actualRoomID to boundRoomID
 			// Then changing boundRoomID to -1 
@@ -93,9 +90,9 @@ public class EnemyController : MonoBehaviour
 			// because at that point this instance will no longer exist
 			var actualRoomID = boundRoomID;
 			boundRoomID = -1;
-			dungeonManager.RegisterEnemyDeath(actualRoomID, sprite.transform.position);
+			dungeonManager.RegisterEnemyDeath(actualRoomID, spriteRenderer.transform.position);
 
-			var death = Instantiate(deathAnimation, sprite.transform.position, Quaternion.identity);
+			var death = Instantiate(deathAnimation, spriteRenderer.transform.position, Quaternion.identity);
 			Destroy(death, 0.25f);
 
 			Destroy(gameObject);
@@ -121,7 +118,7 @@ public class EnemyController : MonoBehaviour
 
 		// Move the rigid body associated with this gameobject
 		var adjustedPosition = new Vector3(agent.transform.position.x, agent.transform.position.y, 0f);
-		sprite.transform.position = Vector3.Lerp(sprite.transform.position, adjustedPosition, Time.deltaTime * 2);
+		spriteRenderer.transform.position = Vector3.Lerp(spriteRenderer.transform.position, adjustedPosition, Time.deltaTime * 2);
 	}
 	public void InflictDamage(int damage)
 	{
@@ -134,11 +131,11 @@ public class EnemyController : MonoBehaviour
 	}
 	IEnumerator DisplayDamage()
 	{
-		sprite.color = damageColor;
+		spriteRenderer.color = damageColor;
 
 		yield return new WaitForSeconds(0.2f);
 
-		sprite.color = defaultColor;
+		spriteRenderer.color = defaultColor;
 	}
 	IEnumerator Stun()
 	{

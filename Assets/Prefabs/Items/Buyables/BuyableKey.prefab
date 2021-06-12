@@ -182,6 +182,8 @@ MonoBehaviour:
     type: 3}
   lockedSprite: {fileID: -7288242425501153905, guid: 21fc1c8483c15074b8c6448ab349ab29,
     type: 3}
+  spriteRenderer: {fileID: 3174573197766090445}
+  textMeshPro: {fileID: 3174573197906253398}
 --- !u!1 &3174573197906253396
 GameObject:
   m_ObjectHideFlags: 0

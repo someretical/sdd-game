@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a37da53fe94cfb48ab95292af56518f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weight: 10
+  weight: 4
   coinReward: 2
   health: 3
   jammed: 0
@@ -57,8 +57,9 @@ MonoBehaviour:
     type: 3}
   deathAnimation: {fileID: 2759489090139703077, guid: 31f5a309a06073548a4a450e3dd9de25,
     type: 3}
-  agent: {fileID: 0}
-  obstacle: {fileID: 0}
+  spriteRenderer: {fileID: 215271185146409136}
+  agent: {fileID: 9139038110035705224}
+  obstacle: {fileID: 9139038110035705225}
   boundRoomID: 0
 --- !u!1 &8550172060478166179
 GameObject:

@@ -5,13 +5,8 @@ using UnityEngine;
 public class EntranceController : MonoBehaviour
 {
 	public Sprite closedState;
-	private CircleCollider2D c2d;
-	private SpriteRenderer spriteRenderer;
-	void Start()
-	{
-		c2d = GetComponent<CircleCollider2D>();
-		spriteRenderer = GetComponent<SpriteRenderer>();
-	}
+	public CircleCollider2D c2d;
+	public SpriteRenderer spriteRenderer;
 	void OnTriggerExit2D(Collider2D other)
 	{
 		if (other.gameObject.CompareTag("Player"))

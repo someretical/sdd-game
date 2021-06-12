@@ -7,16 +7,14 @@ public class SpikeTrapController : MonoBehaviour
 	[Header("Sprites")]
 	public Sprite passiveState;
 	public Sprite activeState;
+	public SpriteRenderer spriteRenderer;
 	private bool timerRunning = false;
 	private bool playerTouching = false;
 	private bool canDamage = false;
-	private SpriteRenderer spriteRenderer;
 	private PlayerController player;
 	void Start()
 	{
-		spriteRenderer = GetComponent<SpriteRenderer>();
-		spriteRenderer.sprite = passiveState;
-		player = transform.parent.parent.parent.GetChild(0).GetComponent<PlayerController>();
+		player = transform.parent.parent.parent.GetChild(2).GetComponent<PlayerController>();
 	}
 	void Update()
 	{
@@ -44,14 +42,14 @@ public class SpikeTrapController : MonoBehaviour
 		//For every update frame for which the object that collides doesn't have the tag "PlayerDodgeRollHitbox"
 		if (PrelimCheck(other))
 			return;
-		
+
 		if (!timerRunning)
 			StartCoroutine(DelayedActivation());
 	}
 	void OnTriggerExit2D(Collider2D other)
 	{
-	//If the object that is colliding is no longer touching, then it checks the tag.
-	//If the tag check fails, it sets the boolean values to false.
+		//If the object that is colliding is no longer touching, then it checks the tag.
+		//If the tag check fails, it sets the boolean values to false.
 		if (PrelimCheck(other))
 			return;
 

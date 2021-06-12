@@ -1,24 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CameraController : MonoBehaviour
 {
 	public float radius;
-	private Transform player;
-	private Camera cam;
+	[Header("Helper references")]
+	public Transform player;
+	public Camera cam;
+	public TextMeshProUGUI playerData;
+	public Text version;
 	private GameManager gameManager;
-	private Text playerData;
 	void Start()
 	{
-		player = transform.parent.GetChild(0);
-		cam = GetComponent<Camera>();
 		gameManager = transform.parent.parent.GetComponent<GameManager>();
-		playerData = transform.GetChild(0).GetChild(1).GetComponent<Text>();
-
-		// Set version
-		transform.GetChild(0).GetChild(2).GetComponent<Text>().text = $"Version {Application.version}";
+		version.text = $"Version {Application.version}";
 	}
 	void LateUpdate()
 	{
@@ -51,12 +49,11 @@ public class CameraController : MonoBehaviour
 		// as to not disturb any 'intended' indentation
 		// But this project has a budget of exactly zero dollars
 
-		playerData.text = $@"
-Health: {gameManager.hp}
+		playerData.text = $@"Health: {gameManager.hp}/{gameManager.maxHp}
 Armour: {gameManager.armour}
 Blanks: {gameManager.blanks}
-Keys:   {gameManager.keys}
-Coins:  {gameManager.coins}
+Keys: {gameManager.keys}
+Coins: {gameManager.coins}
 ";
 	}
 }
