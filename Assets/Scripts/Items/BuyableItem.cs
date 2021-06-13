@@ -132,6 +132,7 @@ public class BuyableItem : MonoBehaviour
 			{
 				//Item is purchased
 				gameManager.coins -= scaledPrice;
+				gameManager.totalSpentCoins += scaledPrice;
 				player.OnItemPickup(id);
 
 				Destroy(gameObject);

@@ -1,5 +1,4 @@
 How to play:
----
 
 - WASD to move
 - m1 to shoot
@@ -9,5 +8,5 @@ How to play:
 - stand in exit node for 3 seconds to go to next floor (marked as green dot on minimap)
 - tab to view fullscreen map
 - scroll to zoom in and out while fullscreen map is up
+- esc to pause the game
 - these are the basic instructions to get started, but there are a bunch of other mechanics that can be explored but are not needed to survive
-

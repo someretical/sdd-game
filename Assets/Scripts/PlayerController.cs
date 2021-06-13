@@ -209,25 +209,33 @@ public class PlayerController : MonoBehaviour
 		switch (id)
 		{
 			case "CoinStack":
-				gameManager.coins += 15 + (int)Math.Ceiling((gameManager.levelCounter - 1) * 15 * gameManager.itemPriceIncreasePercentage);
+				var scaling = (int)Math.Ceiling((gameManager.levelCounter - 1) * 15 * gameManager.itemPriceIncreasePercentage);
+
+				gameManager.coins += 15 + scaling;
+				gameManager.totalCoins += 15 + scaling;
 				break;
 			case "CoinPickup":
 				++gameManager.coins;
 				break;
 			case "2CoinPickup":
 				gameManager.coins += 2;
+				gameManager.totalCoins += 2;
 				break;
 			case "5CoinPickup":
 				gameManager.coins += 5;
+				gameManager.totalCoins += 5;
 				break;
 			case "10CoinPickup":
 				gameManager.coins += 10;
+				gameManager.totalCoins += 10;
 				break;
 			case "20CoinPickup":
 				gameManager.coins += 20;
+				gameManager.totalCoins += 20;
 				break;
 			case "50CoinPickup":
 				gameManager.coins += 50;
+				gameManager.totalCoins += 50;
 				break;
 			case "KeyPickup":
 			// FALL THROUGH
@@ -299,8 +307,9 @@ public class PlayerController : MonoBehaviour
 		StartCoroutine(IFramesCooldown());
 
 		StartCoroutine(FreezePlayer());
-		//The HP is then decreased after getting hit, given that the player isn't in an invulnerable state and that the player had no armour.
-		gameManager.hp -= damage;
+		//The HP is then decreased after getting hit, given that the player isn't in an invulnerable state and that the player had no armour.\
+		// Make sure hp counter doesn't go negative
+		gameManager.hp = Mathf.Max(0, gameManager.hp - damage);
 		cameraController.UpdateHUD();
 	}
 	IEnumerator IFramesCooldown()

@@ -8,6 +8,7 @@ public class ExitController : MonoBehaviour
 	private bool timeoutRunning = false;
 	private GameManager gameManager;
 	private LevelManager levelManager;
+	public Rigidbody2D playerRb2D;
 	void Start()
 	{
 		gameManager = transform.parent.parent.parent.parent.GetComponent<GameManager>();
@@ -41,10 +42,13 @@ public class ExitController : MonoBehaviour
 		if (playerTouching)
 		{
 			// Start exit transition
+			++gameManager.floorsCleared;
+			gameManager.counting = false;
 			levelManager.transitioning = true;
 			levelManager.ready = false;
 			Cursor.visible = false;
 			levelManager.blackOut.gameObject.SetActive(true);
+			playerRb2D.velocity = Vector2.zero;
 
 			var start = new Color(levelManager.blackOut.color.r, levelManager.blackOut.color.g, levelManager.blackOut.color.b, 0f);
 			var end = new Color(levelManager.blackOut.color.r, levelManager.blackOut.color.g, levelManager.blackOut.color.b, 1f);

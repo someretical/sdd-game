@@ -61,8 +61,11 @@ public class DungeonManager : MonoBehaviour
 	public PlayerController playerController;
 	public EnemyManager enemyManager;
 	public ItemManager itemManager;
+	public GameManager gameManager;
 	void Start()
 	{
+		gameManager = transform.parent.parent.GetComponent<GameManager>();
+
 		GenerateDungeon();
 
 		PlacePlayer();
@@ -455,6 +458,7 @@ public class DungeonManager : MonoBehaviour
 				minimapTilemap.SetTile(coords, minimapTiles[0]);
 
 				secretRoomExists = true;
+				++gameManager.totalSecretRoomsRevealed;
 			}
 		}
 
@@ -509,5 +513,7 @@ public class DungeonManager : MonoBehaviour
 
 			UnlockRoom(roomID);
 		}
+
+		++gameManager.enemyKills;
 	}
 }

@@ -14,6 +14,8 @@ public class LevelManager : MonoBehaviour
 	public Image blackOut;
 	public TextMeshProUGUI levelText;
 	public CameraController cam;
+	public TextMeshProUGUI stats;
+	public GameObject deathScreen;
 	void Start()
 	{
 		Cursor.lockState = CursorLockMode.Locked;
@@ -84,7 +86,7 @@ public class LevelManager : MonoBehaviour
 	}
 	void Update()
 	{
-		//Constantly checks every frame if it is ready and NOT transitioning, then it will run the coroutine.
+		//Constantly checks every frame if it is NOT ready and NOT transitioning, then it will run the coroutine.
 		if (!ready && !transitioning)
 		{
 			cam.UpdateHUD();
