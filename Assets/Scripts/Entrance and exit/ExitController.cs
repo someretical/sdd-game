@@ -13,6 +13,7 @@ public class ExitController : MonoBehaviour
 	{
 		gameManager = transform.parent.parent.parent.parent.GetComponent<GameManager>();
 		levelManager = transform.parent.parent.parent.GetComponent<LevelManager>();
+		playerRb2D = transform.parent.parent.GetChild(2).GetComponent<Rigidbody2D>();
 	}
 	void OnTriggerEnter2D(Collider2D other)
 	{
