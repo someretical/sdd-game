@@ -183,6 +183,13 @@ MonoBehaviour:
   hp: 6
   mana: 100
   armour: 0
-  coins: 20
+  coins: 0
   blanks: 2
   keys: 2
+  floorsCleared: 0
+  enemyKills: 0
+  totalCoins: 0
+  totalSpentCoins: 0
+  totalSecretRoomsRevealed: 0
+  timeAlive: 0
+  counting: 0
