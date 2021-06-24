@@ -10,9 +10,26 @@ public class CameraController : MonoBehaviour
 	[Header("Helper references")]
 	public Transform player;
 	public Camera cam;
-	public TextMeshProUGUI playerData;
 	public Text version;
+	[Space]
+	[Header("Health bar")]
+	public TextMeshProUGUI hpText;
+	public Image hpImage;
+	public Slider hpSlider;
+	public Gradient hpGradient;
 	private GameManager gameManager;
+	[Space]
+	[Header("Armour")]
+	public TextMeshProUGUI armour;
+	[Space]
+	[Header("Blanks")]
+	public TextMeshProUGUI blanks;
+	[Space]
+	[Header("Keys")]
+	public TextMeshProUGUI keys;
+	[Space]
+	[Header("Coins")]
+	public TextMeshProUGUI coins;
 	void Start()
 	{
 		gameManager = transform.parent.parent.GetComponent<GameManager>();
@@ -42,18 +59,33 @@ public class CameraController : MonoBehaviour
 	}
 	public void UpdateHUD()
 	{
-		// Indentation broken here because of how multi line strings work in c#
-		// If I wanted to fix this, I would have to create a helper function to:
-		// 1) Detect the number of tabs of indentation on the first newline
-		// 2) Strip that same number of tabs from all following lines
-		// as to not disturb any 'intended' indentation
-		// But this project has a budget of exactly zero dollars
-
-		playerData.text = $@"Health: {gameManager.hp}/{gameManager.maxHp}
-Armour: {gameManager.armour}
-Blanks: {gameManager.blanks}
-Keys: {gameManager.keys}
-Coins: {gameManager.coins}
-";
+		UpdateHP();
+		UpdateArmour();
+		UpdateBlanks();
+		UpdateKeys();
+		UpdateCoins();
+	}
+	public void UpdateHP()
+	{
+		hpText.text = $"{gameManager.hp}/{gameManager.maxHp}";
+		hpSlider.maxValue = gameManager.maxHp;
+		hpSlider.value = gameManager.hp;
+		hpImage.color = hpGradient.Evaluate(hpSlider.normalizedValue);
+	}
+	public void UpdateArmour()
+	{
+		armour.text = gameManager.armour.ToString();
+	}
+	public void UpdateBlanks()
+	{
+		blanks.text = gameManager.blanks.ToString();
+	}
+	public void UpdateKeys()
+	{
+		keys.text = gameManager.keys.ToString();
+	}
+	public void UpdateCoins()
+	{
+		coins.text = gameManager.coins.ToString();
 	}
 }
